@@ -2,11 +2,11 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'node:path'
 import autoprefixer from 'autoprefixer'
-import type{ DeprecationOrId } from 'sass'
+import mkcert from 'vite-plugin-mkcert';
+// import type{ DeprecationOrId } from 'sass'
 
 // https://vitejs.dev/config/
-export default defineConfig(() => {
-  return {
+export default defineConfig({
     base: './',
     build: {
       outDir: 'build',
@@ -18,7 +18,11 @@ export default defineConfig(() => {
         ],
       },
     },
-    plugins: [react()],
+    plugins: [
+      react(),
+      // @ts-ignore
+      process.env.HTTPS && mkcert()
+    ],
     resolve: {
       alias: [
         {
@@ -29,10 +33,14 @@ export default defineConfig(() => {
       extensions: ['.mjs', '.mts', '.js', '.ts', '.jsx', '.tsx', '.json', '.scss'],
     },
     server: {
-      port: 3000,
+      // port: 3000,
+      host: true,
       proxy: {
         // https://vitejs.dev/config/server-options.html
+        '/admin': {
+          target: 'https://devsoko.ru',
+          changeOrigin: true,
+        },
       },
     },
-  }
 })
