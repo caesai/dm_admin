@@ -7,7 +7,7 @@ import { IWorktime } from 'src/types/Worktime.ts'
 import { ISocial } from 'src/types/Socials.ts'
 
 export const GetRestaurantList = async () => {
-  return await axios.get<IRestaurantWCity[]>(`${BASEURL}/restaurants`, {
+  return await axios.get<IRestaurantWCity[]>(`${BASEURL}/restaurants/`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },
