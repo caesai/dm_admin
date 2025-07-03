@@ -13,7 +13,7 @@ import { LoginWatchdog } from 'src/components/LoginWatchdog.tsx'
 import { Toaster } from 'react-hot-toast'
 
 // Containers
-const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
+const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'));
 
 const Login = React.lazy(() => import('./views/pages/login/Login'))
 
