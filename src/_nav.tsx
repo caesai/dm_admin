@@ -1,10 +1,12 @@
 import { ElementType, JSX } from 'react'
 import CIcon from '@coreui/icons-react'
 import {
+  cilBell,
   cilBuilding,
   cilCash,
   cilCircle,
   cilHome,
+  cilLink,
   cilList,
   cilMonitor,
   cilPeople,
@@ -12,7 +14,7 @@ import {
   cilSettings,
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react-pro'
-import {LuChefHat} from "react-icons/lu";
+import { LuChefHat } from 'react-icons/lu'
 
 export type Badge = {
   color: string
@@ -66,7 +68,7 @@ const _nav: NavItem[] = [
     component: CNavItem,
     name: 'Шефы',
     to: '/chefs',
-    icon: <LuChefHat className={'nav-icon'} style={{fill: 'none'}} />
+    icon: <LuChefHat className={'nav-icon'} style={{ fill: 'none' }} />,
   },
   {
     component: CNavItem,
@@ -104,6 +106,22 @@ const _nav: NavItem[] = [
     name: 'Настройки',
     to: '/settings',
     icon: <CIcon icon={cilSettings} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavTitle,
+    name: 'БОТ',
+  },
+  {
+    component: CNavItem,
+    name: 'Инвайт-ссылки',
+    to: '/invite-links',
+    icon: <CIcon icon={cilLink} customClassName="nav-icon" />, // используйте подходящий икон компонент
+  },
+  {
+    component: CNavItem,
+    name: 'Уведомления',
+    to: '/notifications',
+    icon: <CIcon icon={cilBell} customClassName="nav-icon" />, // используйте подходящий икон компонент
   },
 ]
 
