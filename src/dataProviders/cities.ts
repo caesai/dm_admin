@@ -3,7 +3,7 @@ import { BASEURL } from 'src/api.ts'
 import { ICity, ICityCreate } from 'src/types/City.ts'
 
 export const GetCities = async () => {
-  return await axios.get<ICity[]>(`${BASEURL}/dicts/cities`, {
+  return await axios.get<ICity[]>(`${BASEURL}/dicts/cities/`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },

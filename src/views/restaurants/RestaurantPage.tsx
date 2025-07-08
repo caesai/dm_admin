@@ -52,7 +52,7 @@ const RestaurantPage = () => {
           <strong>{restaurant.title}</strong>
         </CCardHeader>
         <CCardBody>
-          <CTabs activeItemKey={'main'}>
+          <CTabs defaultActiveItemKey={'gallery'}>
             <CTabList variant={'tabs'}>
               <CTab itemKey={'main'}>Основное</CTab>
               <CTab itemKey={'gallery'}>Галерея</CTab>

@@ -166,7 +166,7 @@ export const MainPanel = ({ restaurant }: IMainPanel) => {
               }
             >
               {cities.map((city) => (
-                <option value={city.id}>{city.name}</option>
+                <option key={city.id} value={city.id}>{city.name}</option>
               ))}
             </CFormSelect>
           )}
@@ -190,6 +190,7 @@ export const MainPanel = ({ restaurant }: IMainPanel) => {
             >
               {chefs.map((chef) => (
                 <option
+                  key={chef.id}
                   value={chef.id}
                   onChange={() => setRes((prev) => ({ ...prev, brand_chef: chef }))}
                 >

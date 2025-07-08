@@ -3,7 +3,7 @@ import { BASEURL } from 'src/api.ts'
 import { IChef } from 'src/types/Chef.ts'
 
 export const GetChefsList = async () => {
-  return await axios.get<IChef[]>(`${BASEURL}/chefs`, {
+  return await axios.get<IChef[]>(`${BASEURL}/chefs/`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },

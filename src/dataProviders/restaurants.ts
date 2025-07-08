@@ -31,7 +31,7 @@ export const UpdateRestaurantMain = async (res: IRestaurant) => {
 }
 
 export const UpdateRestaurantGalleryItem = async (item: IPhotoCard) => {
-  return await axios.patch(`${BASEURL}/gallery`, item, {
+  return await axios.patch(`${BASEURL}/gallery/`, item, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },
@@ -47,7 +47,7 @@ export const DeleteRestaurantGalleryItem = async (item: IPhotoCard) => {
 }
 export const CreateRestaurantGalleryItem = async (item: IPhotoCard, restaurant_id: number) => {
   return await axios.post(
-    `${BASEURL}/gallery`,
+    `${BASEURL}/gallery/`,
     {
       category: item.category,
       url: item.url,
