@@ -109,7 +109,7 @@ const _nav: NavItem[] = [
   },
   {
     component: CNavTitle,
-    name: 'БОТ',
+    name: 'Бот',
   },
   {
     component: CNavItem,
