@@ -1,18 +1,73 @@
-import { CCard, CCardBody, CCardHeader, CSpinner } from '@coreui/react-pro'
+import {
+  CCard,
+  CCardBody, CCardGroup,
+  CCardHeader,
+  CForm, CFormInput,
+  CInputGroup,
+  CLoadingButton,
+  CSpinner
+} from '@coreui/react-pro'
 import classNames from 'classnames'
 import { useState } from 'react'
+import { SimpleEditor } from 'src/components/TextEditor/TextEditor.tsx'
 
 const NotificationsPage = () => {
-  const [loading, setLoading] = useState(true)
-
+  const [loading,] = useState(false);
+  const [testUserName, setTestUserName] = useState<string>('');
+  const [editorContent, setEditorContent] = useState<any>(null);
   if (loading) {
     return <CSpinner color={'primary'} />
+  }
+
+  const testNotifications = () => {
+    // /admin/mailing/
+    // setLoading(true);
+    console.log("test notifications: ", editorContent);
   }
 
   return (
     <CCard>
       <CCardHeader>Notifications Page</CCardHeader>
-      <CCardBody className={classNames('d-flex', 'flex-row', 'gap-2')}>Hello</CCardBody>
+      <CCardGroup className={"mb-4"}>
+        <CCard className="p-4">
+          <CCardBody className={classNames('d-flex', 'flex-row', 'gap-2')}>
+            <SimpleEditor onUpdate={setEditorContent}/>
+          </CCardBody>
+          <CCardBody className={classNames('d-flex', 'flex-row', 'gap-2')}>
+            <CLoadingButton
+              color="primary"
+              className="px-4"
+              // loading={authPending}
+              onClick={testNotifications}
+            >
+              Рассылка
+            </CLoadingButton>
+          </CCardBody>
+        </CCard>
+      </CCardGroup>
+      <CCardGroup>
+        <CCard className="p-4">
+          <CCardBody>
+            <CForm>
+              <CInputGroup className="mb-3">
+                <CFormInput
+                  placeholder="@Username"
+                  autoComplete="username"
+                  value={testUserName}
+                  onChange={(e) => setTestUserName(e.target.value)}/>
+              </CInputGroup>
+              <CLoadingButton
+                color="primary"
+                className="px-4"
+                // loading={authPending}
+                onClick={testNotifications}
+              >
+                Тест
+              </CLoadingButton>
+            </CForm>
+          </CCardBody>
+        </CCard>
+      </CCardGroup>
     </CCard>
   )
 }
