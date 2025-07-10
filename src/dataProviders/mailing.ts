@@ -2,11 +2,11 @@ import axios from 'axios'
 import { BASEURL } from 'src/api.ts'
 import {IAdmin} from "src/types/Admin.ts";
 
-export const sendMailing = async (user_ids: number[] | null, text: string, document?: string) => {
+export const sendMailing = async (users_ids: number[] | null, text: string) => {
   return axios.post<IAdmin[]>(
     `${BASEURL}/mailing/`,
     {
-        user_ids,
+        users_ids,
         text,
         document: '',
         video: '',
@@ -14,7 +14,7 @@ export const sendMailing = async (user_ids: number[] | null, text: string, docum
     },
     {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        // 'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${localStorage.getItem('access_token')}`,
       },
     },

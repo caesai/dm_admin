@@ -11,7 +11,6 @@ import classNames from 'classnames'
 import { useState } from 'react'
 import { SimpleEditor } from 'src/components/TextEditor/TextEditor.tsx'
 import {sendMailing} from "src/dataProviders/mailing.ts";
-import {Base64} from "src/utils/base64.ts";
 
   const NotificationsPage = () => {
   const [loading,] = useState(false);
@@ -23,13 +22,14 @@ import {Base64} from "src/utils/base64.ts";
 
   const testNotifications = () => {
     // /admin/mailing/
-    // setLoading(true);
-    const encodedString = btoa(unescape(encodeURIComponent(editorContent.toString())));
-    console.log("test notifications: ", editorContent);
+    console.log("test content: ",  editorContent);
+
     sendMailing([
-      115555014
+      // 115555014,
+      // 1283802964
     ], editorContent).then(r => {
       //
+      console.log(r);
     });
   }
 

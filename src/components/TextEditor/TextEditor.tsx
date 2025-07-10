@@ -18,6 +18,7 @@ import * as Icons from "./Icons";
 import { LinkModal } from "./LinkModal";
 // @ts-expect-error its ok
 import css from "./editor.module.css";
+import TurndownService from 'turndown';
 
 interface IProps {
   onUpdate: (a: any) => void;
@@ -102,8 +103,48 @@ export const SimpleEditor: React.FC<IProps> = ({ onUpdate }) => {
     return null;
   }
 
+  const turndownService = new TurndownService();
+  turndownService.addRule('underline', {
+    filter: ['u'],
+    replacement: function (content) {
+      return '<u>' + content + '</u>'
+    }
+  }).addRule('s', {
+    filter: ['s'],
+    replacement: function (content) {
+      return '<s>' + content + '</s>'
+    }
+  }).addRule('em', {
+    filter: ['em'],
+    replacement: function (content) {
+      return '<i>' + content + '</i>'
+    }
+  }).addRule('strong', {
+    filter: ['strong'],
+    replacement: function (content) {
+      return '<b>' + content + '</b>'
+    }
+  }).addRule('code', {
+    filter: ['code'],
+    replacement: function (content) {
+      return '<pre>' + content + '</pre>'
+    }
+  }).addRule('external-link', {
+    filter: function (node) {
+      return node.nodeName === 'A';
+    },
+    replacement: function (content, node) {
+      // @ts-expect-error
+      let url = node.getAttribute("href")
+      if (!url?.startsWith('http'))
+        return content
+      return `<a href="${url}">${content}</a>`
+    },
+  });
+
   useEffect(() => {
-    onUpdate(editorContent);
+    const markdown = turndownService.turndown(editorContent)
+    onUpdate(markdown);
   }, [editorContent]);
 
   return (
