@@ -9,7 +9,7 @@ import {
 } from '@coreui/react-pro'
 import classNames from 'classnames'
 import { useState } from 'react'
-import { SimpleEditor } from 'src/components/TextEditor/TextEditor.tsx'
+import { TextEditor } from 'src/components/TextEditor/TextEditor.tsx'
 import {sendMailing} from "src/dataProviders/mailing.ts";
 
   const NotificationsPage = () => {
@@ -39,7 +39,7 @@ import {sendMailing} from "src/dataProviders/mailing.ts";
       <CCardGroup className={"mb-4"}>
         <CCard className="p-4">
           <CCardBody className={classNames('d-flex', 'flex-row', 'gap-2')}>
-            <SimpleEditor onUpdate={setEditorContent}/>
+            <TextEditor onUpdate={setEditorContent}/>
           </CCardBody>
           <CCardBody className={classNames('d-flex', 'flex-row', 'gap-2')}>
             <CLoadingButton

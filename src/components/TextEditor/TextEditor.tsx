@@ -1,34 +1,34 @@
-import React, {useCallback, useEffect, useState} from "react";
-import classNames from "classnames";
+import React, { useCallback, useEffect, useState } from 'react'
+import classNames from 'classnames'
 // => Tiptap packages
-import { useEditor, EditorContent, Editor, BubbleMenu } from "@tiptap/react";
-import Document from "@tiptap/extension-document";
-import Paragraph from "@tiptap/extension-paragraph";
-import Text from "@tiptap/extension-text";
-import Link from "@tiptap/extension-link";
-import Bold from "@tiptap/extension-bold";
-import Underline from "@tiptap/extension-underline";
-import Italic from "@tiptap/extension-italic";
-import Strike from "@tiptap/extension-strike";
-import Code from "@tiptap/extension-code";
-import History from "@tiptap/extension-history";
+import { useEditor, EditorContent, Editor, BubbleMenu } from '@tiptap/react'
+import Document from '@tiptap/extension-document'
+import Paragraph from '@tiptap/extension-paragraph'
+import Text from '@tiptap/extension-text'
+import Link from '@tiptap/extension-link'
+import Bold from '@tiptap/extension-bold'
+import Underline from '@tiptap/extension-underline'
+import Italic from '@tiptap/extension-italic'
+import Strike from '@tiptap/extension-strike'
+import Code from '@tiptap/extension-code'
+import History from '@tiptap/extension-history'
 // Custom
-import content from "./content";
-import * as Icons from "./Icons";
-import { LinkModal } from "./LinkModal";
+import content from './content'
+import * as Icons from './Icons'
+import { LinkModal } from './LinkModal'
 // @ts-expect-error its ok
-import css from "./editor.module.css";
-import TurndownService from 'turndown';
+import css from './editor.module.css'
+import TurndownService from 'turndown'
 
 interface IProps {
-  onUpdate: (a: any) => void;
+  onUpdate: (a: any) => void
 }
 
-export const SimpleEditor: React.FC<IProps> = ({ onUpdate }) => {
-  const [editorContent, setEditorContent] = useState("");
+export const TextEditor: React.FC<IProps> = ({ onUpdate }) => {
+  const [editorContent, setEditorContent] = useState('')
   const editor = useEditor({
     onUpdate: ({ editor }) => {
-      setEditorContent(editor.getHTML());
+      setEditorContent(editor.getHTML())
     },
     extensions: [
       Document,
@@ -36,116 +36,116 @@ export const SimpleEditor: React.FC<IProps> = ({ onUpdate }) => {
       Paragraph,
       Text,
       Link.configure({
-        openOnClick: false
+        openOnClick: false,
       }),
       Bold,
       Underline,
       Italic,
       Strike,
-      Code
+      Code,
     ],
-    content
-  }) as Editor;
-  const [modalIsOpen, setIsOpen] = useState(false);
-  const [url, setUrl] = useState<string>("");
+    content,
+  }) as Editor
+  const [modalIsOpen, setIsOpen] = useState(false)
+  const [url, setUrl] = useState<string>('')
 
   const openModal = useCallback(() => {
-    console.log(editor.chain().focus());
-    setUrl(editor.getAttributes("link").href);
-    setIsOpen(true);
-  }, [editor]);
+    console.log(editor.chain().focus())
+    setUrl(editor.getAttributes('link').href)
+    setIsOpen(true)
+  }, [editor])
 
   const closeModal = useCallback(() => {
-    setIsOpen(false);
-    setUrl("");
-  }, []);
+    setIsOpen(false)
+    setUrl('')
+  }, [])
 
   const saveLink = useCallback(() => {
     if (url) {
-      editor
-        .chain()
-        .focus()
-        .extendMarkRange("link")
-        .setLink({ href: url, target: "_blank" })
-        .run();
+      editor.chain().focus().extendMarkRange('link').setLink({ href: url, target: '_blank' }).run()
     } else {
-      editor.chain().focus().extendMarkRange("link").unsetLink().run();
+      editor.chain().focus().extendMarkRange('link').unsetLink().run()
     }
-    closeModal();
-  }, [editor, url, closeModal]);
+    closeModal()
+  }, [editor, url, closeModal])
 
   const removeLink = useCallback(() => {
-    editor.chain().focus().extendMarkRange("link").unsetLink().run();
-    closeModal();
-  }, [editor, closeModal]);
+    editor.chain().focus().extendMarkRange('link').unsetLink().run()
+    closeModal()
+  }, [editor, closeModal])
 
   const toggleBold = useCallback(() => {
-    editor.chain().focus().toggleBold().run();
-  }, [editor]);
+    editor.chain().focus().toggleBold().run()
+  }, [editor])
 
   const toggleUnderline = useCallback(() => {
-    editor.chain().focus().toggleUnderline().run();
-  }, [editor]);
+    editor.chain().focus().toggleUnderline().run()
+  }, [editor])
 
   const toggleItalic = useCallback(() => {
-    editor.chain().focus().toggleItalic().run();
-  }, [editor]);
+    editor.chain().focus().toggleItalic().run()
+  }, [editor])
 
   const toggleStrike = useCallback(() => {
-    editor.chain().focus().toggleStrike().run();
-  }, [editor]);
+    editor.chain().focus().toggleStrike().run()
+  }, [editor])
 
   const toggleCode = useCallback(() => {
-    editor.chain().focus().toggleCode().run();
-  }, [editor]);
+    editor.chain().focus().toggleCode().run()
+  }, [editor])
 
   if (!editor) {
-    return null;
+    return null
   }
 
-  const turndownService = new TurndownService();
-  turndownService.addRule('underline', {
-    filter: ['u'],
-    replacement: function (content) {
-      return '<u>' + content + '</u>'
-    }
-  }).addRule('s', {
-    filter: ['s'],
-    replacement: function (content) {
-      return '<s>' + content + '</s>'
-    }
-  }).addRule('em', {
-    filter: ['em'],
-    replacement: function (content) {
-      return '<i>' + content + '</i>'
-    }
-  }).addRule('strong', {
-    filter: ['strong'],
-    replacement: function (content) {
-      return '<b>' + content + '</b>'
-    }
-  }).addRule('code', {
-    filter: ['code'],
-    replacement: function (content) {
-      return '<pre>' + content + '</pre>'
-    }
-  }).addRule('external-link', {
-    filter: function (node) {
-      return node.nodeName === 'A';
-    },
-    replacement: function (content, node) {
-      // @ts-expect-error
-      let url = node.getAttribute("href")
-      if (!url?.startsWith('http'))
-        return content
-      return `<a href="${url}">${content}</a>`
-    },
-  });
+  const turndownService = new TurndownService()
+  turndownService
+    .addRule('underline', {
+      filter: ['u'],
+      replacement: function (content) {
+        return '<u>' + content + '</u>'
+      },
+    })
+    .addRule('s', {
+      filter: ['s'],
+      replacement: function (content) {
+        return '<s>' + content + '</s>'
+      },
+    })
+    .addRule('em', {
+      filter: ['em'],
+      replacement: function (content) {
+        return '<i>' + content + '</i>'
+      },
+    })
+    .addRule('strong', {
+      filter: ['strong'],
+      replacement: function (content) {
+        return '<b>' + content + '</b>'
+      },
+    })
+    .addRule('code', {
+      filter: ['code'],
+      replacement: function (content) {
+        return '<pre>' + content + '</pre>'
+      },
+    })
+    .addRule('external-link', {
+      filter: function (node) {
+        return node.nodeName === 'A'
+      },
+      replacement: function (content, node) {
+        // @ts-expect-error
+        let url = node.getAttribute('href')
+        if (!url?.startsWith('http')) return content
+        return `<a href="${url}">${content}</a>`
+      },
+    })
 
   useEffect(() => {
     const markdown = turndownService.turndown(editorContent)
-    onUpdate(markdown);
-  }, [editorContent]);
+    onUpdate(markdown)
+  }, [editorContent])
 
   return (
     <div className={css.editor}>
@@ -166,7 +166,7 @@ export const SimpleEditor: React.FC<IProps> = ({ onUpdate }) => {
         </button>
         <button
           className={classNames(css.menu_button, {
-            "is-active": editor.isActive("link")
+            'is-active': editor.isActive('link'),
           })}
           onClick={openModal}
         >
@@ -174,7 +174,7 @@ export const SimpleEditor: React.FC<IProps> = ({ onUpdate }) => {
         </button>
         <button
           className={classNames(css.menu_button, {
-            "is-active": editor.isActive("bold")
+            'is-active': editor.isActive('bold'),
           })}
           onClick={toggleBold}
         >
@@ -182,7 +182,7 @@ export const SimpleEditor: React.FC<IProps> = ({ onUpdate }) => {
         </button>
         <button
           className={classNames(css.menu_button, {
-            "is-active": editor.isActive("underline")
+            'is-active': editor.isActive('underline'),
           })}
           onClick={toggleUnderline}
         >
@@ -190,7 +190,7 @@ export const SimpleEditor: React.FC<IProps> = ({ onUpdate }) => {
         </button>
         <button
           className={classNames(css.menu_button, {
-            "is-active": editor.isActive("intalic")
+            'is-active': editor.isActive('italic'),
           })}
           onClick={toggleItalic}
         >
@@ -198,7 +198,7 @@ export const SimpleEditor: React.FC<IProps> = ({ onUpdate }) => {
         </button>
         <button
           className={classNames(css.menu_button, {
-            "is-active": editor.isActive("strike")
+            'is-active': editor.isActive('strike'),
           })}
           onClick={toggleStrike}
         >
@@ -206,7 +206,7 @@ export const SimpleEditor: React.FC<IProps> = ({ onUpdate }) => {
         </button>
         <button
           className={classNames(css.menu_button, {
-            "is-active": editor.isActive("code")
+            'is-active': editor.isActive('code'),
           })}
           onClick={toggleCode}
         >
@@ -220,7 +220,7 @@ export const SimpleEditor: React.FC<IProps> = ({ onUpdate }) => {
         editor={editor}
         shouldShow={({ editor, from, to }) => {
           // only show the bubble menu for links.
-          return from === to && editor.isActive("link");
+          return from === to && editor.isActive('link')
         }}
       >
         <button className={css.button} onClick={openModal}>
@@ -244,5 +244,5 @@ export const SimpleEditor: React.FC<IProps> = ({ onUpdate }) => {
         onRemoveLink={removeLink}
       />
     </div>
-  );
+  )
 }
