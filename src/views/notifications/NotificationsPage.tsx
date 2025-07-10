@@ -10,8 +10,10 @@ import {
 import classNames from 'classnames'
 import { useState } from 'react'
 import { SimpleEditor } from 'src/components/TextEditor/TextEditor.tsx'
+import {sendMailing} from "src/dataProviders/mailing.ts";
+import {Base64} from "src/utils/base64.ts";
 
-const NotificationsPage = () => {
+  const NotificationsPage = () => {
   const [loading,] = useState(false);
   const [testUserName, setTestUserName] = useState<string>('');
   const [editorContent, setEditorContent] = useState<any>(null);
@@ -22,11 +24,17 @@ const NotificationsPage = () => {
   const testNotifications = () => {
     // /admin/mailing/
     // setLoading(true);
+    const encodedString = btoa(unescape(encodeURIComponent(editorContent.toString())));
     console.log("test notifications: ", editorContent);
+    sendMailing([
+      115555014
+    ], editorContent).then(r => {
+      //
+    });
   }
 
   return (
-    <CCard>
+    <CCard className={'border-0 bg-transparent'}>
       <CCardHeader>Notifications Page</CCardHeader>
       <CCardGroup className={"mb-4"}>
         <CCard className="p-4">

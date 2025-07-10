@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import classNames from "classnames";
 // => Tiptap packages
 import { useEditor, EditorContent, Editor, BubbleMenu } from "@tiptap/react";
@@ -24,8 +24,11 @@ interface IProps {
 }
 
 export const SimpleEditor: React.FC<IProps> = ({ onUpdate }) => {
+  const [editorContent, setEditorContent] = useState("");
   const editor = useEditor({
-    onUpdate: onUpdate,
+    onUpdate: ({ editor }) => {
+      setEditorContent(editor.getHTML());
+    },
     extensions: [
       Document,
       History,
@@ -98,6 +101,10 @@ export const SimpleEditor: React.FC<IProps> = ({ onUpdate }) => {
   if (!editor) {
     return null;
   }
+
+  useEffect(() => {
+    onUpdate(editorContent);
+  }, [editorContent]);
 
   return (
     <div className={css.editor}>

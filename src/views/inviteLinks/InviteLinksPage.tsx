@@ -87,6 +87,7 @@ const InviteLinksPage = () => {
   useEffect(() => {
     getCodes()
       //.then((resp) => setLinks(resp.data))
+      // @ts-expect-error
       .then((resp) => setLinks(MOCK_CODES))
       .finally(() => setLoading(false))
   }, [])
