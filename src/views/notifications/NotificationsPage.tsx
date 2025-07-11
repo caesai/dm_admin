@@ -21,21 +21,30 @@ import {sendMailing} from "src/dataProviders/mailing.ts";
     return <CSpinner color={'primary'} />
   }
 
-  const testNotifications = () => {
-    // /admin/mailing/
-    console.log("test content: ",  editorContent);
-    if (!testUserName) {
-      return;
-    }
+  // Function to test notifications.
+  // Examples of user ids: 115555014, 1283802964.
+  const notifyGroup = async () => {
+    try {
+      if (!testUserName) {
+        console.log('No test user data provided');
+        return;
+      }
 
-    sendMailing([
-      // 115555014,
-      // 1283802964
-      testUserName
-    ], editorContent).then(r => {
-      //
-      console.log(r);
-    });
+      const res = await sendMailing([ testUserName ], editorContent);
+      console.log('Notification sent successfully:', res);
+    } catch (error) {
+      console.error('Error in test notification:', error);
+    }
+  }
+
+  // Notify all users
+  const notifyAll = async () => {
+    try {
+      const res = await sendMailing([], editorContent);
+      console.log('Notification sent successfully:', res);
+    } catch (error) {
+      console.error('Error in test notification:', error);
+    }
   }
 
   return (
@@ -51,7 +60,7 @@ import {sendMailing} from "src/dataProviders/mailing.ts";
               color="primary"
               className="px-4"
               // loading={authPending}
-              onClick={testNotifications}
+              onClick={notifyAll}
             >
               Рассылка
             </CLoadingButton>
@@ -64,17 +73,16 @@ import {sendMailing} from "src/dataProviders/mailing.ts";
             <CForm>
               <CInputGroup className="mb-3">
                 <CFormInput
-                  placeholder="@Username"
+                  placeholder="Telegram ID"
                   type={'number'}
-                  autoComplete="username"
                   value={testUserName}
-                  onChange={(e) => setTestUserName(e.target.value)}/>
+                  onChange={(e) => setTestUserName(e.target.value ? Number(e.target.value) : undefined)}/>
               </CInputGroup>
               <CLoadingButton
                 color="primary"
                 className="px-4"
                 // loading={authPending}
-                onClick={testNotifications}
+                onClick={notifyGroup}
               >
                 Тест
               </CLoadingButton>
