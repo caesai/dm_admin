@@ -57,8 +57,8 @@ const RestaurantsListPage = () => {
         {loader ? (
           <CSpinner color="primary" />
         ) : (
-          groupedRestaurants.map((group) => (
-            <CCard>
+          groupedRestaurants.map((group, index) => (
+            <CCard key={index}>
               <CCardHeader>
                 <div
                   className={classNames(
@@ -73,8 +73,8 @@ const RestaurantsListPage = () => {
               </CCardHeader>
               <CCardBody>
                 <CRow className={classNames('gap-4')}>
-                  {group.restaurants.map((res) => (
-                    <RestaurantCard restaurant={res} />
+                  {group.restaurants.map((res, index) => (
+                    <RestaurantCard restaurant={res} key={index}/>
                   ))}
                 </CRow>
               </CCardBody>
