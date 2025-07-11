@@ -147,6 +147,11 @@ export const TextEditor: React.FC<IProps> = ({ onUpdate }) => {
     onUpdate(markdown)
   }, [editorContent])
 
+  useEffect(() => {
+    const markdown = turndownService.turndown(editorContent)
+    onUpdate(markdown);
+  }, []);
+
   return (
     <div className={css.editor}>
       <div className={css.menu}>

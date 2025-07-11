@@ -14,8 +14,9 @@ import {sendMailing} from "src/dataProviders/mailing.ts";
 
   const NotificationsPage = () => {
   const [loading,] = useState(false);
-  const [testUserName, setTestUserName] = useState<string>('');
+  const [testUserName, setTestUserName] = useState<number | undefined>(undefined);
   const [editorContent, setEditorContent] = useState<any>(null);
+  // const [userId, setUserId] = useState<string | null>(null);
   if (loading) {
     return <CSpinner color={'primary'} />
   }
@@ -23,10 +24,14 @@ import {sendMailing} from "src/dataProviders/mailing.ts";
   const testNotifications = () => {
     // /admin/mailing/
     console.log("test content: ",  editorContent);
+    if (!testUserName) {
+      return;
+    }
 
     sendMailing([
       // 115555014,
       // 1283802964
+      testUserName
     ], editorContent).then(r => {
       //
       console.log(r);
@@ -35,7 +40,7 @@ import {sendMailing} from "src/dataProviders/mailing.ts";
 
   return (
     <CCard className={'border-0 bg-transparent'}>
-      <CCardHeader>Notifications Page</CCardHeader>
+      <CCardHeader>Рассылки</CCardHeader>
       <CCardGroup className={"mb-4"}>
         <CCard className="p-4">
           <CCardBody className={classNames('d-flex', 'flex-row', 'gap-2')}>
@@ -60,6 +65,7 @@ import {sendMailing} from "src/dataProviders/mailing.ts";
               <CInputGroup className="mb-3">
                 <CFormInput
                   placeholder="@Username"
+                  type={'number'}
                   autoComplete="username"
                   value={testUserName}
                   onChange={(e) => setTestUserName(e.target.value)}/>
