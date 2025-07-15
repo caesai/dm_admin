@@ -5,7 +5,6 @@ import {
   CForm, CFormInput,
   CInputGroup,
   CLoadingButton,
-  CSpinner
 } from '@coreui/react-pro'
 import classNames from 'classnames'
 import { useState } from 'react'
@@ -13,15 +12,10 @@ import { TextEditor } from 'src/components/TextEditor/TextEditor.tsx'
 import {sendMailing} from "src/dataProviders/mailing.ts";
 
   const NotificationsPage = () => {
-  const [loading,] = useState(false);
   const [testUserName, setTestUserName] = useState<number | undefined>(undefined);
   const [editorContent, setEditorContent] = useState<any>(null);
   const [groupNotificationIsInProgress, setGroupNotificationIsInProgress] = useState(false);
   const [allNotificationIsInProgress, setAllNotificationIsInProgress] = useState(false);
-
-  if (loading) {
-    return <CSpinner color={'primary'} />
-  }
 
   // Function to test notifications.
   // Examples of user ids: 115555014, 1283802964.

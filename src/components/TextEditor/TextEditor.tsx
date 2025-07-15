@@ -48,7 +48,6 @@ export const TextEditor: React.FC<IProps> = ({ onUpdate }) => {
   const [url, setUrl] = useState<string>('')
 
   const openModal = useCallback(() => {
-    console.log(editor.chain().focus())
     setUrl(editor.getAttributes('link').href)
     setIsOpen(true)
   }, [editor])
