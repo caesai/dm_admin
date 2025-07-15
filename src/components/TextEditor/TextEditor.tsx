@@ -42,7 +42,7 @@ export const TextEditor: React.FC<IProps> = ({ onUpdate }) => {
       Strike,
       Code,
     ],
-    content: editorContent,
+    content: 'Текст рассылки...',
   }) as Editor
   const [modalIsOpen, setIsOpen] = useState(false)
   const [url, setUrl] = useState<string>('')
