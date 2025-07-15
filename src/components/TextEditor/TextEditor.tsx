@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import classNames from 'classnames'
 // => Tiptap packages
 import { useEditor, EditorContent, Editor, BubbleMenu } from '@tiptap/react'
@@ -12,8 +12,6 @@ import Italic from '@tiptap/extension-italic'
 import Strike from '@tiptap/extension-strike'
 import Code from '@tiptap/extension-code'
 import History from '@tiptap/extension-history'
-// Custom
-import content from './content'
 import * as Icons from './Icons'
 import { LinkModal } from './LinkModal'
 // @ts-expect-error its ok
@@ -44,7 +42,7 @@ export const TextEditor: React.FC<IProps> = ({ onUpdate }) => {
       Strike,
       Code,
     ],
-    content,
+    content: editorContent,
   }) as Editor
   const [modalIsOpen, setIsOpen] = useState(false)
   const [url, setUrl] = useState<string>('')
@@ -98,39 +96,44 @@ export const TextEditor: React.FC<IProps> = ({ onUpdate }) => {
     return null
   }
 
-  const turndownService = new TurndownService()
-  turndownService
-    .addRule('underline', {
+  const turndownService = useMemo(() => {
+    const service = new TurndownService()
+    service.addRule('underline', {
       filter: ['u'],
       replacement: function (content) {
         return '<u>' + content + '</u>'
       },
     })
-    .addRule('s', {
+
+    service.addRule('s', {
       filter: ['s'],
       replacement: function (content) {
         return '<s>' + content + '</s>'
       },
     })
-    .addRule('em', {
+    
+    service.addRule('em', {
       filter: ['em'],
       replacement: function (content) {
         return '<i>' + content + '</i>'
       },
     })
-    .addRule('strong', {
+    
+    service.addRule('strong', {
       filter: ['strong'],
       replacement: function (content) {
         return '<b>' + content + '</b>'
       },
     })
-    .addRule('code', {
+    
+    service.addRule('code', {
       filter: ['code'],
       replacement: function (content) {
         return '<pre>' + content + '</pre>'
       },
     })
-    .addRule('external-link', {
+    
+    service.addRule('external-link', {
       filter: function (node) {
         return node.nodeName === 'A'
       },
@@ -142,15 +145,13 @@ export const TextEditor: React.FC<IProps> = ({ onUpdate }) => {
       },
     })
 
+    return service;
+  }, [])
+
   useEffect(() => {
     const markdown = turndownService.turndown(editorContent)
     onUpdate(markdown)
   }, [editorContent])
-
-  useEffect(() => {
-    const markdown = turndownService.turndown(editorContent)
-    onUpdate(markdown);
-  }, []);
 
   return (
     <div className={css.editor}>

@@ -1,11 +1,11 @@
 import React from "react";
-import ReactModal from "react-modal";
+import type { Props as ReactModalProps } from "react-modal";
 import * as Icons from "./Icons";
 import { Modal } from "./Modal";
 // @ts-expect-error its ok
 import css from "./editor.module.css";
 
-interface IProps extends ReactModal.Props {
+interface IProps extends ReactModalProps {
   url: string;
   closeModal: () => void;
   onChangeUrl: (e: React.ChangeEvent<HTMLInputElement>) => void;

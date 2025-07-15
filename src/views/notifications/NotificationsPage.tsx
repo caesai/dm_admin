@@ -16,7 +16,9 @@ import {sendMailing} from "src/dataProviders/mailing.ts";
   const [loading,] = useState(false);
   const [testUserName, setTestUserName] = useState<number | undefined>(undefined);
   const [editorContent, setEditorContent] = useState<any>(null);
-  // const [userId, setUserId] = useState<string | null>(null);
+  const [groupNotificationIsInProgress, setGroupNotificationIsInProgress] = useState(false);
+  const [allNotificationIsInProgress, setAllNotificationIsInProgress] = useState(false);
+
   if (loading) {
     return <CSpinner color={'primary'} />
   }
@@ -25,6 +27,7 @@ import {sendMailing} from "src/dataProviders/mailing.ts";
   // Examples of user ids: 115555014, 1283802964.
   const notifyGroup = async () => {
     try {
+      setGroupNotificationIsInProgress(true);
       if (!testUserName) {
         console.log('No test user data provided');
         return;
@@ -34,16 +37,23 @@ import {sendMailing} from "src/dataProviders/mailing.ts";
       console.log('Notification sent successfully:', res);
     } catch (error) {
       console.error('Error in test notification:', error);
+    } finally {
+      // Reset test user name after sending notification
+      setTestUserName(undefined);
+      setGroupNotificationIsInProgress(false);
     }
   }
 
   // Notify all users
   const notifyAll = async () => {
     try {
+      setAllNotificationIsInProgress(true);
       const res = await sendMailing([], editorContent);
       console.log('Notification sent successfully:', res);
     } catch (error) {
       console.error('Error in test notification:', error);
+    } finally {
+      setAllNotificationIsInProgress(false);
     }
   }
 
@@ -59,7 +69,7 @@ import {sendMailing} from "src/dataProviders/mailing.ts";
             <CLoadingButton
               color="primary"
               className="px-4"
-              // loading={authPending}
+              loading={allNotificationIsInProgress}
               onClick={notifyAll}
             >
               Рассылка
@@ -75,13 +85,13 @@ import {sendMailing} from "src/dataProviders/mailing.ts";
                 <CFormInput
                   placeholder="Telegram ID"
                   type={'number'}
-                  value={testUserName}
+                  value={testUserName !== undefined ? testUserName : ''}
                   onChange={(e) => setTestUserName(e.target.value ? Number(e.target.value) : undefined)}/>
               </CInputGroup>
               <CLoadingButton
                 color="primary"
                 className="px-4"
-                // loading={authPending}
+                loading={groupNotificationIsInProgress}
                 onClick={notifyGroup}
               >
                 Тест
