@@ -11,15 +11,21 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
-      - name: setup demo
-        run: |
-          mkdir test
-          touch test/oof.txt
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          registry-url: 'https://registry.npmjs.org'
+      - name: Install deps
+        run: npm ci
+      - name: Build frontend
+        run: npm run build
       - name: Copy folder content recursively to remote
         uses: garygrossgarten/github-action-scp@release
         with:
-          local: test
-          remote: /var/www/test/
+          local: build
+          remote: /var/www/build/
           host: ${{ secrets.HOST }}
           username: ${{ secrets.SSH_USER }}
           privateKey: ${{ secrets.PRIVATE_KEY}}
+          rmRemote: true

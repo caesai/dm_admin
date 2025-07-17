@@ -75,7 +75,14 @@ import {sendMailing} from "src/dataProviders/mailing.ts";
         <CCard className="p-4">
           <CCardBody>
             <CForm>
+              <CFormInput
+                placeholder="Telegram Username"
+                disabled
+                type={'number'}
+                value={testUserName !== undefined ? testUserName : ''}
+                onChange={(e) => setTestUserName(e.target.value ? Number(e.target.value) : undefined)}/>
               <CInputGroup className="mb-3">
+
                 <CFormInput
                   placeholder="Telegram ID"
                   type={'number'}
