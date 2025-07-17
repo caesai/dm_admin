@@ -1,0 +1,26 @@
+# Simple workflow for deploying static content to GitHub Pages
+name: Deploy Admin Panel To Server Via SSH
+
+on:
+  push:
+    branches: ['main']
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: setup demo
+        run: |
+          mkdir test
+          touch test/oof.txt
+          touch test/.dot.txt
+      - name: Copy folder content recursively to remote
+        uses: ./
+        with:
+          local: test
+          remote: /var/www/
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.SSH_USER }}
+          privateKey: ${{ secrets.PRIVATE_KEY}}
