@@ -15,7 +15,6 @@ jobs:
         run: |
           mkdir test
           touch test/oof.txt
-          touch test/.dot.txt
       - name: Copy folder content recursively to remote
         uses: garygrossgarten/github-action-scp@release
         with:
