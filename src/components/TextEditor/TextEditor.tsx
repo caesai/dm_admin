@@ -17,6 +17,7 @@ import { LinkModal } from './LinkModal'
 // @ts-expect-error its ok
 import css from './editor.module.css'
 import TurndownService from 'turndown'
+import EmojiPicker from 'emoji-picker-react';
 
 interface IProps {
   onUpdate: (a: any) => void
@@ -24,6 +25,7 @@ interface IProps {
 
 export const TextEditor: React.FC<IProps> = ({ onUpdate }) => {
   const [editorContent, setEditorContent] = useState('')
+  const [isEmoji, setIsEmoji] = useState<boolean>(false)
   const editor = useEditor({
     onUpdate: ({ editor }) => {
       setEditorContent(editor.getHTML())
@@ -91,8 +93,16 @@ export const TextEditor: React.FC<IProps> = ({ onUpdate }) => {
     editor.chain().focus().toggleCode().run()
   }, [editor])
 
+  const toggleEmoji = () => {
+    setIsEmoji(isOpened => !isOpened);
+  }
+
   if (!editor) {
     return null
+  }
+
+  const onEmojiClick = ({ emoji }: { emoji: string}) => {
+    editor.commands.insertContent(emoji);
   }
 
   const turndownService = useMemo(() => {
@@ -110,28 +120,28 @@ export const TextEditor: React.FC<IProps> = ({ onUpdate }) => {
         return '<s>' + content + '</s>'
       },
     })
-    
+
     service.addRule('em', {
       filter: ['em'],
       replacement: function (content) {
         return '<i>' + content + '</i>'
       },
     })
-    
+
     service.addRule('strong', {
       filter: ['strong'],
       replacement: function (content) {
         return '<b>' + content + '</b>'
       },
     })
-    
+
     service.addRule('code', {
       filter: ['code'],
       replacement: function (content) {
         return '<pre>' + content + '</pre>'
       },
     })
-    
+
     service.addRule('external-link', {
       filter: function (node) {
         return node.nodeName === 'A'
@@ -217,6 +227,16 @@ export const TextEditor: React.FC<IProps> = ({ onUpdate }) => {
         >
           <Icons.Code />
         </button>
+        <div
+            className={classNames(css.menu_button, {
+              'is-active': editor.isActive('code'),
+            })}
+            onClick={toggleEmoji}
+        >
+          <Icons.Emoji />
+          {isEmoji && <EmojiPicker onEmojiClick={onEmojiClick} className={css.emojipicker}/>}
+        </div>
+
       </div>
 
       <BubbleMenu

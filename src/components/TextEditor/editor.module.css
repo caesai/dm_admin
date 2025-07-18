@@ -139,6 +139,7 @@ code {
 .button_save,
 .button_remove,
 .menu_button {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -261,4 +262,10 @@ code {
   display: flex;
   gap: 8px;
   justify-content: flex-end;
+}
+
+.emojipicker {
+  position: absolute!important;
+  top: 0;
+  left: 0;
 }
