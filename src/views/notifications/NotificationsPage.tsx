@@ -15,7 +15,7 @@ import { TextEditor } from 'src/components/TextEditor/TextEditor.tsx'
 import { sendMailing } from 'src/dataProviders/mailing.ts'
 
 const NotificationsPage = () => {
-  const [testUserName, setTestUserName] = useState<number | undefined>(115555014)
+  const [testUserName, setTestUserName] = useState<number | undefined>()
   const [editorContent, setEditorContent] = useState<any>(null)
   const [groupNotificationIsInProgress, setGroupNotificationIsInProgress] = useState(false)
   const [allNotificationIsInProgress, setAllNotificationIsInProgress] = useState(false)
