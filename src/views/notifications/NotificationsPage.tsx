@@ -24,10 +24,10 @@ const NotificationsPage = () => {
   const [buttonText, setButtonText] = useState<string | undefined>()
   const [buttonUrl, setButtonUrl] = useState<string | undefined>()
   const getBase64 = (file: File) =>
-    new Promise(function (resolve, reject) {
+    new Promise(function (resolve: (value: string) => void, reject) {
       let reader = new FileReader()
       reader.readAsDataURL(file)
-      reader.onload = () => resolve(reader.result)
+      reader.onload = () => resolve(String(reader.result))
       reader.onerror = (error) => reject(error)
     })
 
@@ -43,10 +43,10 @@ const NotificationsPage = () => {
       let photo64: string | null = null
       let doc64: string | null = null
       if (photo) {
-        photo64 = await getBase64(photo).then()
+        photo64 = await getBase64(photo);
       }
       if (document) {
-        doc64 = await getBase64(document).then()
+        doc64 = await getBase64(document);
       }
 
       const res = await sendMailing(

@@ -25,7 +25,7 @@ interface IProps {
 
 export const TextEditor: React.FC<IProps> = ({ onUpdate }) => {
   const [editorContent, setEditorContent] = useState('')
-  const [isEmpoji, setIsEmpoji] = useState<boolean>(false)
+  const [isEmoji, setIsEmoji] = useState<boolean>(false)
   const editor = useEditor({
     onUpdate: ({ editor }) => {
       setEditorContent(editor.getHTML())
@@ -94,7 +94,7 @@ export const TextEditor: React.FC<IProps> = ({ onUpdate }) => {
   }, [editor])
 
   const toggleEmoji = () => {
-    setIsEmpoji(isOpened => !isOpened);
+    setIsEmoji(isOpened => !isOpened);
   }
 
   if (!editor) {
@@ -234,7 +234,7 @@ export const TextEditor: React.FC<IProps> = ({ onUpdate }) => {
             onClick={toggleEmoji}
         >
           <Icons.Emoji />
-          {isEmpoji && <EmojiPicker onEmojiClick={onEmojiClick} className={css.emojipicker}/>}
+          {isEmoji && <EmojiPicker onEmojiClick={onEmojiClick} className={css.emojipicker}/>}
         </div>
 
       </div>
