@@ -1,4 +1,5 @@
 import {
+  CButton,
   CCard,
   CCardBody,
   CCardGroup,
@@ -8,6 +9,16 @@ import {
   CImage,
   CInputGroup,
   CLoadingButton,
+  CTab,
+  CTabContent,
+  CTable,
+  CTableBody,
+  CTableDataCell,
+  CTableHead,
+  CTableHeaderCell, CTableRow,
+  CTabList,
+  CTabPanel,
+  CTabs,
 } from '@coreui/react-pro'
 import classNames from 'classnames'
 import { ChangeEvent, useState } from 'react'
@@ -101,101 +112,135 @@ const NotificationsPage = () => {
   }
 
   return (
-    <CCard className={'border-0 bg-transparent'}>
-      <CCard className="mb-4">
-        <CCardHeader>Рассылка</CCardHeader>
-        <CCardGroup className="flex-column">
-          <CCardBody className={classNames('d-flex', 'flex-row', 'gap-2')}>
-            <TextEditor onUpdate={setEditorContent} />
-          </CCardBody>
-          <CCardBody className={classNames('d-flex', 'flex-row', 'gap-2')}>
-            <CLoadingButton
-              color="primary"
-              className="px-4"
-              loading={allNotificationIsInProgress}
-              onClick={notifyAll}
-            >
-              Рассылка
-            </CLoadingButton>
-          </CCardBody>
-        </CCardGroup>
-      </CCard>
-      <CCard className="mb-4">
-        <CCardHeader>Вложения</CCardHeader>
-        <CCardGroup>
-          <CCardBody>
-            {photo && (
-              <CImage rounded thumbnail src={URL.createObjectURL(photo)} width={200} height={200} />
-            )}
-            <CForm className={'flex-column gap-4'} style={{ display: 'flex' }}>
-              <div>
-                <CFormInput
-                  type={'file'}
-                  label={'Изображение'}
-                  // value={testUserName !== undefined ? testUserName : ''}
-                  onChange={handlePhoto}
-                />
-              </div>
-              <div>
-                <CFormInput
-                  type={'file'}
-                  label={'Документ'}
-                  // value={testUserName !== undefined ? testUserName : ''}
-                  onChange={handleDocument}
-                />
-              </div>
-            </CForm>
-          </CCardBody>
-        </CCardGroup>
-      </CCard>
-      <CCard className="mb-4">
-        <CCardHeader>Кнопка</CCardHeader>
-        <CCardGroup>
-          <CCardBody>
-            <CForm className="flex-column gap-4" style={{ display: 'flex' }}>
-              <CFormInput
-                placeholder="Текст кнопки"
-                type={'text'}
-                value={buttonText}
-                onChange={(e) => setButtonText(e.target.value)}
-              />
-              <CFormInput
-                placeholder="Url кнопки"
-                type={'text'}
-                value={buttonUrl}
-                onChange={(e) => setButtonUrl(e.target.value)}
-              />
-            </CForm>
-          </CCardBody>
-        </CCardGroup>
-      </CCard>
-      <CCard className="mb-4">
-        <CCardGroup className="flex-column">
-          <CCardHeader>Тест рассылки</CCardHeader>
-          <CCardBody>
-            <CForm>
-              <CInputGroup className="mb-3">
-                <CFormInput
-                  placeholder="Telegram ID"
-                  type={'number'}
-                  value={testUserName !== undefined ? testUserName : ''}
-                  onChange={(e) =>
-                    setTestUserName(e.target.value ? Number(e.target.value) : undefined)
-                  }
-                />
-              </CInputGroup>
-              <CLoadingButton
-                color="primary"
-                className="px-4"
-                loading={groupNotificationIsInProgress}
-                onClick={notifyGroup}
-              >
-                Тест
-              </CLoadingButton>
-            </CForm>
-          </CCardBody>
-        </CCardGroup>
-      </CCard>
+    <CCard className={classNames('border-0', 'bg-transparent')}>
+      <CTabs defaultActiveItemKey="distribution">
+        <CCardHeader className="bg-white">
+          <CTabList variant="enclosed">
+            <CTab itemKey="distribution">Рассылка</CTab>
+            <CTab itemKey="reservation">Бронирование</CTab>
+          </CTabList>
+        </CCardHeader>
+        <CTabContent>
+          <CTabPanel itemKey="distribution">
+            <CCard className={classNames('mb-4', 'border-0')}>
+              <CCardBody>
+                <CCardGroup className="flex-column">
+                  <CCardBody className={classNames('d-flex', 'flex-row', 'gap-2')}>
+                    <TextEditor onUpdate={setEditorContent} />
+                  </CCardBody>
+                  <CCardBody className="d-flex">
+                    <CLoadingButton
+                      color="primary"
+                      className="px-4"
+                      loading={allNotificationIsInProgress}
+                      onClick={notifyAll}
+                    >
+                      Рассылка
+                    </CLoadingButton>
+                  </CCardBody>
+                </CCardGroup>
+              </CCardBody>
+            </CCard>
+            <CCard className="mb-4">
+              <CCardHeader>Вложения</CCardHeader>
+              <CCardBody>
+                {photo && (
+                  <CImage rounded thumbnail src={URL.createObjectURL(photo)} width={200} height={200} />
+                )}
+                <CForm className="flex-column gap-4" style={{ display: 'flex' }}>
+                  <CFormInput
+                    type="file"
+                    label="Изображение"
+                    onChange={handlePhoto}
+                  />
+                  <CFormInput
+                    type="file"
+                    label="Документ"
+                    onChange={handleDocument}
+                  />
+                </CForm>
+              </CCardBody>
+            </CCard>
+            <CCard className="mb-4">
+              <CCardHeader>Кнопка</CCardHeader>
+              <CCardBody>
+                <CForm className="flex-column gap-4" style={{ display: 'flex' }}>
+                  <CFormInput
+                    placeholder="Текст кнопки"
+                    type="text"
+                    value={buttonText}
+                    onChange={(e) => setButtonText(e.target.value)}
+                  />
+                  <CFormInput
+                    placeholder="Url кнопки"
+                    type="text"
+                    value={buttonUrl}
+                    onChange={(e) => setButtonUrl(e.target.value)}
+                  />
+                </CForm>
+              </CCardBody>
+            </CCard>
+            <CCard className="mb-4">
+              <CCardHeader>Тест рассылки</CCardHeader>
+              <CCardBody>
+                <CForm>
+                  <CInputGroup className="mb-3">
+                    <CFormInput
+                      placeholder="Telegram ID"
+                      type="number"
+                      value={testUserName ?? ''}
+                      onChange={(e) => setTestUserName(e.target.value ? Number(e.target.value) : undefined)}
+                    />
+                  </CInputGroup>
+                  <CLoadingButton
+                    color="primary"
+                    className="px-4"
+                    loading={groupNotificationIsInProgress}
+                    onClick={notifyGroup}
+                  >
+                    Тест
+                  </CLoadingButton>
+                </CForm>
+              </CCardBody>
+            </CCard>
+          </CTabPanel>
+          <CTabPanel itemKey="reservation" className={classNames('bg-white', 'p-3')}>
+            <CTable striped className={classNames('align-middle', 'table-hover', 'mb-0')}>
+              <CTableHead>
+                <CTableHeaderCell className={classNames('text-start', 'pb-3')}>
+                  Ресторан
+                </CTableHeaderCell>
+                <CTableHeaderCell className={classNames('text-center', 'pb-3')}>
+                  Подтверждение
+                </CTableHeaderCell>
+                <CTableHeaderCell className={classNames('text-end', 'pe-2', 'pb-3')}>
+                  Редактировать
+                </CTableHeaderCell>
+              </CTableHead>
+              <CTableBody className={classNames('border-top')}>
+                <CTableRow>
+                  <CTableDataCell className="text-start">Lorem ipsum dolor sit amet.</CTableDataCell>
+                  <CTableDataCell className="text-center">Lorem ipsum dolor sit amet.</CTableDataCell>
+                  <CTableDataCell className={classNames('text-end', 'pe-0')}>
+                    <CButton color={'primary'} onClick={console.log}>
+                      Редактировать
+                    </CButton>
+                  </CTableDataCell>
+                </CTableRow>
+                <CTableRow>
+                  <CTableDataCell className="text-start">Lorem ipsum dolor sit amet.</CTableDataCell>
+                  <CTableDataCell className="text-center">Lorem ipsum dolor sit amet.</CTableDataCell>
+                  <CTableDataCell className={classNames('text-end', 'pe-0')}>
+                    <CButton color={'primary'} onClick={console.log}>
+                      Редактировать
+                    </CButton>
+                  </CTableDataCell>
+                </CTableRow>
+              </CTableBody>
+            </CTable>
+          </CTabPanel>
+        </CTabContent>
+      </CTabs>
     </CCard>
   )
 }
