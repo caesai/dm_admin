@@ -9,8 +9,11 @@ import {
   CTableRow,
   CTabPanel,
 } from '@coreui/react-pro'
+import { Dispatch, FC, SetStateAction } from 'react'
 
-const ReservationPanel = () => {
+const ReservationPanel: FC<{
+  setOpenPopup: Dispatch<SetStateAction<boolean>>
+}> = ({ setOpenPopup }) => {
   return (
     <CTabPanel itemKey="reservation" className={classNames('bg-white', 'p-3')}>
       <CTable striped className={classNames('align-middle', 'table-hover', 'mb-0')}>
@@ -28,7 +31,7 @@ const ReservationPanel = () => {
             <CTableDataCell className="text-start">Lorem ipsum dolor sit amet.</CTableDataCell>
             <CTableDataCell className="text-center">Lorem ipsum dolor sit amet.</CTableDataCell>
             <CTableDataCell className={classNames('text-end', 'pe-0')}>
-              <CButton color={'primary'} onClick={console.log}>
+              <CButton color={'primary'} onClick={() => setOpenPopup(true)}>
                 Редактировать
               </CButton>
             </CTableDataCell>
@@ -37,7 +40,7 @@ const ReservationPanel = () => {
             <CTableDataCell className="text-start">Lorem ipsum dolor sit amet.</CTableDataCell>
             <CTableDataCell className="text-center">Lorem ipsum dolor sit amet.</CTableDataCell>
             <CTableDataCell className={classNames('text-end', 'pe-0')}>
-              <CButton color={'primary'} onClick={console.log}>
+              <CButton color={'primary'} onClick={() => setOpenPopup(true)}>
                 Редактировать
               </CButton>
             </CTableDataCell>
