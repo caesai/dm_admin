@@ -23,9 +23,7 @@ const EditReservationPopup: FC<{
   const [editorContent, setEditorContent] = useState<string>('')
   const [reservation, setReservation] = useState<IText>()
   useEffect(() => {
-    getTextById(textId)
-      .then((d) => setReservation(d.data))
-      .then(() => setEditorContent(reservation ? reservation.content : ''))
+    getTextById(textId).then((d) => setReservation(d.data))
   }, [])
   const changeReservation = async () => {
     if (reservation) {
@@ -51,7 +49,7 @@ const EditReservationPopup: FC<{
           </CCard>
           <CCard className="border-0">
             <CCardBody className={classNames('border', 'rounded')}>
-              <TextEditor onUpdate={setEditorContent} />
+              <TextEditor onUpdate={setEditorContent} initialContent={reservation?.content} />
             </CCardBody>
           </CCard>
         </CCardGroup>
