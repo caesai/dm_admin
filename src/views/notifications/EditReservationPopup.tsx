@@ -23,8 +23,8 @@ const EditReservationPopup: FC<{
   const [editorContent, setEditorContent] = useState<string>('')
   const [reservation, setReservation] = useState<IText>()
   useEffect(() => {
-    getTextById(textId).then((d) => setReservation(d.data))
-  }, [])
+    fetchReservation()
+  }, [textId])
   const changeReservation = async () => {
     if (reservation) {
       await updateTextById(textId, {
@@ -35,6 +35,14 @@ const EditReservationPopup: FC<{
       if (onUpdate) {
         await onUpdate()
       }
+    }
+  }
+  const fetchReservation = async () => {
+    try {
+      const response = await getTextById(textId)
+      setReservation(response.data)
+    } catch (error) {
+      console.error('Failed to fetch reservation:', error)
     }
   }
   return (
