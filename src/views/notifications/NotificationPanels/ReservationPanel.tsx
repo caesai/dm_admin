@@ -10,12 +10,21 @@ import {
   CTabPanel,
 } from '@coreui/react-pro'
 import { Dispatch, FC, SetStateAction } from 'react'
-import { IText } from 'src/types/Texts.ts'
+import { IConfirmation } from 'src/types/Texts.ts'
+import { IRestaurantWCity } from 'src/types/Restaurant.ts'
 
 const ReservationPanel: FC<{
-  setTextId: Dispatch<SetStateAction<number | null>>
-  texts: IText[]
-}> = ({ setTextId, texts }) => {
+  setConfirmationId: Dispatch<SetStateAction<number | null>>
+  confirmationList: IConfirmation[]
+  restaurants: IRestaurantWCity[]
+}> = ({ setConfirmationId, confirmationList, restaurants }) => {
+  const getCity = (restaurantId: number) => {
+    const restaurant = restaurants.find((r) => r.id === restaurantId)
+    if (restaurant?.title === 'Smoke BBQ' && restaurant?.city.name === 'Санкт-Петербург') {
+      return restaurant?.address
+    }
+    return restaurant?.city.name
+  }
   return (
     <CTabPanel itemKey="reservation" className={classNames('bg-white', 'p-3')}>
       <CTable striped className={classNames('align-middle', 'table-hover', 'mb-0')}>
@@ -29,12 +38,16 @@ const ReservationPanel: FC<{
           </CTableHeaderCell>
         </CTableHead>
         <CTableBody className={classNames('border-top')}>
-          {texts.map((text) => (
-            <CTableRow key={text.id}>
-              <CTableDataCell className="text-start">{text.name}</CTableDataCell>
-              <CTableDataCell className="text-center">{text.content}</CTableDataCell>
+          {confirmationList.map((confirmation) => (
+            <CTableRow key={confirmation.id}>
+              <CTableDataCell className="text-start">
+                {confirmation.title}, {getCity(confirmation.id)}
+              </CTableDataCell>
+              <CTableDataCell className="text-center">
+                {confirmation.text !== null ? confirmation.text : 'Текст отстутствует'}
+              </CTableDataCell>
               <CTableDataCell className={classNames('text-end', 'pe-0')}>
-                <CButton color={'primary'} onClick={() => setTextId(text.id)}>
+                <CButton color={'primary'} onClick={() => setConfirmationId(confirmation.id)}>
                   Редактировать
                 </CButton>
               </CTableDataCell>

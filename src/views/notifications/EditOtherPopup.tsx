@@ -12,24 +12,24 @@ import {
 import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 import classNames from 'classnames'
 import { TextEditor } from 'src/components/TextEditor/TextEditor.tsx'
-import { IConfirmation } from 'src/types/Texts.ts'
-import { getConfirmationById, updateConfirmation } from 'src/dataProviders/texts.ts'
+import { IText } from 'src/types/Texts.ts'
+import { getTextById, updateTextById } from 'src/dataProviders/texts.ts'
 
-const EditReservationPopup: FC<{
+const EditOtherPopup: FC<{
   popup: [number, Dispatch<SetStateAction<number | null>>]
   onUpdate?: () => Promise<void>
 }> = ({ popup, onUpdate }) => {
   const [textId, setTextId] = popup
   const [editorContent, setEditorContent] = useState<string>('')
-  const [reservation, setReservation] = useState<IConfirmation>()
+  const [text, setText] = useState<IText>()
   useEffect(() => {
-    fetchReservation()
+    fetchText()
   }, [textId])
-  const changeReservation = async () => {
-    if (reservation) {
-      await updateConfirmation(textId, {
-        ...reservation,
-        text: editorContent,
+  const changeText = async () => {
+    if (text) {
+      await updateTextById(textId, {
+        ...text,
+        content: editorContent,
       })
       setTextId(null)
       if (onUpdate) {
@@ -37,12 +37,12 @@ const EditReservationPopup: FC<{
       }
     }
   }
-  const fetchReservation = async () => {
+  const fetchText = async () => {
     try {
-      const response = await getConfirmationById(textId)
-      setReservation(response.data)
+      const response = await getTextById(textId)
+      setText(response.data)
     } catch (error) {
-      console.error('Failed to fetch reservation:', error)
+      console.error('Failed to fetch text:', error)
     }
   }
   return (
@@ -53,11 +53,11 @@ const EditReservationPopup: FC<{
       <CModalBody>
         <CCardGroup className={classNames('flex-column', 'gap-2')}>
           <CCard>
-            <CCardBody>{reservation?.title}</CCardBody>
+            <CCardBody>{text?.name}</CCardBody>
           </CCard>
           <CCard className="border-0">
             <CCardBody className={classNames('border', 'rounded')}>
-              <TextEditor onUpdate={setEditorContent} initialContent={reservation?.text} />
+              <TextEditor onUpdate={setEditorContent} initialContent={text?.content} />
             </CCardBody>
           </CCard>
         </CCardGroup>
@@ -66,7 +66,7 @@ const EditReservationPopup: FC<{
         <CButton color="secondary" className="w-100" onClick={() => setTextId(null)}>
           Отменить
         </CButton>
-        <CButton color="primary" className="w-100" onClick={changeReservation}>
+        <CButton color="primary" className="w-100" onClick={changeText}>
           Сохранить
         </CButton>
       </CModalFooter>
@@ -74,4 +74,4 @@ const EditReservationPopup: FC<{
   )
 }
 
-export default EditReservationPopup
+export default EditOtherPopup
