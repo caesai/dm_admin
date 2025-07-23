@@ -44,7 +44,7 @@ const ReservationPanel: FC<{
                 {confirmation.title}, {getCity(confirmation.id)}
               </CTableDataCell>
               <CTableDataCell className="text-center">
-                {confirmation.text !== null ? confirmation.text : 'Текст отстутствует'}
+                {confirmation.text !== null ? confirmation.text : 'Текст отсутствует'}
               </CTableDataCell>
               <CTableDataCell className={classNames('text-end', 'pe-0')}>
                 <CButton color={'primary'} onClick={() => setConfirmationId(confirmation.id)}>

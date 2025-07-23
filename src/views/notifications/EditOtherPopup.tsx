@@ -48,7 +48,7 @@ const EditOtherPopup: FC<{
   return (
     <CModal size="lg" alignment="center" visible={textId !== null} onClose={() => setTextId(null)}>
       <CModalHeader>
-        <CModalTitle>Подтверждение бронирования</CModalTitle>
+        <CModalTitle>Редактирование текста</CModalTitle>
       </CModalHeader>
       <CModalBody>
         <CCardGroup className={classNames('flex-column', 'gap-2')}>

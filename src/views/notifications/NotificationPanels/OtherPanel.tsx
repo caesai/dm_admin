@@ -31,7 +31,7 @@ const OtherPanel: FC<{
             <CTableRow key={text.id}>
               <CTableDataCell className="text-start">{text.name}</CTableDataCell>
               <CTableDataCell className="text-center">
-                {text.content ? text.content : 'Текст отстутствует'}
+                {text.content ? text.content : 'Текст отсутствует'}
               </CTableDataCell>
               <CTableDataCell className={classNames('text-end', 'pe-0')}>
                 <CButton color={'primary'} onClick={() => setTextId(text.id)}>
