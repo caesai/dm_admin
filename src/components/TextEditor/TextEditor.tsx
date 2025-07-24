@@ -20,10 +20,14 @@ import TurndownService from 'turndown'
 import EmojiPicker from 'emoji-picker-react';
 
 interface IProps {
+  initialContent?: string | undefined
   onUpdate: (a: any) => void
 }
 
-export const TextEditor: React.FC<IProps> = ({ onUpdate }) => {
+export const TextEditor: React.FC<IProps> = ({
+  onUpdate,
+  initialContent = 'Текст рассылки...',
+}) => {
   const [editorContent, setEditorContent] = useState('')
   const [isEmoji, setIsEmoji] = useState<boolean>(false)
   const editor = useEditor({
@@ -44,8 +48,13 @@ export const TextEditor: React.FC<IProps> = ({ onUpdate }) => {
       Strike,
       Code,
     ],
-    content: 'Текст рассылки...',
+    content: initialContent,
   }) as Editor
+  useEffect(() => {
+    if (editor && initialContent) {
+      editor.commands.setContent(initialContent)
+    }
+  }, [initialContent, editor])
   const [modalIsOpen, setIsOpen] = useState(false)
   const [url, setUrl] = useState<string>('')
 
