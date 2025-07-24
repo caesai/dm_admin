@@ -119,7 +119,7 @@ const _nav: NavItem[] = [
   },
   {
     component: CNavItem,
-    name: 'Уведомления',
+    name: 'Рассылка',
     to: '/notifications',
     icon: <CIcon icon={cilBell} customClassName="nav-icon" />, // используйте подходящий икон компонент
   },
