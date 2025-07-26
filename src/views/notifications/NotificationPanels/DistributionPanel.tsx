@@ -1,4 +1,5 @@
 import {
+  CButton,
   CCard,
   CCardBody,
   CCardGroup,
@@ -14,16 +15,17 @@ import classNames from 'classnames'
 import { TextEditor } from 'src/components/TextEditor/TextEditor.tsx'
 import { ChangeEvent, useState } from 'react'
 import { sendMailing } from 'src/dataProviders/mailing.ts'
+import ConfirmDistributionPopup from 'src/views/notifications/NotificationPopups/ConfirmDistributionPopup.tsx'
 
 const DistributionPanel = () => {
   const [testUserName, setTestUserName] = useState<number | undefined>()
   const [editorContent, setEditorContent] = useState<any>(null)
   const [groupNotificationIsInProgress, setGroupNotificationIsInProgress] = useState(false)
-  const [allNotificationIsInProgress, setAllNotificationIsInProgress] = useState(false)
   const [photo, setPhoto] = useState<File | null>(null)
   const [document, setDocument] = useState<File | null>(null)
   const [buttonText, setButtonText] = useState<string | undefined>()
   const [buttonUrl, setButtonUrl] = useState<string | undefined>()
+  const [isPopupOpen, setIsPopupOpen] = useState(false)
   const getBase64 = (file: File) =>
     new Promise(function (resolve: (value: string) => void, reject) {
       const reader = new FileReader()
@@ -62,11 +64,6 @@ const DistributionPanel = () => {
       console.error('Error in test notification:', error)
     } finally {
       // Reset test username after sending notification
-      setTestUserName(undefined)
-      setButtonUrl(undefined)
-      setButtonText(undefined)
-      setDocument(null)
-      setPhoto(null)
       setGroupNotificationIsInProgress(false)
     }
   }
@@ -74,17 +71,11 @@ const DistributionPanel = () => {
   // Notify all users
   const notifyAll = async () => {
     try {
-      setAllNotificationIsInProgress(true)
       const res = await sendMailing([], editorContent, null, null, undefined, undefined)
       console.log('Notification sent successfully:', res)
     } catch (error) {
       console.error('Error in test notification:', error)
     } finally {
-      setButtonUrl(undefined)
-      setButtonText(undefined)
-      setDocument(null)
-      setPhoto(null)
-      setAllNotificationIsInProgress(false)
     }
   }
 
@@ -100,83 +91,83 @@ const DistributionPanel = () => {
     }
   }
   return (
-    <CTabPanel itemKey="distribution">
-      <CCard className={classNames('mb-4', 'border-0')}>
-        <CCardBody>
-          <CCardGroup className="flex-column">
-            <CCardBody className={classNames('d-flex', 'flex-row', 'gap-2')}>
-              <TextEditor onUpdate={setEditorContent} />
-            </CCardBody>
-            <CCardBody className="d-flex">
+    <>
+      <CTabPanel itemKey="distribution">
+        <CCard className={classNames('mb-4', 'border-0')}>
+          <CCardBody>
+            <CCardGroup className="flex-column">
+              <CCardBody className={classNames('d-flex', 'flex-row', 'gap-2')}>
+                <TextEditor onUpdate={setEditorContent} />
+              </CCardBody>
+              <CCardBody className="d-flex">
+                <CButton color="primary" className="px-4" onClick={() => setIsPopupOpen(true)}>
+                  Рассылка
+                </CButton>
+              </CCardBody>
+            </CCardGroup>
+          </CCardBody>
+        </CCard>
+        <CCard className="mb-4">
+          <CCardHeader>Вложения</CCardHeader>
+          <CCardBody>
+            {photo && (
+              <CImage rounded thumbnail src={URL.createObjectURL(photo)} width={200} height={200} />
+            )}
+            <CForm className="flex-column gap-4" style={{ display: 'flex' }}>
+              <CFormInput type="file" label="Изображение" onChange={handlePhoto} />
+              <CFormInput type="file" label="Документ" onChange={handleDocument} />
+            </CForm>
+          </CCardBody>
+        </CCard>
+        <CCard className="mb-4">
+          <CCardHeader>Кнопка</CCardHeader>
+          <CCardBody>
+            <CForm className="flex-column gap-4" style={{ display: 'flex' }}>
+              <CFormInput
+                placeholder="Текст кнопки"
+                type="text"
+                value={buttonText}
+                onChange={(e) => setButtonText(e.target.value)}
+              />
+              <CFormInput
+                placeholder="Url кнопки"
+                type="text"
+                value={buttonUrl}
+                onChange={(e) => setButtonUrl(e.target.value)}
+              />
+            </CForm>
+          </CCardBody>
+        </CCard>
+        <CCard className="mb-4">
+          <CCardHeader>Тест рассылки</CCardHeader>
+          <CCardBody>
+            <CForm>
+              <CInputGroup className="mb-3">
+                <CFormInput
+                  placeholder="Telegram ID"
+                  type="number"
+                  value={testUserName ?? ''}
+                  onChange={(e) =>
+                    setTestUserName(e.target.value ? Number(e.target.value) : undefined)
+                  }
+                />
+              </CInputGroup>
               <CLoadingButton
                 color="primary"
                 className="px-4"
-                loading={allNotificationIsInProgress}
-                onClick={notifyAll}
+                loading={groupNotificationIsInProgress}
+                onClick={notifyGroup}
               >
-                Рассылка
+                Тест
               </CLoadingButton>
-            </CCardBody>
-          </CCardGroup>
-        </CCardBody>
-      </CCard>
-      <CCard className="mb-4">
-        <CCardHeader>Вложения</CCardHeader>
-        <CCardBody>
-          {photo && (
-            <CImage rounded thumbnail src={URL.createObjectURL(photo)} width={200} height={200} />
-          )}
-          <CForm className="flex-column gap-4" style={{ display: 'flex' }}>
-            <CFormInput type="file" label="Изображение" onChange={handlePhoto} />
-            <CFormInput type="file" label="Документ" onChange={handleDocument} />
-          </CForm>
-        </CCardBody>
-      </CCard>
-      <CCard className="mb-4">
-        <CCardHeader>Кнопка</CCardHeader>
-        <CCardBody>
-          <CForm className="flex-column gap-4" style={{ display: 'flex' }}>
-            <CFormInput
-              placeholder="Текст кнопки"
-              type="text"
-              value={buttonText}
-              onChange={(e) => setButtonText(e.target.value)}
-            />
-            <CFormInput
-              placeholder="Url кнопки"
-              type="text"
-              value={buttonUrl}
-              onChange={(e) => setButtonUrl(e.target.value)}
-            />
-          </CForm>
-        </CCardBody>
-      </CCard>
-      <CCard className="mb-4">
-        <CCardHeader>Тест рассылки</CCardHeader>
-        <CCardBody>
-          <CForm>
-            <CInputGroup className="mb-3">
-              <CFormInput
-                placeholder="Telegram ID"
-                type="number"
-                value={testUserName ?? ''}
-                onChange={(e) =>
-                  setTestUserName(e.target.value ? Number(e.target.value) : undefined)
-                }
-              />
-            </CInputGroup>
-            <CLoadingButton
-              color="primary"
-              className="px-4"
-              loading={groupNotificationIsInProgress}
-              onClick={notifyGroup}
-            >
-              Тест
-            </CLoadingButton>
-          </CForm>
-        </CCardBody>
-      </CCard>
-    </CTabPanel>
+            </CForm>
+          </CCardBody>
+        </CCard>
+      </CTabPanel>
+      {isPopupOpen && (
+        <ConfirmDistributionPopup onConfirm={notifyAll} popup={[isPopupOpen, setIsPopupOpen]} />
+      )}
+    </>
   )
 }
 
