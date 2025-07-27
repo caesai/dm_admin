@@ -14,11 +14,15 @@ import {
 import classNames from 'classnames'
 import { TextEditor } from 'src/components/TextEditor/TextEditor.tsx'
 import { ChangeEvent, useState } from 'react'
-import { sendMailing } from 'src/dataProviders/mailing.ts'
 import ConfirmDistributionPopup from 'src/views/notifications/NotificationPopups/ConfirmDistributionPopup.tsx'
+import {
+  sendMailingDocument,
+  sendMailingPhoto,
+  sendMailingText,
+} from 'src/dataProviders/mailing.ts'
 
 const DistributionPanel = () => {
-  const [testUserName, setTestUserName] = useState<number | undefined>()
+  const [testUserName, setTestUserName] = useState<string | undefined>()
   const [editorContent, setEditorContent] = useState<any>(null)
   const [groupNotificationIsInProgress, setGroupNotificationIsInProgress] = useState(false)
   const [photo, setPhoto] = useState<File | null>(null)
@@ -26,13 +30,32 @@ const DistributionPanel = () => {
   const [buttonText, setButtonText] = useState<string | undefined>()
   const [buttonUrl, setButtonUrl] = useState<string | undefined>()
   const [isPopupOpen, setIsPopupOpen] = useState(false)
-  const getBase64 = (file: File) =>
-    new Promise(function (resolve: (value: string) => void, reject) {
-      const reader = new FileReader()
-      reader.readAsDataURL(file)
-      reader.onload = () => resolve(String(reader.result))
-      reader.onerror = (error) => reject(error)
-    })
+  const sendMailing = async (
+    users_ids: string | null,
+    text: string,
+    photoFile: File | null,
+    // videoFile: File | null,
+    documentFile: File | null,
+    button_text: string | undefined,
+    button_url: string | undefined,
+  ) => {
+    try {
+      await sendMailingText(text, button_text, button_url, users_ids)
+      if (photoFile) {
+        console.log('sendMailing photo:', photoFile)
+        await sendMailingPhoto(photoFile)
+      }
+      if (documentFile) {
+        await sendMailingDocument(documentFile)
+      }
+      // if (videoFile) {
+      //   await sendMailingVideo(videoFile);
+      // }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   // Function to test notifications.
   // Examples of user ids: 115555014, 1283802964.
   const notifyGroup = async () => {
@@ -42,20 +65,16 @@ const DistributionPanel = () => {
         console.log('No test user data provided')
         return
       }
-      let photo64: string | null = null
-      let doc64: string | null = null
-      if (photo) {
-        photo64 = await getBase64(photo)
-      }
-      if (document) {
-        doc64 = await getBase64(document)
+      if (!editorContent) {
+        console.log('No content to send')
+        return
       }
 
       const res = await sendMailing(
-        [testUserName],
+        testUserName,
         editorContent,
-        photo64,
-        doc64,
+        photo,
+        document,
         buttonText,
         buttonUrl,
       )
@@ -63,15 +82,13 @@ const DistributionPanel = () => {
     } catch (error) {
       console.error('Error in test notification:', error)
     } finally {
-      // Reset test username after sending notification
       setGroupNotificationIsInProgress(false)
     }
   }
-
   // Notify all users
   const notifyAll = async () => {
     try {
-      const res = await sendMailing([], editorContent, null, null, undefined, undefined)
+      const res = await sendMailing(null, editorContent, null, null, undefined, undefined)
       console.log('Notification sent successfully:', res)
     } catch (error) {
       console.error('Error in test notification:', error)
@@ -145,10 +162,10 @@ const DistributionPanel = () => {
               <CInputGroup className="mb-3">
                 <CFormInput
                   placeholder="Telegram ID"
-                  type="number"
+                  type="text"
                   value={testUserName ?? ''}
                   onChange={(e) =>
-                    setTestUserName(e.target.value ? Number(e.target.value) : undefined)
+                    setTestUserName(e.target.value ? String(e.target.value) : undefined)
                   }
                 />
               </CInputGroup>
