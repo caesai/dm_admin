@@ -19,6 +19,7 @@ import {
   sendMailingDocument,
   sendMailingPhoto,
   sendMailingText,
+  // sendMailingVideo,
 } from 'src/dataProviders/mailing.ts'
 
 const DistributionPanel = () => {
@@ -26,6 +27,7 @@ const DistributionPanel = () => {
   const [editorContent, setEditorContent] = useState<any>(null)
   const [groupNotificationIsInProgress, setGroupNotificationIsInProgress] = useState(false)
   const [photo, setPhoto] = useState<File | null>(null)
+  // const [video, setVideo] = useState<File | null>(null)
   const [document, setDocument] = useState<File | null>(null)
   const [buttonText, setButtonText] = useState<string | undefined>()
   const [buttonUrl, setButtonUrl] = useState<string | undefined>()
@@ -40,17 +42,17 @@ const DistributionPanel = () => {
     button_url: string | undefined,
   ) => {
     try {
-      await sendMailingText(text, button_text, button_url, users_ids)
       if (photoFile) {
-        console.log('sendMailing photo:', photoFile)
-        await sendMailingPhoto(photoFile)
+        await sendMailingPhoto(photoFile, text, button_text, button_url, users_ids)
+      } else if (documentFile) {
+        await sendMailingDocument(documentFile, text, button_text, button_url, users_ids)
       }
-      if (documentFile) {
-        await sendMailingDocument(documentFile)
-      }
-      // if (videoFile) {
-      //   await sendMailingVideo(videoFile);
+      // else if (videoFile) {
+      //   await sendMailingVideo(videoFile)
       // }
+      else {
+        await sendMailingText(text, button_text, button_url, users_ids)
+      }
     } catch (error) {
       console.log(error)
     }
@@ -74,6 +76,7 @@ const DistributionPanel = () => {
         testUserName,
         editorContent,
         photo,
+        // video,
         document,
         buttonText,
         buttonUrl,
