@@ -90,7 +90,15 @@ const DistributionPanel = () => {
   // Notify all users
   const notifyAll = async () => {
     try {
-      const res = await sendMailing(null, editorContent, null, null, null, undefined, undefined)
+      const res = await sendMailing(
+        null,
+        editorContent,
+        photo,
+        video,
+        document,
+        buttonText,
+        buttonUrl,
+      )
       console.log('Notification sent successfully:', res)
     } catch (error) {
       console.error('Error in test notification:', error)
