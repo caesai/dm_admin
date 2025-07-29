@@ -19,6 +19,7 @@ import {
   sendMailingDocument,
   sendMailingPhoto,
   sendMailingText,
+  sendMailingVideo,
   // sendMailingVideo,
 } from 'src/dataProviders/mailing.ts'
 
@@ -27,7 +28,7 @@ const DistributionPanel = () => {
   const [editorContent, setEditorContent] = useState<any>(null)
   const [groupNotificationIsInProgress, setGroupNotificationIsInProgress] = useState(false)
   const [photo, setPhoto] = useState<File | null>(null)
-  // const [video, setVideo] = useState<File | null>(null)
+  const [video, setVideo] = useState<File | null>(null)
   const [document, setDocument] = useState<File | null>(null)
   const [buttonText, setButtonText] = useState<string | undefined>()
   const [buttonUrl, setButtonUrl] = useState<string | undefined>()
@@ -36,21 +37,19 @@ const DistributionPanel = () => {
     users_ids: string | null,
     text: string,
     photoFile: File | null,
-    // videoFile: File | null,
+    videoFile: File | null,
     documentFile: File | null,
     button_text: string | undefined,
     button_url: string | undefined,
   ) => {
     try {
-      if (photoFile) {
+      if (photoFile !== null) {
         await sendMailingPhoto(photoFile, text, button_text, button_url, users_ids)
-      } else if (documentFile) {
+      } else if (documentFile !== null) {
         await sendMailingDocument(documentFile, text, button_text, button_url, users_ids)
-      }
-      // else if (videoFile) {
-      //   await sendMailingVideo(videoFile)
-      // }
-      else {
+      } else if (videoFile !== null) {
+        await sendMailingVideo(videoFile, text, button_text, button_url, users_ids)
+      } else {
         await sendMailingText(text, button_text, button_url, users_ids)
       }
     } catch (error) {
@@ -76,7 +75,7 @@ const DistributionPanel = () => {
         testUserName,
         editorContent,
         photo,
-        // video,
+        video,
         document,
         buttonText,
         buttonUrl,
@@ -91,7 +90,7 @@ const DistributionPanel = () => {
   // Notify all users
   const notifyAll = async () => {
     try {
-      const res = await sendMailing(null, editorContent, null, null, undefined, undefined)
+      const res = await sendMailing(null, editorContent, null, null, null, undefined, undefined)
       console.log('Notification sent successfully:', res)
     } catch (error) {
       console.error('Error in test notification:', error)
@@ -102,6 +101,12 @@ const DistributionPanel = () => {
   const handlePhoto = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setPhoto(e.target.files[0])
+    }
+  }
+
+  const handleVideo = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setVideo(e.target.files[0])
     }
   }
 
@@ -135,6 +140,7 @@ const DistributionPanel = () => {
             )}
             <CForm className="flex-column gap-4" style={{ display: 'flex' }}>
               <CFormInput type="file" label="Изображение" onChange={handlePhoto} />
+              <CFormInput type="file" label="Видео" onChange={handleVideo} />
               <CFormInput type="file" label="Документ" onChange={handleDocument} />
             </CForm>
           </CCardBody>
