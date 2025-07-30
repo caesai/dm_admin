@@ -20,7 +20,6 @@ import {
   sendMailingPhoto,
   sendMailingText,
   sendMailingVideo,
-  // sendMailingVideo,
 } from 'src/dataProviders/mailing.ts'
 import toast from 'react-hot-toast'
 
@@ -44,8 +43,8 @@ const DistributionPanel = () => {
     button_url: string,
   ) => {
     try {
-      let btnText = button_text ? button_text : undefined;
-      let btnUrl = button_url ? button_url : undefined;
+      let btnText = button_text || undefined;
+      let btnUrl = button_url || undefined;
       if (photoFile) {
         await sendMailingPhoto(photoFile, text, btnText, btnUrl, users_ids)
       } else if (documentFile) {
@@ -106,6 +105,7 @@ const DistributionPanel = () => {
       )
       toast.success('Рассылка успешно отправлена.')
     } catch (error) {
+      console.log(error)
       toast.error('Ошибка в рассылке: ' + error)
     } finally {
     }
@@ -187,7 +187,7 @@ const DistributionPanel = () => {
                   type="text"
                   value={testUserName}
                   onChange={(e) =>
-                    setTestUserName(String(e.target.value))
+                    setTestUserName(e.target.value)
                   }
                 />
               </CInputGroup>
