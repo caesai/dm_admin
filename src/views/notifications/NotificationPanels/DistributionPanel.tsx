@@ -22,38 +22,42 @@ import {
   sendMailingVideo,
   // sendMailingVideo,
 } from 'src/dataProviders/mailing.ts'
+import toast from 'react-hot-toast'
 
 const DistributionPanel = () => {
-  const [testUserName, setTestUserName] = useState<string | undefined>()
+  const [testUserName, setTestUserName] = useState<string>('')
   const [editorContent, setEditorContent] = useState<any>(null)
   const [groupNotificationIsInProgress, setGroupNotificationIsInProgress] = useState(false)
-  const [photo, setPhoto] = useState<File | null>(null)
-  const [video, setVideo] = useState<File | null>(null)
-  const [document, setDocument] = useState<File | null>(null)
-  const [buttonText, setButtonText] = useState<string | undefined>()
-  const [buttonUrl, setButtonUrl] = useState<string | undefined>()
+  const [photo, setPhoto] = useState<File | undefined>(undefined)
+  const [video, setVideo] = useState<File | undefined>(undefined)
+  const [document, setDocument] = useState<File | undefined>(undefined)
+  const [buttonText, setButtonText] = useState<string>('')
+  const [buttonUrl, setButtonUrl] = useState<string>('')
   const [isPopupOpen, setIsPopupOpen] = useState(false)
   const sendMailing = async (
     users_ids: string | null,
     text: string,
-    photoFile: File | null,
-    videoFile: File | null,
-    documentFile: File | null,
-    button_text: string | undefined,
-    button_url: string | undefined,
+    photoFile: File | undefined,
+    videoFile: File | undefined,
+    documentFile: File | undefined,
+    button_text: string,
+    button_url: string,
   ) => {
     try {
-      if (photoFile !== null) {
-        await sendMailingPhoto(photoFile, text, button_text, button_url, users_ids)
-      } else if (documentFile !== null) {
-        await sendMailingDocument(documentFile, text, button_text, button_url, users_ids)
-      } else if (videoFile !== null) {
-        await sendMailingVideo(videoFile, text, button_text, button_url, users_ids)
+      let btnText = button_text ? button_text : undefined;
+      let btnUrl = button_url ? button_url : undefined;
+      if (photoFile) {
+        await sendMailingPhoto(photoFile, text, btnText, btnUrl, users_ids)
+      } else if (documentFile) {
+        await sendMailingDocument(documentFile, text, btnText, btnUrl, users_ids)
+      } else if (videoFile) {
+        await sendMailingVideo(videoFile, text, btnText, btnUrl, users_ids)
       } else {
-        await sendMailingText(text, button_text, button_url, users_ids)
+        await sendMailingText(text, btnText, btnUrl, users_ids)
       }
     } catch (error) {
       console.log(error)
+      toast.error('Ошибка при отправке рассылки: ' + error)
     }
   }
 
@@ -63,15 +67,15 @@ const DistributionPanel = () => {
     try {
       setGroupNotificationIsInProgress(true)
       if (!testUserName) {
-        console.log('No test user data provided')
+        toast.error('Отсутствует Telegram ID для теста.')
         return
       }
-      if (!editorContent) {
-        console.log('No content to send')
+      if (!editorContent && !photo && !video && !document) {
+        toast.error('Отсутствует контент для рассылки.')
         return
       }
 
-      const res = await sendMailing(
+      await sendMailing(
         testUserName,
         editorContent,
         photo,
@@ -80,9 +84,10 @@ const DistributionPanel = () => {
         buttonText,
         buttonUrl,
       )
-      console.log('Notification sent successfully:', res)
+      toast.success('Тестовая рассылка успешно отправлена.')
     } catch (error) {
-      console.error('Error in test notification:', error)
+      console.log(error)
+      toast.error('Ошибка в тестовой рассылке: ' + error)
     } finally {
       setGroupNotificationIsInProgress(false)
     }
@@ -90,7 +95,7 @@ const DistributionPanel = () => {
   // Notify all users
   const notifyAll = async () => {
     try {
-      const res = await sendMailing(
+      await sendMailing(
         null,
         editorContent,
         photo,
@@ -99,9 +104,9 @@ const DistributionPanel = () => {
         buttonText,
         buttonUrl,
       )
-      console.log('Notification sent successfully:', res)
+      toast.success('Рассылка успешно отправлена.')
     } catch (error) {
-      console.error('Error in test notification:', error)
+      toast.error('Ошибка в рассылке: ' + error)
     } finally {
     }
   }
@@ -180,9 +185,9 @@ const DistributionPanel = () => {
                 <CFormInput
                   placeholder="Telegram ID"
                   type="text"
-                  value={testUserName ?? ''}
+                  value={testUserName}
                   onChange={(e) =>
-                    setTestUserName(e.target.value ? String(e.target.value) : undefined)
+                    setTestUserName(String(e.target.value))
                   }
                 />
               </CInputGroup>
