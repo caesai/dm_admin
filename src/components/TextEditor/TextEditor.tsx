@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import classNames from 'classnames'
 // => Tiptap packages
 import { useEditor, EditorContent, Editor, BubbleMenu } from '@tiptap/react'
@@ -17,7 +17,8 @@ import { LinkModal } from './LinkModal'
 // @ts-expect-error its ok
 import css from './editor.module.css'
 import TurndownService from 'turndown'
-import EmojiPicker from 'emoji-picker-react';
+import EmojiPicker from 'emoji-picker-react'
+import useClickOutside from 'src/hooks/useClickOutside.ts'
 
 interface IProps {
   initialContent?: string | undefined
@@ -30,6 +31,8 @@ export const TextEditor: React.FC<IProps> = ({
 }) => {
   const [editorContent, setEditorContent] = useState('')
   const [isEmoji, setIsEmoji] = useState<boolean>(false)
+  const emojiPickerRef = useRef<HTMLDivElement>(null)
+
   const editor = useEditor({
     onUpdate: ({ editor }) => {
       setEditorContent(editor.getHTML())
@@ -102,16 +105,20 @@ export const TextEditor: React.FC<IProps> = ({
     editor.chain().focus().toggleCode().run()
   }, [editor])
 
-  const toggleEmoji = () => {
-    setIsEmoji(isOpened => !isOpened);
+  const openEmojiPopup = () => {
+    setIsEmoji(true)
+  }
+
+  const closeEmojiPopup = () => {
+    setIsEmoji(false)
   }
 
   if (!editor) {
     return null
   }
 
-  const onEmojiClick = ({ emoji }: { emoji: string}) => {
-    editor.commands.insertContent(emoji);
+  const onEmojiClick = ({ emoji }: { emoji: string }) => {
+    editor.commands.insertContent(emoji)
   }
 
   const turndownService = useMemo(() => {
@@ -157,19 +164,21 @@ export const TextEditor: React.FC<IProps> = ({
       },
       replacement: function (content, node) {
         // @ts-expect-error
-        let url = node.getAttribute('href')
+        const url = node.getAttribute('href')
         if (!url?.startsWith('http')) return content
         return `<a href="${url}">${content}</a>`
       },
     })
 
-    return service;
+    return service
   }, [])
 
   useEffect(() => {
     const markdown = turndownService.turndown(editorContent)
     onUpdate(markdown)
   }, [editorContent])
+
+  useClickOutside(emojiPickerRef, closeEmojiPopup)
 
   return (
     <div className={css.editor}>
@@ -237,15 +246,15 @@ export const TextEditor: React.FC<IProps> = ({
           <Icons.Code />
         </button>
         <div
-            className={classNames(css.menu_button, {
-              'is-active': editor.isActive('code'),
-            })}
-            onClick={toggleEmoji}
+          ref={emojiPickerRef}
+          className={classNames(css.menu_button, {
+            'is-active': editor.isActive('code'),
+          })}
+          onClick={openEmojiPopup}
         >
           <Icons.Emoji />
-          {isEmoji && <EmojiPicker onEmojiClick={onEmojiClick} className={css.emojipicker}/>}
+          <EmojiPicker open={isEmoji} onEmojiClick={onEmojiClick} className={css.emojipicker} />
         </div>
-
       </div>
 
       <BubbleMenu
