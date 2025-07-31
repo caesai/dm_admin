@@ -14,8 +14,8 @@ import classNames from 'classnames'
 import { useEffect, useState } from 'react'
 import { getMailingList } from 'src/dataProviders/mailing.ts'
 import { IMailing } from 'src/types/Mailing.ts'
-import DeleteMailingPopup from "src/views/notifications/NotificationPopups/DeleteMailingPopup.tsx";
-import toast from "react-hot-toast";
+import DeleteMailingPopup from 'src/views/notifications/NotificationPopups/DeleteMailingPopup.tsx'
+import toast from 'react-hot-toast'
 
 const NotificationHistory = () => {
   const [MailingList, setMailingList] = useState<IMailing[]>([])
@@ -24,10 +24,10 @@ const NotificationHistory = () => {
   const loadMailing = () => {
     getMailingList()
       .then((res) => {
-      setMailingList(res.data)
-    })
+        setMailingList(res.data)
+      })
       .catch((error) => {
-        toast.error("Ошибка при получении истории рассылки: " + error)
+        toast.error('Ошибка при получении истории рассылки: ' + error)
       })
   }
   useEffect(() => {
@@ -56,7 +56,9 @@ const NotificationHistory = () => {
                   <CTableDataCell>{mailing.created_at}</CTableDataCell>
                   <CTableDataCell>{mailing.sent_count}</CTableDataCell>
                   <CTableDataCell>
-                    <CButton color="primary" onClick={() => setCurrentMailingId(mailing.id)}>Удалить</CButton>
+                    <CButton color="primary" onClick={() => setCurrentMailingId(mailing.id)}>
+                      Удалить
+                    </CButton>
                   </CTableDataCell>
                 </CTableRow>
               ))}
@@ -65,7 +67,10 @@ const NotificationHistory = () => {
         </CCardBody>
       </CCard>
       {currentMailingId !== null && (
-        <DeleteMailingPopup popup={[currentMailingId, setCurrentMailingId]} onUpdate={loadMailing} />
+        <DeleteMailingPopup
+          popup={[currentMailingId, setCurrentMailingId]}
+          onUpdate={loadMailing}
+        />
       )}
     </>
   )
