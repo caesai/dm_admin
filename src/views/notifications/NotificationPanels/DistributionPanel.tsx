@@ -22,6 +22,7 @@ import {
   sendMailingVideo,
 } from 'src/dataProviders/mailing.ts'
 import toast from 'react-hot-toast'
+import NotificationHistory from 'src/views/notifications/NotificationPanels/NotificationHistory.tsx'
 
 const DistributionPanel = () => {
   const [testUserName, setTestUserName] = useState<string>('')
@@ -32,7 +33,14 @@ const DistributionPanel = () => {
   const [document, setDocument] = useState<File | undefined>(undefined)
   const [buttonText, setButtonText] = useState<string>('')
   const [buttonUrl, setButtonUrl] = useState<string>('')
-  const [isPopupOpen, setIsPopupOpen] = useState(false)
+  const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false)
+  const [refreshHistoryKey, setRefreshHistoryKey] = useState<number>(0);
+
+  // Function to refresh the notification history.
+  const handleSuccess = () => {
+    setRefreshHistoryKey(key => key + 1); // increment refreshKey
+  };
+
   const sendMailing = async (
     users_ids: string | null,
     text: string,
@@ -43,8 +51,8 @@ const DistributionPanel = () => {
     button_url: string,
   ) => {
     try {
-      let btnText = button_text || undefined;
-      let btnUrl = button_url || undefined;
+      const btnText = button_text || undefined
+      const btnUrl = button_url || undefined
       if (photoFile) {
         await sendMailingPhoto(photoFile, text, btnText, btnUrl, users_ids)
       } else if (documentFile) {
@@ -54,6 +62,7 @@ const DistributionPanel = () => {
       } else {
         await sendMailingText(text, btnText, btnUrl, users_ids)
       }
+      handleSuccess();
     } catch (error) {
       console.log(error)
       toast.error('Ошибка при отправке рассылки: ' + error)
@@ -74,15 +83,7 @@ const DistributionPanel = () => {
         return
       }
 
-      await sendMailing(
-        testUserName,
-        editorContent,
-        photo,
-        video,
-        document,
-        buttonText,
-        buttonUrl,
-      )
+      await sendMailing(testUserName, editorContent, photo, video, document, buttonText, buttonUrl)
       toast.success('Тестовая рассылка успешно отправлена.')
     } catch (error) {
       console.log(error)
@@ -94,15 +95,7 @@ const DistributionPanel = () => {
   // Notify all users
   const notifyAll = async () => {
     try {
-      await sendMailing(
-        null,
-        editorContent,
-        photo,
-        video,
-        document,
-        buttonText,
-        buttonUrl,
-      )
+      await sendMailing(null, editorContent, photo, video, document, buttonText, buttonUrl)
       toast.success('Рассылка успешно отправлена.')
     } catch (error) {
       console.log(error)
@@ -186,9 +179,7 @@ const DistributionPanel = () => {
                   placeholder="Telegram ID"
                   type="text"
                   value={testUserName}
-                  onChange={(e) =>
-                    setTestUserName(e.target.value)
-                  }
+                  onChange={(e) => setTestUserName(e.target.value)}
                 />
               </CInputGroup>
               <CLoadingButton
@@ -202,6 +193,7 @@ const DistributionPanel = () => {
             </CForm>
           </CCardBody>
         </CCard>
+        <NotificationHistory refreshKey={refreshHistoryKey} />
       </CTabPanel>
       {isPopupOpen && (
         <ConfirmDistributionPopup onConfirm={notifyAll} popup={[isPopupOpen, setIsPopupOpen]} />
