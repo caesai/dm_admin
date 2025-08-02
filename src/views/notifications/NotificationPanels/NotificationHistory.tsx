@@ -18,8 +18,12 @@ import DeleteMailingPopup from 'src/views/notifications/NotificationPopups/Delet
 import toast from 'react-hot-toast'
 import MailingTextPopup from 'src/views/notifications/NotificationPopups/MailingTextPopup.tsx'
 
-const NotificationHistory = () => {
-  const [MailingList, setMailingList] = useState<IMailing[]>([])
+interface NotificationHistoryProps {
+  refreshKey: number; // Replace 'any' with a more specific type if possible, e.g., number or string
+}
+
+const NotificationHistory = ({ refreshKey }: NotificationHistoryProps) => {
+  const [mailingList, setMailingList] = useState<IMailing[]>([])
   const [currentMailingId, setCurrentMailingId] = useState<number | null>(null)
   const [currentMailingText, setCurrentMailingText] = useState<string | null>(null)
 
@@ -40,7 +44,7 @@ const NotificationHistory = () => {
   }
   useEffect(() => {
     loadMailing()
-  }, [])
+  }, [refreshKey])
   return (
     <>
       <CCard>
@@ -55,7 +59,7 @@ const NotificationHistory = () => {
               <CTableHeaderCell>Удалить</CTableHeaderCell>
             </CTableHead>
             <CTableBody>
-              {MailingList.map((mailing: IMailing) => (
+              {mailingList.map((mailing: IMailing) => (
                 <CTableRow className="text-center" key={mailing.id}>
                   <CTableDataCell className="text-start">{formatText(mailing.text)}</CTableDataCell>
                   <CTableDataCell className="text-start">
