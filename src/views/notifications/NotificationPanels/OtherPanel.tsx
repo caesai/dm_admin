@@ -1,6 +1,7 @@
 import classNames from 'classnames'
 import {
-  CButton, CCard,
+  CButton,
+  CCard,
   CTable,
   CTableBody,
   CTableDataCell,

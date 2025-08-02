@@ -19,7 +19,7 @@ import toast from 'react-hot-toast'
 import MailingTextPopup from 'src/views/notifications/NotificationPopups/MailingTextPopup.tsx'
 
 interface NotificationHistoryProps {
-  refreshKey: number;
+  refreshKey: number
 }
 
 const NotificationHistory = ({ refreshKey }: NotificationHistoryProps) => {

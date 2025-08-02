@@ -28,12 +28,14 @@ export const CreateSocialPopup: FC<{
   const [open, setOpen] = popup
 
   const saveChanges = () => {
-    CreateSocialLink(social, restaurant.id).then((res) =>
-      setRestaurant((prevState) => ({
-        ...prevState!,
-        socials: [...prevState!.socials, res.data],
-      })),
-    ).then(()=>setOpen(false))
+    CreateSocialLink(social, restaurant.id)
+      .then((res) =>
+        setRestaurant((prevState) => ({
+          ...prevState!,
+          socials: [...prevState!.socials, res.data],
+        })),
+      )
+      .then(() => setOpen(false))
   }
 
   return (
@@ -62,7 +64,9 @@ export const CreateSocialPopup: FC<{
         </CForm>
       </CModalBody>
       <CModalFooter>
-        <CButton color={'primary'} onClick={saveChanges}>Сохранить</CButton>
+        <CButton color={'primary'} onClick={saveChanges}>
+          Сохранить
+        </CButton>
       </CModalFooter>
     </CModal>
   )
