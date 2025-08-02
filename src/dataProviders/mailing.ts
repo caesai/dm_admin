@@ -1,5 +1,22 @@
 import axios from 'axios'
 import { BASEURL } from 'src/api.ts'
+import { IMailing } from 'src/types/Mailing.ts'
+
+export const getMailingList = async () => {
+  return await axios.get<IMailing[]>(`${BASEURL}/mailing/`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+    },
+  })
+}
+
+export const deleteMailing = async (id: number) => {
+  return await axios.delete(`${BASEURL}/mailing/${id}`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+    },
+  })
+}
 
 export const sendMailingText = async (
   text: string,
