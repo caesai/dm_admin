@@ -38,7 +38,7 @@ const DistributionPanel = () => {
 
   // Function to refresh the notification history.
   const handleSuccess = () => {
-    setRefreshHistoryKey(key => key + 1); // увеличить refreshKey
+    setRefreshHistoryKey(key => key + 1); // increment refreshKey
   };
 
   const sendMailing = async (

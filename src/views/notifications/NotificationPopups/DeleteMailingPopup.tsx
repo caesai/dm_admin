@@ -43,7 +43,7 @@ const DeleteMailingPopup: FC<{
           Отменить
         </CLoadingButton>
         <CLoadingButton
-          color="primary"
+          color="danger"
           className="w-100"
           loading={isDeleting}
           onClick={confirmDelete}

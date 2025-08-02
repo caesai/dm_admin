@@ -19,7 +19,7 @@ import toast from 'react-hot-toast'
 import MailingTextPopup from 'src/views/notifications/NotificationPopups/MailingTextPopup.tsx'
 
 interface NotificationHistoryProps {
-  refreshKey: number; // Replace 'any' with a more specific type if possible, e.g., number or string
+  refreshKey: number;
 }
 
 const NotificationHistory = ({ refreshKey }: NotificationHistoryProps) => {
@@ -31,6 +31,7 @@ const NotificationHistory = ({ refreshKey }: NotificationHistoryProps) => {
     if (text !== null) {
       return text.length > 70 ? text.slice(0, 70) + '...' : text
     }
+    return ''
   }
 
   const loadMailing = () => {
