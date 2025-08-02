@@ -74,7 +74,7 @@ const RestaurantsListPage = () => {
               <CCardBody>
                 <CRow className={classNames('gap-4')}>
                   {group.restaurants.map((res, index) => (
-                    <RestaurantCard restaurant={res} key={index}/>
+                    <RestaurantCard restaurant={res} key={index} />
                   ))}
                 </CRow>
               </CCardBody>

@@ -34,12 +34,12 @@ const DistributionPanel = () => {
   const [buttonText, setButtonText] = useState<string>('')
   const [buttonUrl, setButtonUrl] = useState<string>('')
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false)
-  const [refreshHistoryKey, setRefreshHistoryKey] = useState<number>(0);
+  const [refreshHistoryKey, setRefreshHistoryKey] = useState<number>(0)
 
   // Function to refresh the notification history.
   const handleSuccess = () => {
-    setRefreshHistoryKey(key => key + 1); // increment refreshKey
-  };
+    setRefreshHistoryKey((key) => key + 1) // increment refreshKey
+  }
 
   const sendMailing = async (
     users_ids: string | null,
@@ -62,7 +62,7 @@ const DistributionPanel = () => {
       } else {
         await sendMailingText(text, btnText, btnUrl, users_ids)
       }
-      handleSuccess();
+      handleSuccess()
     } catch (error) {
       console.log(error)
       toast.error('Ошибка при отправке рассылки: ' + error)

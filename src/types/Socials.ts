@@ -1,4 +1,4 @@
-export interface ISocial{
+export interface ISocial {
   id: number
   type: string
   url: string

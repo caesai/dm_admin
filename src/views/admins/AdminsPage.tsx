@@ -146,7 +146,12 @@ const AdminsPage = () => {
                         >
                           Сбросить пароль
                         </CButton>
-                        <CButton color={'warning'} onClick={()=>activeAdmin(admin.id, !admin.is_active)}>Деактивировать</CButton>
+                        <CButton
+                          color={'warning'}
+                          onClick={() => activeAdmin(admin.id, !admin.is_active)}
+                        >
+                          Деактивировать
+                        </CButton>
                         <CButton color={'danger'} onClick={() => delAdmin(admin.id)}>
                           Удалить
                         </CButton>

@@ -166,7 +166,9 @@ export const MainPanel = ({ restaurant }: IMainPanel) => {
               }
             >
               {cities.map((city) => (
-                <option key={city.id} value={city.id}>{city.name}</option>
+                <option key={city.id} value={city.id}>
+                  {city.name}
+                </option>
               ))}
             </CFormSelect>
           )}
