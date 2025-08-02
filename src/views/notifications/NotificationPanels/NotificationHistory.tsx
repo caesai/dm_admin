@@ -16,10 +16,18 @@ import { getMailingList } from 'src/dataProviders/mailing.ts'
 import { IMailing } from 'src/types/Mailing.ts'
 import DeleteMailingPopup from 'src/views/notifications/NotificationPopups/DeleteMailingPopup.tsx'
 import toast from 'react-hot-toast'
+import MailingTextPopup from 'src/views/notifications/NotificationPopups/MailingTextPopup.tsx'
 
 const NotificationHistory = () => {
   const [MailingList, setMailingList] = useState<IMailing[]>([])
   const [currentMailingId, setCurrentMailingId] = useState<number | null>(null)
+  const [currentMailingText, setCurrentMailingText] = useState<string | null>(null)
+
+  const formatText = (text: string | null) => {
+    if (text !== null) {
+      return text.length > 70 ? text.slice(0, 70) + '...' : text
+    }
+  }
 
   const loadMailing = () => {
     getMailingList()
@@ -47,11 +55,13 @@ const NotificationHistory = () => {
               <CTableHeaderCell>Удалить</CTableHeaderCell>
             </CTableHead>
             <CTableBody>
-              {MailingList.map((mailing) => (
+              {MailingList.map((mailing: IMailing) => (
                 <CTableRow className="text-center" key={mailing.id}>
-                  <CTableDataCell className="text-start">{mailing.text}</CTableDataCell>
+                  <CTableDataCell className="text-start">{formatText(mailing.text)}</CTableDataCell>
                   <CTableDataCell className="text-start">
-                    <CButton color="primary">Показать</CButton>
+                    <CButton color="primary" onClick={() => setCurrentMailingText(mailing.text)}>
+                      Показать
+                    </CButton>
                   </CTableDataCell>
                   <CTableDataCell>{mailing.created_at}</CTableDataCell>
                   <CTableDataCell>{mailing.sent_count}</CTableDataCell>
@@ -71,6 +81,9 @@ const NotificationHistory = () => {
           popup={[currentMailingId, setCurrentMailingId]}
           onUpdate={loadMailing}
         />
+      )}
+      {currentMailingText !== null && currentMailingId === null && (
+        <MailingTextPopup popup={[currentMailingText, setCurrentMailingText]} />
       )}
     </>
   )

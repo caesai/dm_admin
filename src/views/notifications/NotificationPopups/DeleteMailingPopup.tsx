@@ -1,12 +1,19 @@
-import {CLoadingButton, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle} from "@coreui/react-pro";
-import {Dispatch, FC, SetStateAction, useState} from "react";
-import {deleteMailing} from "src/dataProviders/mailing.ts";
-import toast from "react-hot-toast";
+import {
+  CLoadingButton,
+  CModal,
+  CModalBody,
+  CModalFooter,
+  CModalHeader,
+  CModalTitle,
+} from '@coreui/react-pro'
+import { Dispatch, FC, SetStateAction, useState } from 'react'
+import { deleteMailing } from 'src/dataProviders/mailing.ts'
+import toast from 'react-hot-toast'
 
 const DeleteMailingPopup: FC<{
   popup: [number, Dispatch<SetStateAction<number | null>>]
   onUpdate: () => void
-}> = ({popup, onUpdate}) => {
+}> = ({ popup, onUpdate }) => {
   const [id, setId] = popup
   const [isDeleting, setIsDeleting] = useState(false)
 
@@ -15,10 +22,10 @@ const DeleteMailingPopup: FC<{
     await deleteMailing(id)
       .then(() => {
         setId(null)
-        toast.success("Рассылка успешно удалена.")
+        toast.success('Рассылка успешно удалена.')
       })
       .catch((error) => {
-        toast.error("Ошибка удаления рассылки: " + error)
+        toast.error('Ошибка удаления рассылки: ' + error)
       })
       .finally(() => {
         setIsDeleting(false)
@@ -32,11 +39,7 @@ const DeleteMailingPopup: FC<{
       </CModalHeader>
       <CModalBody>Подтвердите удаление сообщения!</CModalBody>
       <CModalFooter>
-        <CLoadingButton
-          color="secondary"
-          className="w-100"
-          onClick={() => setId(null)}
-        >
+        <CLoadingButton color="secondary" className="w-100" onClick={() => setId(null)}>
           Отменить
         </CLoadingButton>
         <CLoadingButton
