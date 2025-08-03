@@ -34,7 +34,7 @@ export const EditChefPopup: FC<{
   }
 
   const saveChanges = async () => {
-    UpdateChef(copy)
+    UpdateChef(copy.id, copy)
       .then((res) => setChefs((prev) => [...prev.filter((v) => v.id !== res.data.id), res.data]))
       .then(() => setOpen(false))
   }

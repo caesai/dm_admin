@@ -56,7 +56,7 @@ const ChefsPage = () => {
       </CCardHeader>
       <CCardBody className={classNames('d-flex', 'flex-row', 'gap-2')}>
         {chefs.map((c: IChef) => (
-          <CCard style={{ width: '18rem' }}>
+          <CCard style={{ width: '18rem' }} key={c.id}>
             <CCardImage src={c.photo_url} />
             <CCardBody>
               <CCardTitle>{c.name}</CCardTitle>
