@@ -12,6 +12,7 @@ import {
 } from '@coreui/react-pro'
 import { Dispatch, FC, SetStateAction } from 'react'
 import { IText } from 'src/types/Texts.ts'
+import { renderHTMLContent } from 'src/utils.tsx'
 
 const OtherPanel: FC<{
   setTextId: Dispatch<SetStateAction<number | null>>
@@ -33,7 +34,7 @@ const OtherPanel: FC<{
               <CTableRow key={text.id}>
                 <CTableDataCell className="text-start">{text.name}</CTableDataCell>
                 <CTableDataCell className="text-center">
-                  {text.content ? text.content : 'Текст отсутствует'}
+                  {renderHTMLContent(text.content)}
                 </CTableDataCell>
                 <CTableDataCell className={classNames('text-end', 'pe-0')}>
                   <CButton color={'primary'} onClick={() => setTextId(text.id)}>

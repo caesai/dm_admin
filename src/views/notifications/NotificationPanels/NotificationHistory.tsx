@@ -17,6 +17,7 @@ import { IMailing } from 'src/types/Mailing.ts'
 import DeleteMailingPopup from 'src/views/notifications/NotificationPopups/DeleteMailingPopup.tsx'
 import toast from 'react-hot-toast'
 import MailingTextPopup from 'src/views/notifications/NotificationPopups/MailingTextPopup.tsx'
+import { renderHTMLContent } from 'src/utils.tsx'
 
 interface NotificationHistoryProps {
   refreshKey: number
@@ -62,7 +63,9 @@ const NotificationHistory = ({ refreshKey }: NotificationHistoryProps) => {
             <CTableBody>
               {mailingList.map((mailing: IMailing) => (
                 <CTableRow className="text-center" key={mailing.id}>
-                  <CTableDataCell className="text-start">{formatText(mailing.text)}</CTableDataCell>
+                  <CTableDataCell className="text-start">
+                    {renderHTMLContent(formatText(mailing.text))}
+                  </CTableDataCell>
                   <CTableDataCell className="text-start">
                     <CButton color="primary" onClick={() => setCurrentMailingText(mailing.text)}>
                       Показать
