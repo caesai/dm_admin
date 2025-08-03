@@ -13,6 +13,7 @@ import {
 import { Dispatch, FC, SetStateAction } from 'react'
 import { IConfirmation } from 'src/types/Texts.ts'
 import { IRestaurantWCity } from 'src/types/Restaurant.ts'
+import { renderHTMLContent } from 'src/utils.tsx'
 
 const ReservationPanel: FC<{
   setConfirmationId: Dispatch<SetStateAction<number | null>>
@@ -48,7 +49,7 @@ const ReservationPanel: FC<{
                   {confirmation.title}, {getCity(confirmation.id)}
                 </CTableDataCell>
                 <CTableDataCell className="text-center">
-                  {confirmation.text !== null ? confirmation.text : 'Текст отсутствует'}
+                  {renderHTMLContent(confirmation.text)}
                 </CTableDataCell>
                 <CTableDataCell className={classNames('text-end', 'pe-0')}>
                   <CButton color={'primary'} onClick={() => setConfirmationId(confirmation.id)}>
