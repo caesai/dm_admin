@@ -1,10 +1,10 @@
 import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 import { IChef } from 'src/types/Chef.ts'
 import {
-  CButton,
   CFormInput,
   CFormTextarea,
   CImage,
+  CLoadingButton,
   CModal,
   CModalBody,
   CModalFooter,
@@ -13,13 +13,16 @@ import {
 } from '@coreui/react-pro'
 import { uploadFile } from 'src/dataProviders/s3.ts'
 import { UpdateChef } from 'src/dataProviders/chefs.ts'
+import toast from 'react-hot-toast'
 
 export const EditChefPopup: FC<{
   chef: IChef
   setChefs: Dispatch<SetStateAction<IChef[]>>
   popup: [boolean, Dispatch<SetStateAction<boolean>>]
-}> = ({ chef, popup }) => {
+  reloadChefs?: () => void
+}> = ({ chef, popup, reloadChefs }) => {
   const [copy, setCopy] = useState<IChef>(chef)
+  const [buttonLoading, setButtonLoading] = useState<boolean>(false)
   const [open, setOpen] = popup
 
   useEffect(() => {
@@ -34,7 +37,22 @@ export const EditChefPopup: FC<{
   }
 
   const saveChanges = async () => {
-    UpdateChef(copy.id, copy).then(() => setOpen(false))
+    setButtonLoading(true)
+    UpdateChef(copy.id, copy)
+      .then(() => {
+        toast.success('Изменения сохранены')
+        if (reloadChefs) {
+          reloadChefs()
+        }
+        setOpen(false)
+      })
+      .catch((error) => {
+        toast.error('Произошла ошибка при сохранении изменений: ' + error.message)
+        console.log('Error updating chef:', error)
+      })
+      .finally(() => {
+        setButtonLoading(false)
+      })
   }
 
   return (
@@ -67,9 +85,9 @@ export const EditChefPopup: FC<{
         />
       </CModalBody>
       <CModalFooter>
-        <CButton color={'primary'} onClick={saveChanges}>
+        <CLoadingButton color={'primary'} onClick={saveChanges} loading={buttonLoading}>
           Сохранить
-        </CButton>
+        </CLoadingButton>
       </CModalFooter>
     </CModal>
   )

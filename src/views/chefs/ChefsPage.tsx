@@ -24,9 +24,8 @@ const ChefsPage = () => {
 
   const loadChefs = () => {
     GetChefsList()
-      .then((d) => setChefs(d.data))
+      .then((d) => setChefs([...d.data].sort((a, b) => a.id - b.id)))
       .finally(() => setLoading(false))
-    setChefs([...chefs].sort((a, b) => a.id - b.id))
   }
 
   useEffect(() => {
@@ -41,7 +40,12 @@ const ChefsPage = () => {
   return (
     <CCard>
       {curItem && (
-        <EditChefPopup chef={curItem} setChefs={setChefs} popup={[editPopup, setEditPopup]} />
+        <EditChefPopup
+          chef={curItem}
+          setChefs={setChefs}
+          reloadChefs={loadChefs}
+          popup={[editPopup, setEditPopup]}
+        />
       )}
       <CreateChefPopup setChefs={setChefs} popup={[createPopup, setCreatePopup]} />
       <CCardHeader>
