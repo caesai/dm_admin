@@ -18,7 +18,7 @@ export const EditChefPopup: FC<{
   chef: IChef
   setChefs: Dispatch<SetStateAction<IChef[]>>
   popup: [boolean, Dispatch<SetStateAction<boolean>>]
-}> = ({ chef, setChefs, popup }) => {
+}> = ({ chef, popup }) => {
   const [copy, setCopy] = useState<IChef>(chef)
   const [open, setOpen] = popup
 
@@ -34,9 +34,7 @@ export const EditChefPopup: FC<{
   }
 
   const saveChanges = async () => {
-    UpdateChef(copy.id, copy)
-      .then((res) => setChefs((prev) => [...prev.filter((v) => v.id !== res.data.id), res.data]))
-      .then(() => setOpen(false))
+    UpdateChef(copy.id, copy).then(() => setOpen(false))
   }
 
   return (

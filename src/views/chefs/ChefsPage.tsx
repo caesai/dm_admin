@@ -22,11 +22,16 @@ const ChefsPage = () => {
   const [createPopup, setCreatePopup] = useState(false)
   const [curItem, setCurItem] = useState<IChef>()
 
-  useEffect(() => {
-    setLoading(true)
+  const loadChefs = () => {
     GetChefsList()
       .then((d) => setChefs(d.data))
       .finally(() => setLoading(false))
+    setChefs([...chefs].sort((a, b) => a.id - b.id))
+  }
+
+  useEffect(() => {
+    setLoading(true)
+    loadChefs()
   }, [])
 
   if (loading) {
