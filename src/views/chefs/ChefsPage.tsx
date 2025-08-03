@@ -22,11 +22,15 @@ const ChefsPage = () => {
   const [createPopup, setCreatePopup] = useState(false)
   const [curItem, setCurItem] = useState<IChef>()
 
+  const loadChefs = () => {
+    GetChefsList()
+      .then((d) => setChefs([...d.data].sort((a, b) => a.id - b.id)))
+      .finally(() => setLoading(false))
+  }
+
   useEffect(() => {
     setLoading(true)
-    GetChefsList()
-      .then((d) => setChefs(d.data))
-      .finally(() => setLoading(false))
+    loadChefs()
   }, [])
 
   if (loading) {
@@ -36,7 +40,12 @@ const ChefsPage = () => {
   return (
     <CCard>
       {curItem && (
-        <EditChefPopup chef={curItem} setChefs={setChefs} popup={[editPopup, setEditPopup]} />
+        <EditChefPopup
+          chef={curItem}
+          setChefs={setChefs}
+          reloadChefs={loadChefs}
+          popup={[editPopup, setEditPopup]}
+        />
       )}
       <CreateChefPopup setChefs={setChefs} popup={[createPopup, setCreatePopup]} />
       <CCardHeader>
@@ -56,7 +65,7 @@ const ChefsPage = () => {
       </CCardHeader>
       <CCardBody className={classNames('d-flex', 'flex-row', 'gap-2')}>
         {chefs.map((c: IChef) => (
-          <CCard style={{ width: '18rem' }}>
+          <CCard style={{ width: '18rem' }} key={c.id}>
             <CCardImage src={c.photo_url} />
             <CCardBody>
               <CCardTitle>{c.name}</CCardTitle>
