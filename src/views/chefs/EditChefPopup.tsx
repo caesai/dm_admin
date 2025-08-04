@@ -17,7 +17,6 @@ import toast from 'react-hot-toast'
 
 export const EditChefPopup: FC<{
   chef: IChef
-  setChefs: Dispatch<SetStateAction<IChef[]>>
   popup: [boolean, Dispatch<SetStateAction<boolean>>]
   reloadChefs?: () => void
 }> = ({ chef, popup, reloadChefs }) => {

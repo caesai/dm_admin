@@ -40,12 +40,7 @@ const ChefsPage = () => {
   return (
     <CCard>
       {curItem && (
-        <EditChefPopup
-          chef={curItem}
-          setChefs={setChefs}
-          reloadChefs={loadChefs}
-          popup={[editPopup, setEditPopup]}
-        />
+        <EditChefPopup chef={curItem} reloadChefs={loadChefs} popup={[editPopup, setEditPopup]} />
       )}
       <CreateChefPopup setChefs={setChefs} popup={[createPopup, setCreatePopup]} />
       <CCardHeader>

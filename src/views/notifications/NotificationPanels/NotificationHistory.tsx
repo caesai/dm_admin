@@ -90,7 +90,7 @@ const NotificationHistory = ({ refreshKey }: NotificationHistoryProps) => {
           onUpdate={loadMailing}
         />
       )}
-      {currentMailingText !== null && currentMailingId === null && (
+      {currentMailingText !== null && (
         <MailingTextPopup popup={[currentMailingText, setCurrentMailingText]} />
       )}
     </>
