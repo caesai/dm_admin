@@ -61,7 +61,7 @@ const routes: Route[] = [
   },
   {
     path: '/notifications',
-    name: 'Уведомления',
+    name: 'Рассылка',
     exact: true,
     element: NotificationsPage,
   },

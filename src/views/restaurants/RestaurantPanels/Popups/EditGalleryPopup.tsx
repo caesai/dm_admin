@@ -53,7 +53,7 @@ export const EditGalleryPopup: FC<{
     }
     uploadFile(files[0]).then((d) => setCardCopy((prev) => ({ ...prev, url: d.data.url })))
   }
-console.log('cardCopy.url: ', cardCopy.url);
+  console.log('cardCopy.url: ', cardCopy.url)
   return (
     <CModal visible={open} onClose={() => setOpen(false)}>
       <CModalHeader>

@@ -10,8 +10,8 @@ export const GetChefsList = async () => {
   })
 }
 
-export const UpdateChef = async (data: IChef) => {
-  return await axios.patch<IChef>(`${BASEURL}/chefs`, data, {
+export const UpdateChef = async (id: number, data: IChef) => {
+  return await axios.patch<IChef>(`${BASEURL}/chefs/${id}`, data, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },

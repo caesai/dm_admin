@@ -3,11 +3,11 @@ import { useEffect, useState } from 'react'
 import classNames from 'classnames'
 import ReservationPanel from 'src/views/notifications/NotificationPanels/ReservationPanel.tsx'
 import DistributionPanel from 'src/views/notifications/NotificationPanels/DistributionPanel.tsx'
-import EditReservationPopup from 'src/views/notifications/EditReservationPopup.tsx'
+import EditReservationPopup from 'src/views/notifications/NotificationPopups/EditReservationPopup.tsx'
 import { getConfirmationList, getTextsList } from 'src/dataProviders/texts.ts'
 import { IConfirmation, IText } from 'src/types/Texts.ts'
 import OtherPanel from 'src/views/notifications/NotificationPanels/OtherPanel.tsx'
-import EditOtherPopup from 'src/views/notifications/EditOtherPopup.tsx'
+import EditOtherPopup from 'src/views/notifications/NotificationPopups/EditOtherPopup.tsx'
 import { IRestaurantWCity } from 'src/types/Restaurant.ts'
 import { GetRestaurantList } from 'src/dataProviders/restaurants.ts'
 
@@ -44,7 +44,7 @@ const NotificationsPage = () => {
       )}
       {textId !== null && <EditOtherPopup popup={[textId, setTextId]} onUpdate={loadTexts} />}
       <CTabs defaultActiveItemKey="distribution">
-        <CCardHeader className="bg-white">
+        <CCardHeader className="">
           <CTabList variant="enclosed">
             <CTab itemKey="distribution">Рассылка</CTab>
             <CTab itemKey="reservation">Бронирование</CTab>

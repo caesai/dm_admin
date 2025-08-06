@@ -8,4 +8,4 @@ export default `
 <p><em>This is italic.</em></p>
 <p><s>But that’s striked through.</s></p>
 <p><code>This is code.</code></p>
-`;
+`

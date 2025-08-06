@@ -1,4 +1,4 @@
-import {Dispatch, FC, SetStateAction, useEffect, useState} from 'react'
+import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 import {
   CButton,
   CForm,
@@ -24,7 +24,7 @@ export const EditWorktimePopup: FC<{
 
   useEffect(() => {
     setCopy(worktime)
-  }, [worktime]);
+  }, [worktime])
 
   const saveChanges = () => {
     EditWorktime(copy)

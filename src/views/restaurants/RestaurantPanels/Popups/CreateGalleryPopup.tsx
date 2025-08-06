@@ -42,7 +42,7 @@ export const CreateGalleryPopup: FC<{
       .then(() => signal((p) => ++p))
       .then(() => setOpen(false))
   }
-console.log('card.url: ', card.url);
+  console.log('card.url: ', card.url)
   return (
     <CModal visible={open} onClose={() => setOpen(false)}>
       <CModalHeader>
