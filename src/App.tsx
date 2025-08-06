@@ -43,7 +43,7 @@ const App = () => {
   }, [])
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={'/'}>
       <LoginWatchdog />
       <Toaster position={'top-right'} />
       <Suspense
