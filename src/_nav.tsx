@@ -103,6 +103,12 @@ const _nav: NavItem[] = [
   },
   {
     component: CNavItem,
+    name: 'Истории',
+    to: '/stories',
+    icon: <CIcon icon={cilLink} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
     name: 'Настройки',
     to: '/settings',
     icon: <CIcon icon={cilSettings} customClassName="nav-icon" />,
