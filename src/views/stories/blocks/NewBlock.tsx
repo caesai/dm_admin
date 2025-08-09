@@ -18,9 +18,10 @@ import {
   CTableHead,
   CTableHeaderCell,
   CTableRow,
+  CTooltip,
 } from '@coreui/react-pro'
 import CIcon from '@coreui/icons-react'
-import { cilArrowBottom, cilArrowTop, cilLightbulb } from '@coreui/icons'
+import { cilArrowBottom, cilArrowTop, cilInfo } from '@coreui/icons'
 import classNames from 'classnames'
 
 const NewBlock = () => {
@@ -30,10 +31,38 @@ const NewBlock = () => {
       <CCardBody className="p-4">
         <CForm>
           <CRow className="mb-3">
-            <CFormInput type="text" placeholder="Имя" />
+            <div className={classNames('d-flex', 'align-items-center', 'p-0')}>
+              <div className={classNames('position-relative', 'w-100')}>
+                <CFormInput type="text" placeholder="Имя" />
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    userSelect: 'none',
+                    transform: 'translate(600%, 25%)',
+                  }}
+                >
+                  <strong className="fs-5">*</strong>
+                </div>
+              </div>
+              <div className="ms-2">
+                <CTooltip content="Текст тултипа">
+                  <CIcon icon={cilInfo} />
+                </CTooltip>
+              </div>
+            </div>
           </CRow>
           <CRow className="mb-3">
-            <CFormCheck id="isActiveCheckbox" label="Активный блок" />
+            <div className={classNames('d-flex', 'align-items-center', 'gap-2', 'p-0')}>
+              <CFormCheck id="isActiveCheckbox" label="Активный блок" />
+              <strong className="fs-5" style={{ transform: 'translateY(10%)' }}>
+                *
+              </strong>
+              <CTooltip content="Текст тултипа">
+                <CIcon icon={cilInfo} />
+              </CTooltip>
+            </div>
           </CRow>
           <CRow className="mb-3">
             <CFormInput type="text" placeholder="URL обложки" />
@@ -41,8 +70,13 @@ const NewBlock = () => {
           <CRow className="mb-3">
             <CAccordion className="p-0">
               <CAccordionItem>
-                <CAccordionHeader>
-                  Выбор города <CIcon icon={cilLightbulb} className="ms-2" />
+                <CAccordionHeader className="d-flex">
+                  Выбор города
+                  <div className="ms-2">
+                    <CTooltip content="Текст тултипа">
+                      <CIcon icon={cilInfo} />
+                    </CTooltip>
+                  </div>
                 </CAccordionHeader>
                 <CAccordionBody>
                   <CFormCheck
@@ -65,8 +99,13 @@ const NewBlock = () => {
           </CRow>
           <CRow className="mb-3">
             <CCard className="p-0">
-              <CCardHeader>
-                Доступно для аккаунтов: <CIcon icon={cilLightbulb} className="ms-1" />
+              <CCardHeader className="d-flex">
+                Доступно для аккаунтов:
+                <div className="ms-3">
+                  <CTooltip content="Текст тултипа">
+                    <CIcon icon={cilInfo} />
+                  </CTooltip>
+                </div>
               </CCardHeader>
               <CCardBody>
                 <CFormCheck label="User-01" indeterminate />
@@ -138,11 +177,21 @@ const NewBlock = () => {
           </CRow>
           <CRow className="mb-3">
             <div className={classNames('mb-3', 'd-flex', 'flex-nowrap', 'gap-2', 'p-0')}>
-              <CButton color="secondary" className="w-100">
-                Отмена <CIcon icon={cilLightbulb} />
+              <CButton color="secondary" className={classNames('w-100', 'position-relative')}>
+                Отмена
+                <div style={{ position: 'absolute', right: '3%', top: '25%' }}>
+                  <CTooltip content="Текст тултипа">
+                    <CIcon icon={cilInfo} size="lg" />
+                  </CTooltip>
+                </div>
               </CButton>
-              <CLoadingButton color="primary" className="w-100">
-                Опубликовать <CIcon icon={cilLightbulb} />
+              <CLoadingButton color="primary" className={classNames('w-100', 'position-relative')}>
+                Опубликовать
+                <div style={{ position: 'absolute', right: '3%', top: '25%' }}>
+                  <CTooltip content="Текст тултипа">
+                    <CIcon icon={cilInfo} size="lg" />
+                  </CTooltip>
+                </div>
               </CLoadingButton>
             </div>
           </CRow>
