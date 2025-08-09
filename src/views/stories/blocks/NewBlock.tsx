@@ -23,8 +23,10 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilArrowBottom, cilArrowTop, cilInfo } from '@coreui/icons'
 import classNames from 'classnames'
+import { useState } from 'react'
 
 const NewBlock = () => {
+  const [isForAll, setIsForAll] = useState(false)
   return (
     <CCard className="border-0">
       <CCardHeader className="py-3">Добавление блока историй</CCardHeader>
@@ -95,29 +97,35 @@ const NewBlock = () => {
             </CAccordion>
           </CRow>
           <CRow className="mb-3">
-            <CFormCheck id="forAll" label="Доступен всем пользователям" />
+            <CFormCheck
+              label="Доступен всем пользователям"
+              onChange={() => setIsForAll(!isForAll)}
+              checked={!isForAll}
+            />
           </CRow>
-          <CRow className="mb-3">
-            <CCard className="p-0">
-              <CCardHeader className="d-flex">
-                Доступно для аккаунтов:
-                <div className="ms-3">
-                  <CTooltip content="Текст тултипа">
-                    <CIcon icon={cilInfo} />
-                  </CTooltip>
-                </div>
-              </CCardHeader>
-              <CCardBody>
-                <CFormCheck label="User-01" indeterminate />
-                <CFormCheck label="User-02" indeterminate />
-                <CFormCheck
-                  label={<CFormInput placeholder="Telegram ID" className="text-center" />}
-                  checked={true}
-                  className={classNames('mt-4', 'd-flex', 'align-items-center', 'gap-3', 'w-25')}
-                />
-              </CCardBody>
-            </CCard>
-          </CRow>
+          {isForAll && (
+            <CRow className="mb-3">
+              <CCard className="p-0">
+                <CCardHeader className="d-flex">
+                  Доступно для аккаунтов:
+                  <div className="ms-3">
+                    <CTooltip content="Текст тултипа">
+                      <CIcon icon={cilInfo} />
+                    </CTooltip>
+                  </div>
+                </CCardHeader>
+                <CCardBody>
+                  <CFormCheck label="User-01" indeterminate />
+                  <CFormCheck label="User-02" indeterminate />
+                  <CFormCheck
+                    label={<CFormInput placeholder="Telegram ID" className="text-center" />}
+                    checked={true}
+                    className={classNames('mt-4', 'd-flex', 'align-items-center', 'gap-3', 'w-25')}
+                  />
+                </CCardBody>
+              </CCard>
+            </CRow>
+          )}
           <CRow className={classNames('py-3', 'border-bottom', 'border-top', 'mt-4')}>
             <div
               className={classNames(
