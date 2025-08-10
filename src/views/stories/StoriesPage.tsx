@@ -1,6 +1,6 @@
 import { CButton } from '@coreui/react-pro'
 import classNames from 'classnames'
-import StoryTable from 'src/views/stories/StoriesTable.tsx'
+import BlocksTable from 'src/views/stories/blocks/BlocksTable.tsx'
 import { useState } from 'react'
 import NewBlock from 'src/views/stories/blocks/NewBlock.tsx'
 
@@ -15,7 +15,7 @@ const StoriesPage = () => {
           </CButton>
         </div>
       )}
-      {isNewBlock ? <NewBlock /> : <StoryTable />}
+      {isNewBlock ? <NewBlock /> : <BlocksTable />}
     </>
   )
 }

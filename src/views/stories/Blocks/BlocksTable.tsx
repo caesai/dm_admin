@@ -1,6 +1,6 @@
 import { CSmartTable } from '@coreui/react-pro'
 
-const StoryTable = () => {
+const BlocksTable = () => {
   const columns = [
     { key: 'id', _style: { width: '15%' }, label: '#' },
     { key: 'name', _style: { width: '30%' }, label: 'Имя' },
@@ -33,4 +33,4 @@ const StoryTable = () => {
   )
 }
 
-export default StoryTable
+export default BlocksTable

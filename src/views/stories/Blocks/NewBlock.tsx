@@ -12,21 +12,17 @@ import {
   CFormInput,
   CLoadingButton,
   CRow,
-  CTable,
-  CTableBody,
-  CTableDataCell,
-  CTableHead,
-  CTableHeaderCell,
-  CTableRow,
   CTooltip,
 } from '@coreui/react-pro'
 import CIcon from '@coreui/icons-react'
-import { cilArrowBottom, cilArrowTop, cilInfo } from '@coreui/icons'
+import { cilInfo } from '@coreui/icons'
 import classNames from 'classnames'
 import { useState } from 'react'
+import StoriesTable from 'src/views/stories/Stories/StoriesTable.tsx'
 
 const NewBlock = () => {
   const [isForAll, setIsForAll] = useState(false)
+  const [openStoryPopup, setOpenStoryPopup] = useState(false)
   return (
     <CCard className="border-0">
       <CCardHeader className="py-3">Добавление блока историй</CCardHeader>
@@ -39,10 +35,8 @@ const NewBlock = () => {
                 <div
                   style={{
                     position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    userSelect: 'none',
-                    transform: 'translate(600%, 25%)',
+                    top: '20%',
+                    left: '6ex',
                   }}
                 >
                   <strong className="fs-5">*</strong>
@@ -136,52 +130,17 @@ const NewBlock = () => {
               )}
             >
               <strong>Истории</strong>
-              <CButton color="primary" style={{ width: 'fit-content' }}>
+              <CButton
+                color="primary"
+                style={{ width: 'fit-content' }}
+                onClick={() => setOpenStoryPopup(true)}
+              >
                 + Добавить историю
               </CButton>
             </div>
           </CRow>
           <CRow className="mb-3">
-            <CTable striped className={classNames('align-middle', 'table-hover', 'mb-0')}>
-              <CTableHead>
-                <CTableHeaderCell className={classNames('text-start', 'py-4')}>#</CTableHeaderCell>
-                <CTableHeaderCell className={classNames('text-start', 'py-4')}>
-                  Тип
-                </CTableHeaderCell>
-                <CTableHeaderCell className={classNames('text-start', 'py-4')}>
-                  Заголовок
-                </CTableHeaderCell>
-                <CTableHeaderCell className={classNames('text-end', 'py-4')}>
-                  Редактировать
-                </CTableHeaderCell>
-                <CTableHeaderCell className={classNames('text-end', 'py-4')}>Вниз</CTableHeaderCell>
-                <CTableHeaderCell className={classNames('text-end', 'py-4')}>
-                  Вверх
-                </CTableHeaderCell>
-                <CTableHeaderCell className={classNames('text-end', 'pe-2', 'py-4')}>
-                  Удалить
-                </CTableHeaderCell>
-              </CTableHead>
-              <CTableBody>
-                <CTableRow>
-                  <CTableDataCell className="text-start">132</CTableDataCell>
-                  <CTableDataCell className="text-start">Компонент</CTableDataCell>
-                  <CTableDataCell className="text-start">Отсутствует</CTableDataCell>
-                  <CTableDataCell className="text-end">
-                    <CButton color="primary">Редактировать</CButton>
-                  </CTableDataCell>
-                  <CTableDataCell className="text-end">
-                    <CIcon icon={cilArrowBottom} size="xl" style={{ cursor: 'pointer' }} />
-                  </CTableDataCell>
-                  <CTableDataCell className="text-end">
-                    <CIcon icon={cilArrowTop} size="xl" style={{ cursor: 'pointer' }} />
-                  </CTableDataCell>
-                  <CTableDataCell className={classNames('text-end', 'pe-0')}>
-                    <CButton color="primary">Удалить</CButton>
-                  </CTableDataCell>
-                </CTableRow>
-              </CTableBody>
-            </CTable>
+            <StoriesTable popup={[openStoryPopup, setOpenStoryPopup]} />
           </CRow>
           <CRow className="mb-3">
             <div className={classNames('mb-3', 'd-flex', 'flex-nowrap', 'gap-2', 'p-0')}>
