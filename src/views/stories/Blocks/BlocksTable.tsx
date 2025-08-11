@@ -1,6 +1,13 @@
-import { CSmartTable } from '@coreui/react-pro'
+import { CButton, CSmartTable, CSpinner } from '@coreui/react-pro'
+import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
+import { IStoriesBlock } from 'src/types/Stories.ts'
+import { getBlocksList } from 'src/dataProviders/stories.ts'
 
-const BlocksTable = () => {
+const BlocksTable: FC<{
+  setBlockId: Dispatch<SetStateAction<number | null>>
+}> = ({ setBlockId }) => {
+  const [blocks, setBlocks] = useState<IStoriesBlock[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const columns = [
     { key: 'id', _style: { width: '15%' }, label: '#' },
     { key: 'name', _style: { width: '30%' }, label: 'Имя' },
@@ -13,9 +20,22 @@ const BlocksTable = () => {
       filter: false,
     },
   ]
+
+  useEffect(() => {
+    setIsLoading(true)
+    getBlocksList()
+      .then((res) => setBlocks(res.data))
+      .then(() => console.log(blocks))
+      .finally(() => setIsLoading(false))
+  }, [])
+
+  if (isLoading) {
+    return <CSpinner color={'primary'} />
+  }
+
   return (
     <CSmartTable
-      // items={links}
+      items={blocks}
       clickableRows
       tableProps={{
         striped: true,
@@ -29,6 +49,15 @@ const BlocksTable = () => {
       itemsPerPageSelect
       itemsPerPage={20}
       pagination
+      scopedColumns={{
+        edit: (block: IStoriesBlock) => (
+          <td>
+            <CButton color="primary" onClick={() => setBlockId(block.id)}>
+              Редактировать
+            </CButton>
+          </td>
+        ),
+      }}
     />
   )
 }

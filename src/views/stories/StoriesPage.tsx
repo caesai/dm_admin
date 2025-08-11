@@ -1,11 +1,12 @@
 import { CButton } from '@coreui/react-pro'
 import classNames from 'classnames'
-import BlocksTable from 'src/views/stories/blocks/BlocksTable.tsx'
 import { useState } from 'react'
-import NewBlock from 'src/views/stories/blocks/NewBlock.tsx'
+import BlocksTable from 'src/views/stories/Blocks/BlocksTable.tsx'
+import StoriesBlock from 'src/views/stories/Blocks/StoriesBlock.tsx'
 
 const StoriesPage = () => {
   const [isNewBlock, setIsNewBlock] = useState(false)
+  const [currentBlockId, setCurrentBlockId] = useState<number | null>(null)
   return (
     <>
       {isNewBlock ? null : (
@@ -15,7 +16,11 @@ const StoriesPage = () => {
           </CButton>
         </div>
       )}
-      {isNewBlock ? <NewBlock /> : <BlocksTable />}
+      {isNewBlock || currentBlockId !== null ? (
+        <StoriesBlock blockId={currentBlockId} closeBlock={[setCurrentBlockId, setIsNewBlock]} />
+      ) : (
+        <BlocksTable setBlockId={setCurrentBlockId} />
+      )}
     </>
   )
 }

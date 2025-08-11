@@ -1,7 +1,7 @@
 export type StoryType = 'image' | 'video' | 'component'
 
 export interface IStory {
-  id: string
+  id: number
   type: StoryType
   duration: number
   url: string | null
@@ -12,8 +12,8 @@ export interface IStory {
   button_color?: string | null
 }
 
-export interface StoriesBlock {
-  id: string
+export interface IStoriesBlock {
+  id: number
   name: string
   active: boolean
   stories: IStory[]

@@ -17,15 +17,34 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilInfo } from '@coreui/icons'
 import classNames from 'classnames'
-import { useState } from 'react'
+import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 import StoriesTable from 'src/views/stories/Stories/StoriesTable.tsx'
 
-const NewBlock = () => {
+const StoriesBlock: FC<{
+  blockId: number | null
+  closeBlock: [Dispatch<SetStateAction<number | null>>, Dispatch<SetStateAction<boolean>>]
+}> = ({ blockId, closeBlock }) => {
   const [isForAll, setIsForAll] = useState(false)
   const [openStoryPopup, setOpenStoryPopup] = useState(false)
+  const [isEdit, setIsEdit] = useState(false)
+  const [setCurrentBlockId, setIsNewBlock] = closeBlock
+
+  const cancelBlockEdit = () => {
+    setCurrentBlockId(null)
+    setIsEdit(false)
+    setIsNewBlock(false)
+  }
+
+  useEffect(() => {
+    if (blockId !== null) {
+      setIsEdit(true)
+    }
+  })
   return (
     <CCard className="border-0">
-      <CCardHeader className="py-3">Добавление блока историй</CCardHeader>
+      <CCardHeader className="py-3">
+        {isEdit ? 'Редактирование блока историй' : 'Добавление блока историй'}
+      </CCardHeader>
       <CCardBody className="p-4">
         <CForm>
           <CRow className="mb-3">
@@ -144,7 +163,7 @@ const NewBlock = () => {
           </CRow>
           <CRow className="mb-3">
             <div className={classNames('mb-3', 'd-flex', 'flex-nowrap', 'gap-2', 'p-0')}>
-              <CButton color="secondary" className="w-100">
+              <CButton color="secondary" className="w-100" onClick={cancelBlockEdit}>
                 Отмена
               </CButton>
               <CLoadingButton color="primary" className="w-100">
@@ -158,4 +177,4 @@ const NewBlock = () => {
   )
 }
 
-export default NewBlock
+export default StoriesBlock
