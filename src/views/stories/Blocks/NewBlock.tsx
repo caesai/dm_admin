@@ -144,21 +144,11 @@ const NewBlock = () => {
           </CRow>
           <CRow className="mb-3">
             <div className={classNames('mb-3', 'd-flex', 'flex-nowrap', 'gap-2', 'p-0')}>
-              <CButton color="secondary" className={classNames('w-100', 'position-relative')}>
+              <CButton color="secondary" className="w-100">
                 Отмена
-                <div style={{ position: 'absolute', right: '3%', top: '25%' }}>
-                  <CTooltip content="Текст тултипа">
-                    <CIcon icon={cilInfo} size="lg" />
-                  </CTooltip>
-                </div>
               </CButton>
-              <CLoadingButton color="primary" className={classNames('w-100', 'position-relative')}>
+              <CLoadingButton color="primary" className="w-100">
                 Опубликовать
-                <div style={{ position: 'absolute', right: '3%', top: '25%' }}>
-                  <CTooltip content="Текст тултипа">
-                    <CIcon icon={cilInfo} size="lg" />
-                  </CTooltip>
-                </div>
               </CLoadingButton>
             </div>
           </CRow>

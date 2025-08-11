@@ -128,7 +128,7 @@ const StoryPopup: FC<{
                   label={
                     <>
                       Цвет
-                      <strong className={classNames('ms-2', 'align-middle')}>*</strong>
+                      <strong className={classNames('ms-2', 'align-middle', 'fs-5')}>*</strong>
                     </>
                   }
                 />
