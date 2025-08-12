@@ -1,7 +1,7 @@
 export type StoryType = 'image' | 'video' | 'component'
 
 export interface IStory {
-  id: number
+  id?: number
   type: StoryType
   duration: number
   url: string | null
@@ -13,11 +13,11 @@ export interface IStory {
 }
 
 export interface IStoriesBlock {
-  id: number
+  id?: number | null
   name: string
   active: boolean
   stories: IStory[]
-  thumbnail: string | null
-  cities: number[] | null
-  users: number[] | null
+  thumbnail?: string | null
+  cities?: number[] | null
+  users?: number[] | null
 }

@@ -4,7 +4,7 @@ import { IStoriesBlock } from 'src/types/Stories.ts'
 import { getBlocksList } from 'src/dataProviders/stories.ts'
 
 const BlocksTable: FC<{
-  setBlockId: Dispatch<SetStateAction<number | null>>
+  setBlockId: Dispatch<SetStateAction<number | null | undefined>>
 }> = ({ setBlockId }) => {
   const [blocks, setBlocks] = useState<IStoriesBlock[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -12,7 +12,7 @@ const BlocksTable: FC<{
     { key: 'id', _style: { width: '15%' }, label: '#' },
     { key: 'name', _style: { width: '30%' }, label: 'Имя' },
     { key: 'active', _style: { width: '15%' }, label: 'Активная' },
-    { key: 'stories', _style: { width: '45%' }, label: 'Колличество историй' },
+    { key: 'stories_count', _style: { width: '45%' }, label: 'Колличество историй' },
     {
       key: 'edit',
       label: 'Редактировать',
@@ -50,6 +50,7 @@ const BlocksTable: FC<{
       itemsPerPage={20}
       pagination
       scopedColumns={{
+        active: (block: IStoriesBlock) => <td>{block.active ? 'Да' : 'Нет'}</td>,
         edit: (block: IStoriesBlock) => (
           <td>
             <CButton color="primary" onClick={() => setBlockId(block.id)}>
