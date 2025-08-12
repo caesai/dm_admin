@@ -23,7 +23,6 @@ const StoryPopup: FC<{
   const [open, setOpen] = popup
   const [edit, setEdit] = isEdit
   const [story, setStory] = useState<IStory>({
-    id: '',
     type: 'image',
     duration: 0,
     url: null,
@@ -34,7 +33,6 @@ const StoryPopup: FC<{
     setEdit(false)
     setIsActiveButton(false)
     setStory({
-      id: '',
       type: 'image',
       duration: 0,
       url: null,

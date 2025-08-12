@@ -17,8 +17,12 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilInfo } from '@coreui/icons'
 import classNames from 'classnames'
-import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
+import { ChangeEvent, Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 import StoriesTable from 'src/views/stories/Stories/StoriesTable.tsx'
+import ImageInput from 'src/components/ImageInput.tsx'
+import { IStoriesBlock } from 'src/types/Stories.ts'
+import { createBlock, getBlockById, updateBlock } from 'src/dataProviders/stories.ts'
+import toast from 'react-hot-toast'
 
 const StoriesBlock: FC<{
   blockId: number | null
@@ -27,7 +31,13 @@ const StoriesBlock: FC<{
   const [isForAll, setIsForAll] = useState(false)
   const [openStoryPopup, setOpenStoryPopup] = useState(false)
   const [isEdit, setIsEdit] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const [setCurrentBlockId, setIsNewBlock] = closeBlock
+  const [block, setBlock] = useState<IStoriesBlock>({
+    name: '',
+    active: false,
+    stories: [],
+  })
 
   const cancelBlockEdit = () => {
     setCurrentBlockId(null)
@@ -35,9 +45,51 @@ const StoriesBlock: FC<{
     setIsNewBlock(false)
   }
 
+  const changeBlockName = (e: ChangeEvent<HTMLInputElement>) => {
+    setBlock((prev) => ({
+      ...prev,
+      name: e.target.value,
+    }))
+  }
+
+  const changeBlockActive = () => {
+    setBlock((prev) => ({
+      ...prev,
+      active: !prev.active,
+    }))
+  }
+
+  const sendBlock = () => {
+    if (isEdit) {
+      setIsLoading(true)
+      updateBlock({
+        id: blockId,
+        ...block,
+      })
+        .then(() => toast('Блок обновлён'))
+        .catch((e) => toast.error(e))
+        .finally(() => setIsLoading(false))
+    } else {
+      setIsLoading(true)
+      createBlock({
+        ...block,
+      })
+        .then(() => toast('Блок создан'))
+        .catch((e) => toast.error(e))
+        .finally(() => setIsLoading(false))
+    }
+    cancelBlockEdit()
+  }
+
   useEffect(() => {
     if (blockId !== null) {
       setIsEdit(true)
+      getBlockById(blockId)
+        .then((res) => setBlock(res.data as IStoriesBlock))
+        .catch(() => {
+          toast.error('Не удалось загрузить блок')
+          cancelBlockEdit()
+        })
     }
   })
   return (
@@ -50,7 +102,12 @@ const StoriesBlock: FC<{
           <CRow className="mb-3">
             <div className={classNames('d-flex', 'align-items-center', 'p-0')}>
               <div className={classNames('position-relative', 'w-100')}>
-                <CFormInput type="text" placeholder="Имя" />
+                <CFormInput
+                  type="text"
+                  placeholder="Имя"
+                  onInput={changeBlockName}
+                  defaultValue={block.name}
+                />
                 <div
                   style={{
                     position: 'absolute',
@@ -70,7 +127,11 @@ const StoriesBlock: FC<{
           </CRow>
           <CRow className="mb-3">
             <div className={classNames('d-flex', 'align-items-center', 'gap-2', 'p-0')}>
-              <CFormCheck id="isActiveCheckbox" label="Активный блок" />
+              <CFormCheck
+                label="Активный блок"
+                onChange={changeBlockActive}
+                checked={block.active}
+              />
               <strong className="fs-5" style={{ transform: 'translateY(10%)' }}>
                 *
               </strong>
@@ -80,7 +141,13 @@ const StoriesBlock: FC<{
             </div>
           </CRow>
           <CRow className="mb-3">
-            <CFormInput type="text" placeholder="URL обложки" />
+            <div className={classNames('d-flex', 'align-items-center', 'gap-2', 'p-0')}>
+              <CFormInput type="text" placeholder="URL обложки" />
+              <ImageInput onChange={() => console.log()} />
+              <CTooltip content="Текст тултипа">
+                <CIcon icon={cilInfo} />
+              </CTooltip>
+            </div>
           </CRow>
           <CRow className="mb-3">
             <CAccordion className="p-0">
@@ -166,7 +233,12 @@ const StoriesBlock: FC<{
               <CButton color="secondary" className="w-100" onClick={cancelBlockEdit}>
                 Отмена
               </CButton>
-              <CLoadingButton color="primary" className="w-100">
+              <CLoadingButton
+                color="primary"
+                className="w-100"
+                loading={isLoading}
+                onClick={sendBlock}
+              >
                 Опубликовать
               </CLoadingButton>
             </div>
