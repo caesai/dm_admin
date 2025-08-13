@@ -5,13 +5,13 @@ export interface IStory {
   type: StoryType
   duration: number
   url: string | null
-  title?: string | null
-  description?: string | null
-  button_url?: string | null
-  button_text?: string | null
-  button_color?: string | null
-  order_index?: number
-  views_count?: number
+  title: string | null
+  description: string | null
+  button_url: string | null
+  button_text: string | null
+  button_color: string | null
+  order_index: number
+  views_count: number
 }
 
 export interface IStoriesBlock {

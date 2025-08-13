@@ -76,6 +76,41 @@ const StoryPopup: FC<{
     }))
   }
 
+  const changeStoryTitle = (e: ChangeEvent<HTMLInputElement>) => {
+    setStory((prev) => ({
+      ...prev,
+      title: e.target.value,
+    }))
+  }
+
+  const changeStoryDescription = (e: ChangeEvent<HTMLInputElement>) => {
+    setStory((prev) => ({
+      ...prev,
+      description: e.target.value,
+    }))
+  }
+
+  const changeButtonUrl = (e: ChangeEvent<HTMLInputElement>) => {
+    setStory((prev) => ({
+      ...prev,
+      button_url: e.target.value,
+    }))
+  }
+
+  const changeButtonText = (e: ChangeEvent<HTMLInputElement>) => {
+    setStory((prev) => ({
+      ...prev,
+      button_text: e.target.value,
+    }))
+  }
+
+  const changeButtonColor = (e: ChangeEvent<HTMLInputElement>) => {
+    setStory((prev) => ({
+      ...prev,
+      button_color: e.target.value,
+    }))
+  }
+
   const handleImageChange = (files: FileList | null) => {
     if (!files) {
       return
@@ -102,9 +137,9 @@ const StoryPopup: FC<{
         <div className={classNames('w-75', 'd-flex', 'flex-column', 'gap-2')}>
           <CFormSelect
             options={[
-              { label: 'Изображение', value: 'image' },
-              { label: 'Видео', value: 'video' },
-              { label: 'Компонент', value: 'component' },
+              { label: 'Изображение', value: 'IMAGE' },
+              { label: 'Видео', value: 'VIDEO' },
+              { label: 'Компонент', value: 'COMPONENT' },
             ]}
             onChange={changeStoryType}
           />
@@ -135,8 +170,8 @@ const StoryPopup: FC<{
           </div>
           {story.type === 'COMPONENT' && (
             <div className={classNames('d-flex', 'flex-column', 'gap-2')}>
-              <CFormInput placeholder="Заголовок" />
-              <CFormInput placeholder="Описание" />
+              <CFormInput placeholder="Заголовок" onInput={changeStoryTitle} />
+              <CFormInput placeholder="Описание" onInput={changeStoryDescription} />
               <div className={classNames('d-flex', 'align-items-center', 'gap-2')}>
                 <CFormCheck
                   label="Кнопка"
@@ -152,8 +187,8 @@ const StoryPopup: FC<{
           {isActiveButton && (
             <div className={classNames('d-flex', 'flex-column', 'gap-2')}>
               <div className={classNames('position-relative', 'w-100')}>
-                <CFormInput placeholder="URL" />
-                {story.button_url === undefined && (
+                <CFormInput placeholder="URL" onInput={changeButtonUrl} />
+                {story.button_url === null && (
                   <strong
                     className="fs-5"
                     style={{ position: 'absolute', top: '20%', left: '5ex' }}
@@ -163,8 +198,8 @@ const StoryPopup: FC<{
                 )}
               </div>
               <div className={classNames('position-relative', 'w-100')}>
-                <CFormInput placeholder="Текст" />
-                {story.button_text === undefined && (
+                <CFormInput placeholder="Текст" onInput={changeButtonText} />
+                {story.button_text === null && (
                   <strong
                     className="fs-5"
                     style={{ position: 'absolute', top: '20%', left: '6ex' }}
@@ -186,6 +221,7 @@ const StoryPopup: FC<{
                 <CFormInput
                   type="color"
                   className="border-0"
+                  onInput={changeButtonColor}
                   label={
                     <>
                       Цвет
