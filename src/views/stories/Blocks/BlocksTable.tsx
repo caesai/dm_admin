@@ -25,7 +25,6 @@ const BlocksTable: FC<{
     setIsLoading(true)
     getBlocksList()
       .then((res) => setBlocks(res.data))
-      .then(() => console.log(blocks))
       .finally(() => setIsLoading(false))
   }, [])
 

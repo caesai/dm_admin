@@ -4,7 +4,7 @@ import { cilImagePlus } from '@coreui/icons'
 import { ChangeEventHandler, FC } from 'react'
 
 const ImageInput: FC<{
-  onChange: ChangeEventHandler
+  onChange: ChangeEventHandler<HTMLInputElement>
 }> = ({ onChange }) => {
   return (
     <label
