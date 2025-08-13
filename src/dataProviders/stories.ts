@@ -2,8 +2,16 @@ import axios from 'axios'
 import { BASEURL } from 'src/api.ts'
 import { IStoriesBlock, IStory } from 'src/types/Stories.ts'
 
-export const getStoriesList = async () => {
-  return await axios.get<IStory[]>(`${BASEURL}/stories/`, {
+export const getStoriesList = async (blockId: number) => {
+  return await axios.get<IStory[]>(`${BASEURL}/stories/blocks/${blockId}/stories`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+    },
+  })
+}
+
+export const createStory = async (data: IStory, block_id: number) => {
+  return await axios.post<IStory>(`${BASEURL}/stories/blocks/${block_id}/stories`, data, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },

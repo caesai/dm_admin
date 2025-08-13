@@ -17,7 +17,10 @@ const StoriesPage = () => {
         </div>
       )}
       {isNewBlock || currentBlockId !== null ? (
-        <StoriesBlock blockId={currentBlockId} closeBlock={[setCurrentBlockId, setIsNewBlock]} />
+        <StoriesBlock
+          id={[currentBlockId, setCurrentBlockId]}
+          closeBlock={[setCurrentBlockId, setIsNewBlock]}
+        />
       ) : (
         <BlocksTable setBlockId={setCurrentBlockId} />
       )}

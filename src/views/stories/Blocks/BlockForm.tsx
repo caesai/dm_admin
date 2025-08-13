@@ -20,21 +20,23 @@ import { cilInfo } from '@coreui/icons'
 import ImageInput from 'src/components/ImageInput.tsx'
 import StoriesTable from 'src/views/stories/Stories/StoriesTable.tsx'
 import { ChangeEvent, Dispatch, FC, SetStateAction, useState } from 'react'
-import { createBlock, updateBlock } from 'src/dataProviders/stories.ts'
+import { createBlock, createStory, updateBlock } from 'src/dataProviders/stories.ts'
 import toast from 'react-hot-toast'
-import { IStoriesBlock } from 'src/types/Stories.ts'
+import { IStoriesBlock, IStory } from 'src/types/Stories.ts'
 import { uploadFile } from 'src/dataProviders/s3.ts'
 
 const BlockForm: FC<{
   currentBlock: [IStoriesBlock, Dispatch<SetStateAction<IStoriesBlock>>]
-  utilProps: [boolean, number | null, () => void]
-}> = ({ currentBlock, utilProps }) => {
+  id: [number | null, Dispatch<number | null>]
+  utilProps: [boolean, () => void]
+}> = ({ currentBlock, id, utilProps }) => {
   const [isForAll, setIsForAll] = useState(false)
-  const [openStoryPopup, setOpenStoryPopup] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [openStoryPopup, setOpenStoryPopup] = useState(false)
+  const [storiesList, setStoriesList] = useState<IStory[]>([])
   const [block, setBlock] = currentBlock
-  const [isEdit, blockId, cancelBlockEdit] = utilProps
-
+  const [blockId] = id
+  const [isEdit, cancelBlockEdit] = utilProps
   const changeBlockName = (e: ChangeEvent<HTMLInputElement>) => {
     setBlock((prev) => ({
       ...prev,
@@ -60,14 +62,19 @@ const BlockForm: FC<{
     if (!files) {
       return
     }
-    uploadFile(files[0])
-      .then((res) =>
-        setBlock((prev) => ({
-          ...prev,
-          thumbnail: res.data.url,
-        })),
-      )
-      .then(() => console.log(block.thumbnail))
+    uploadFile(files[0]).then((res) =>
+      setBlock((prev) => ({
+        ...prev,
+        thumbnail: res.data.url,
+      })),
+    )
+  }
+
+  const sendStories = (id: number) => {
+    console.log('sending stories...')
+    storiesList.map((story) => {
+      createStory(story, id)
+    })
   }
 
   const sendBlock = () => {
@@ -80,16 +87,23 @@ const BlockForm: FC<{
         .then(() => toast('Блок обновлён'))
         .catch((e) => toast.error(e))
         .finally(() => setIsLoading(false))
+        .finally(() => cancelBlockEdit())
     } else {
       setIsLoading(true)
       createBlock({
         ...block,
       })
+        .then((res) => {
+          const id = res.data.id ? res.data.id : null
+          if (id) {
+            sendStories(id)
+          }
+        })
         .then(() => toast('Блок создан'))
         .catch((e) => toast.error(e))
         .finally(() => setIsLoading(false))
+        .finally(() => cancelBlockEdit())
     }
-    cancelBlockEdit()
   }
   return (
     <CForm>
@@ -223,7 +237,11 @@ const BlockForm: FC<{
         </div>
       </CRow>
       <CRow className="mb-3">
-        <StoriesTable popup={[openStoryPopup, setOpenStoryPopup]} />
+        <StoriesTable
+          popup={[openStoryPopup, setOpenStoryPopup]}
+          stories={[storiesList, setStoriesList]}
+          blockId={blockId !== null ? blockId : undefined}
+        />
       </CRow>
       <CRow className="mb-3">
         <div className={classNames('mb-3', 'd-flex', 'flex-nowrap', 'gap-2', 'p-0')}>
@@ -231,7 +249,7 @@ const BlockForm: FC<{
             Отмена
           </CButton>
           <CLoadingButton color="primary" className="w-100" loading={isLoading} onClick={sendBlock}>
-            Опубликовать
+            {isEdit ? 'Сохранить изменения' : 'Опубликовать'}
           </CLoadingButton>
         </div>
       </CRow>

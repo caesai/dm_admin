@@ -10,14 +10,25 @@ import {
 } from '@coreui/react-pro'
 import CIcon from '@coreui/icons-react'
 import { cilArrowBottom, cilArrowTop } from '@coreui/icons'
-import { Dispatch, FC, SetStateAction, useState } from 'react'
+import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 import StoryPopup from 'src/views/stories/Stories/StoryPopup.tsx'
+import { IStory } from 'src/types/Stories.ts'
+import { getStoriesList } from 'src/dataProviders/stories.ts'
 
 const StoriesTable: FC<{
   popup: [boolean, Dispatch<SetStateAction<boolean>>]
-}> = ({ popup }) => {
+  stories: [IStory[], Dispatch<SetStateAction<IStory[]>>]
+  blockId?: number
+}> = ({ popup, stories, blockId }) => {
   const [, setOpenStoryPopup] = popup
   const [isEdit, setEdit] = useState(false)
+  const [storiesList, setStoriesList] = stories
+
+  useEffect(() => {
+    if (blockId) {
+      getStoriesList(blockId).then((res) => setStoriesList(res.data))
+    }
+  }, [])
   return (
     <>
       <CTable striped className={classNames('align-middle', 'table-hover', 'mb-0')}>
@@ -37,34 +48,38 @@ const StoriesTable: FC<{
           </CTableHeaderCell>
         </CTableHead>
         <CTableBody>
-          <CTableRow>
-            <CTableDataCell className="text-start">132</CTableDataCell>
-            <CTableDataCell className="text-start">Компонент</CTableDataCell>
-            <CTableDataCell className="text-start">Отсутствует</CTableDataCell>
-            <CTableDataCell className="text-end">
-              <CButton
-                color="primary"
-                onClick={() => {
-                  setEdit(true)
-                  setOpenStoryPopup(true)
-                }}
-              >
-                Редактировать
-              </CButton>
-            </CTableDataCell>
-            <CTableDataCell className="text-end">
-              <CIcon icon={cilArrowBottom} size="xl" style={{ cursor: 'pointer' }} />
-            </CTableDataCell>
-            <CTableDataCell className="text-end">
-              <CIcon icon={cilArrowTop} size="xl" style={{ cursor: 'pointer' }} />
-            </CTableDataCell>
-            <CTableDataCell className={classNames('text-end', 'pe-0')}>
-              <CButton color="primary">Удалить</CButton>
-            </CTableDataCell>
-          </CTableRow>
+          {storiesList.map((story) => (
+            <CTableRow key={story.id}>
+              <CTableDataCell className="text-start">{story.id ? story.id : 'Нет'}</CTableDataCell>
+              <CTableDataCell className="text-start">{story.type}</CTableDataCell>
+              <CTableDataCell className="text-start">
+                {story.title ? story.title : 'Отсутствует'}
+              </CTableDataCell>
+              <CTableDataCell className="text-end">
+                <CButton
+                  color="primary"
+                  onClick={() => {
+                    setEdit(true)
+                    setOpenStoryPopup(true)
+                  }}
+                >
+                  Редактировать
+                </CButton>
+              </CTableDataCell>
+              <CTableDataCell className="text-end">
+                <CIcon icon={cilArrowBottom} size="xl" style={{ cursor: 'pointer' }} />
+              </CTableDataCell>
+              <CTableDataCell className="text-end">
+                <CIcon icon={cilArrowTop} size="xl" style={{ cursor: 'pointer' }} />
+              </CTableDataCell>
+              <CTableDataCell className={classNames('text-end', 'pe-0')}>
+                <CButton color="primary">Удалить</CButton>
+              </CTableDataCell>
+            </CTableRow>
+          ))}
         </CTableBody>
       </CTable>
-      <StoryPopup popup={popup} isEdit={[isEdit, setEdit]} />
+      <StoryPopup popup={popup} isEdit={[isEdit, setEdit]} setStoriesList={setStoriesList} />
     </>
   )
 }

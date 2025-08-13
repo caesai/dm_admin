@@ -3,7 +3,6 @@ import {
   CFormCheck,
   CFormInput,
   CFormSelect,
-  CLoadingButton,
   CModal,
   CModalBody,
   CModalHeader,
@@ -15,17 +14,27 @@ import classNames from 'classnames'
 import CIcon from '@coreui/icons-react'
 import { cilInfo } from '@coreui/icons'
 import { IStory, StoryType } from 'src/types/Stories.ts'
+import ImageInput from 'src/components/ImageInput.tsx'
+import { uploadFile } from 'src/dataProviders/s3.ts'
 
 const StoryPopup: FC<{
   popup: [boolean, Dispatch<SetStateAction<boolean>>]
   isEdit: [boolean, Dispatch<SetStateAction<boolean>>]
-}> = ({ popup, isEdit }) => {
+  setStoriesList: Dispatch<SetStateAction<IStory[]>>
+}> = ({ popup, isEdit, setStoriesList }) => {
   const [open, setOpen] = popup
   const [edit, setEdit] = isEdit
   const [story, setStory] = useState<IStory>({
-    type: 'image',
+    type: 'IMAGE',
     duration: 0,
     url: null,
+    title: null,
+    description: null,
+    button_url: null,
+    button_text: null,
+    button_color: null,
+    order_index: 0,
+    views_count: 0,
   })
   const [isActiveButton, setIsActiveButton] = useState(false)
   const closePopup = () => {
@@ -33,9 +42,16 @@ const StoryPopup: FC<{
     setEdit(false)
     setIsActiveButton(false)
     setStory({
-      type: 'image',
+      type: 'IMAGE',
       duration: 0,
       url: null,
+      title: null,
+      description: null,
+      button_url: null,
+      button_text: null,
+      button_color: null,
+      order_index: 0,
+      views_count: 0,
     })
   }
 
@@ -51,6 +67,30 @@ const StoryPopup: FC<{
       ...prev,
       duration: Number(e.target.value),
     }))
+  }
+
+  const changeStoryUrl = (e: ChangeEvent<HTMLInputElement>) => {
+    setStory((prev) => ({
+      ...prev,
+      url: e.target.value,
+    }))
+  }
+
+  const handleImageChange = (files: FileList | null) => {
+    if (!files) {
+      return
+    }
+    uploadFile(files[0]).then((res) =>
+      setStory((prev) => ({
+        ...prev,
+        url: res.data.url,
+      })),
+    )
+  }
+
+  const addStoryToList = () => {
+    setStoriesList((prev) => [...prev, story])
+    closePopup()
   }
 
   return (
@@ -81,8 +121,19 @@ const StoryPopup: FC<{
               <CIcon icon={cilInfo} />
             </CTooltip>
           </div>
-          <CFormInput placeholder="URL обложки" />
-          {story.type === 'component' && (
+          <div className={classNames('d-flex', 'align-items-center', 'gap-2', 'p-0')}>
+            <CFormInput
+              type="text"
+              placeholder={story.type === 'COMPONENT' ? 'Контент URL' : 'URL обложки'}
+              defaultValue={story.url === null ? '' : story.url}
+              onInput={changeStoryUrl}
+            />
+            <ImageInput onChange={(e) => handleImageChange(e.target.files)} />
+            <CTooltip content="Текст тултипа">
+              <CIcon icon={cilInfo} />
+            </CTooltip>
+          </div>
+          {story.type === 'COMPONENT' && (
             <div className={classNames('d-flex', 'flex-column', 'gap-2')}>
               <CFormInput placeholder="Заголовок" />
               <CFormInput placeholder="Описание" />
@@ -102,15 +153,25 @@ const StoryPopup: FC<{
             <div className={classNames('d-flex', 'flex-column', 'gap-2')}>
               <div className={classNames('position-relative', 'w-100')}>
                 <CFormInput placeholder="URL" />
-                <strong className="fs-5" style={{ position: 'absolute', top: '20%', left: '5ex' }}>
-                  *
-                </strong>
+                {story.button_url === undefined && (
+                  <strong
+                    className="fs-5"
+                    style={{ position: 'absolute', top: '20%', left: '5ex' }}
+                  >
+                    *
+                  </strong>
+                )}
               </div>
               <div className={classNames('position-relative', 'w-100')}>
                 <CFormInput placeholder="Текст" />
-                <strong className="fs-5" style={{ position: 'absolute', top: '20%', left: '6ex' }}>
-                  *
-                </strong>
+                {story.button_text === undefined && (
+                  <strong
+                    className="fs-5"
+                    style={{ position: 'absolute', top: '20%', left: '6ex' }}
+                  >
+                    *
+                  </strong>
+                )}
               </div>
               <div
                 className={classNames(
@@ -139,9 +200,9 @@ const StoryPopup: FC<{
             <CButton color="secondary" className="w-100" onClick={closePopup}>
               Отмена
             </CButton>
-            <CLoadingButton color="primary" className="w-100">
+            <CButton color="primary" className="w-100" onClick={addStoryToList}>
               Сохранить
-            </CLoadingButton>
+            </CButton>
           </div>
         </div>
         <div className={classNames('w-25', 'h-100', 'ms-4')}>

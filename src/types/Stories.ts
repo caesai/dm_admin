@@ -1,4 +1,4 @@
-export type StoryType = 'image' | 'video' | 'component'
+export type StoryType = 'IMAGE' | 'VIDEO' | 'COMPONENT'
 
 export interface IStory {
   id?: number
@@ -10,6 +10,8 @@ export interface IStory {
   button_url?: string | null
   button_text?: string | null
   button_color?: string | null
+  order_index?: number
+  views_count?: number
 }
 
 export interface IStoriesBlock {

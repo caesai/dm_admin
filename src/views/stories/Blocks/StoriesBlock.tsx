@@ -6,11 +6,12 @@ import toast from 'react-hot-toast'
 import BlockForm from 'src/views/stories/Blocks/BlockForm.tsx'
 
 const StoriesBlock: FC<{
-  blockId: number | null
+  id: [number | null, Dispatch<number | null>]
   closeBlock: [Dispatch<SetStateAction<number | null>>, Dispatch<SetStateAction<boolean>>]
-}> = ({ blockId, closeBlock }) => {
+}> = ({ id, closeBlock }) => {
   const [isEdit, setIsEdit] = useState(false)
   const [setCurrentBlockId, setIsNewBlock] = closeBlock
+  const [blockId] = id
   const [block, setBlock] = useState<IStoriesBlock>({
     name: '',
     active: false,
@@ -33,17 +34,14 @@ const StoriesBlock: FC<{
           cancelBlockEdit()
         })
     }
-  })
+  }, [])
   return (
     <CCard className="border-0">
       <CCardHeader className="py-3">
         {isEdit ? 'Редактирование блока историй' : 'Добавление блока историй'}
       </CCardHeader>
       <CCardBody className="p-4">
-        <BlockForm
-          currentBlock={[block, setBlock]}
-          utilProps={[isEdit, blockId, cancelBlockEdit]}
-        />
+        <BlockForm id={id} currentBlock={[block, setBlock]} utilProps={[isEdit, cancelBlockEdit]} />
       </CCardBody>
     </CCard>
   )
