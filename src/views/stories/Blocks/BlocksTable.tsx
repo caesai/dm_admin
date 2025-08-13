@@ -4,7 +4,7 @@ import { IStoriesBlock } from 'src/types/Stories.ts'
 import { getBlocksList } from 'src/dataProviders/stories.ts'
 
 const BlocksTable: FC<{
-  setBlockId: Dispatch<SetStateAction<number | null | undefined>>
+  setBlockId: Dispatch<SetStateAction<number | null>>
 }> = ({ setBlockId }) => {
   const [blocks, setBlocks] = useState<IStoriesBlock[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -53,7 +53,7 @@ const BlocksTable: FC<{
         active: (block: IStoriesBlock) => <td>{block.active ? 'Да' : 'Нет'}</td>,
         edit: (block: IStoriesBlock) => (
           <td>
-            <CButton color="primary" onClick={() => setBlockId(block.id)}>
+            <CButton color="primary" onClick={() => (block.id ? setBlockId(block.id) : null)}>
               Редактировать
             </CButton>
           </td>
