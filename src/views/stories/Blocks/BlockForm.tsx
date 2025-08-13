@@ -102,15 +102,17 @@ const BlockForm: FC<{
               onInput={changeBlockName}
               defaultValue={block.name}
             />
-            <div
-              style={{
-                position: 'absolute',
-                top: '20%',
-                left: '6ex',
-              }}
-            >
-              <strong className="fs-5">*</strong>
-            </div>
+            {block.name === '' && (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '20%',
+                  left: '6ex',
+                }}
+              >
+                <strong className="fs-5">*</strong>
+              </div>
+            )}
           </div>
           <div className="ms-2">
             <CTooltip content="Текст тултипа">

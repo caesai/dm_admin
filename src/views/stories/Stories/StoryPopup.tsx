@@ -71,9 +71,11 @@ const StoryPopup: FC<{
           <div className={classNames('d-flex', 'align-items-center', 'gap-2')}>
             <div className={classNames('position-relative', 'w-100')}>
               <CFormInput placeholder="Длительность в секундах" onChange={changeStoryDuration} />
-              <strong className="fs-5" style={{ position: 'absolute', top: '20%', left: '21ex' }}>
-                *
-              </strong>
+              {story.duration === 0 && (
+                <strong className="fs-5" style={{ position: 'absolute', top: '20%', left: '21ex' }}>
+                  *
+                </strong>
+              )}
             </div>
             <CTooltip content="Текст тултипа">
               <CIcon icon={cilInfo} />
