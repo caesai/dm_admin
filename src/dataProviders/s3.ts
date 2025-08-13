@@ -10,7 +10,7 @@ export const uploadFile = async (file: File) => {
   const compressedFile = await compressImage(file, 50)
   formData.append('file', compressedFile)
   console.log('compressed!')
-  return axios.put<IFileUpload>(`${BASEURL}/s3/upload/`, formData, {
+  return axios.put<IFileUpload>(`${BASEURL}/s3/upload`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
       Authorization: 'Bearer ' + localStorage.getItem('access_token'),
