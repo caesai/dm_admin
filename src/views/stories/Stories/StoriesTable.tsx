@@ -33,19 +33,21 @@ const StoriesTable: FC<{
     <>
       <CTable striped className={classNames('align-middle', 'table-hover', 'mb-0')}>
         <CTableHead>
-          <CTableHeaderCell className={classNames('text-start', 'py-4')}>#</CTableHeaderCell>
-          <CTableHeaderCell className={classNames('text-start', 'py-4')}>Тип</CTableHeaderCell>
-          <CTableHeaderCell className={classNames('text-start', 'py-4')}>
-            Заголовок
-          </CTableHeaderCell>
-          <CTableHeaderCell className={classNames('text-end', 'py-4')}>
-            Редактировать
-          </CTableHeaderCell>
-          <CTableHeaderCell className={classNames('text-end', 'py-4')}>Вниз</CTableHeaderCell>
-          <CTableHeaderCell className={classNames('text-end', 'py-4')}>Вверх</CTableHeaderCell>
-          <CTableHeaderCell className={classNames('text-end', 'pe-2', 'py-4')}>
-            Удалить
-          </CTableHeaderCell>
+          <CTableRow>
+            <CTableHeaderCell className={classNames('text-start', 'py-4')}>#</CTableHeaderCell>
+            <CTableHeaderCell className={classNames('text-start', 'py-4')}>Тип</CTableHeaderCell>
+            <CTableHeaderCell className={classNames('text-start', 'py-4')}>
+              Заголовок
+            </CTableHeaderCell>
+            <CTableHeaderCell className={classNames('text-end', 'py-4')}>
+              Редактировать
+            </CTableHeaderCell>
+            <CTableHeaderCell className={classNames('text-end', 'py-4')}>Вниз</CTableHeaderCell>
+            <CTableHeaderCell className={classNames('text-end', 'py-4')}>Вверх</CTableHeaderCell>
+            <CTableHeaderCell className={classNames('text-end', 'pe-2', 'py-4')}>
+              Удалить
+            </CTableHeaderCell>
+          </CTableRow>
         </CTableHead>
         <CTableBody>
           {storiesList.map((story) => (
