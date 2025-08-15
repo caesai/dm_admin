@@ -245,6 +245,9 @@ const BlockForm: FC<{
       </CRow>
       <CRow className="mb-3">
         <div className={classNames('mb-3', 'd-flex', 'flex-nowrap', 'gap-2', 'p-0')}>
+          <CButton color="danger" className={classNames('px-2', 'text-white')}>
+            Удалить
+          </CButton>
           <CButton color="secondary" className="w-100" onClick={cancelBlockEdit}>
             Отмена
           </CButton>
