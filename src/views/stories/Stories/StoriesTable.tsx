@@ -12,7 +12,7 @@ import CIcon from '@coreui/icons-react'
 import { cilArrowBottom, cilArrowTop } from '@coreui/icons'
 import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 import StoryPopup from 'src/views/stories/Stories/StoryPopup.tsx'
-import { IStory } from 'src/types/Stories.ts'
+import { IStory, StoryType } from 'src/types/Stories.ts'
 import { getStoriesList } from 'src/dataProviders/stories.ts'
 
 const StoriesTable: FC<{
@@ -23,6 +23,17 @@ const StoriesTable: FC<{
   const [, setOpenStoryPopup] = popup
   const [isEdit, setEdit] = useState(false)
   const [storiesList, setStoriesList] = stories
+
+  const setStoryType = (type: StoryType) => {
+    switch (type) {
+      case 'IMAGE':
+        return 'Изображение'
+      case 'VIDEO':
+        return 'Видео'
+      case 'COMPONENT':
+        return 'Компонент'
+    }
+  }
 
   useEffect(() => {
     if (blockId) {
@@ -53,7 +64,7 @@ const StoriesTable: FC<{
           {storiesList.map((story) => (
             <CTableRow key={story.id}>
               <CTableDataCell className="text-start">{story.id ? story.id : 'Нет'}</CTableDataCell>
-              <CTableDataCell className="text-start">{story.type}</CTableDataCell>
+              <CTableDataCell className="text-start">{setStoryType(story.type)}</CTableDataCell>
               <CTableDataCell className="text-start">
                 {story.title ? story.title : 'Отсутствует'}
               </CTableDataCell>
