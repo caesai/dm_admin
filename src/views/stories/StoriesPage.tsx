@@ -9,7 +9,7 @@ const StoriesPage = () => {
   const [currentBlockId, setCurrentBlockId] = useState<number | null>(null)
   return (
     <>
-      {isNewBlock ? null : (
+      {isNewBlock || currentBlockId !== null ? null : (
         <div className={classNames('d-flex', 'justify-content-end')}>
           <CButton color="primary" onClick={() => setIsNewBlock(true)}>
             + Новый блок историй

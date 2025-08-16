@@ -206,13 +206,16 @@ const BlockForm: FC<{
               </div>
             </CCardHeader>
             <CCardBody>
-              <CFormCheck label="User-01" indeterminate />
-              <CFormCheck label="User-02" indeterminate />
-              <CFormCheck
-                label={<CFormInput placeholder="Telegram ID" className="text-center" />}
-                checked={true}
-                className={classNames('mt-4', 'd-flex', 'align-items-center', 'gap-3', 'w-25')}
-              />
+              <CFormCheck label="User-02" indeterminate className="mb-4" />
+              <div className={classNames('d-flex', 'gap-2')}>
+                <CButton color="primary" className="px-2">
+                  Добавить
+                </CButton>
+                <CFormInput
+                  placeholder="Telegram ID"
+                  className={classNames('text-center', 'w-auto')}
+                />
+              </div>
             </CCardBody>
           </CCard>
         </CRow>
@@ -245,9 +248,11 @@ const BlockForm: FC<{
       </CRow>
       <CRow className="mb-3">
         <div className={classNames('mb-3', 'd-flex', 'flex-nowrap', 'gap-2', 'p-0')}>
-          <CButton color="danger" className={classNames('px-2', 'text-white')}>
-            Удалить
-          </CButton>
+          {isEdit && (
+            <CButton color="danger" className={classNames('px-2', 'text-white')}>
+              Удалить
+            </CButton>
+          )}
           <CButton color="secondary" className="w-100" onClick={cancelBlockEdit}>
             Отмена
           </CButton>
