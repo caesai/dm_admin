@@ -21,5 +21,5 @@ export interface IStoriesBlock {
   stories: IStory[]
   thumbnail?: string | null
   cities?: number[] | null
-  users?: number[] | null
+  users: number[]
 }

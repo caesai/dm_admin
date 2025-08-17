@@ -19,7 +19,7 @@ import CIcon from '@coreui/icons-react'
 import { cilInfo } from '@coreui/icons'
 import ImageInput from 'src/components/ImageInput.tsx'
 import StoriesTable from 'src/views/stories/Stories/StoriesTable.tsx'
-import { ChangeEvent, Dispatch, FC, SetStateAction, useState } from 'react'
+import React, { ChangeEvent, Dispatch, FC, SetStateAction, useState } from 'react'
 import { createBlock, createStory, updateBlock } from 'src/dataProviders/stories.ts'
 import toast from 'react-hot-toast'
 import { IStoriesBlock, IStory } from 'src/types/Stories.ts'
@@ -34,6 +34,7 @@ const BlockForm: FC<{
   const [isLoading, setIsLoading] = useState(false)
   const [openStoryPopup, setOpenStoryPopup] = useState(false)
   const [storiesList, setStoriesList] = useState<IStory[]>([])
+  const [currentUser, setCurrentUser] = useState<number | null>(null)
   const [block, setBlock] = currentBlock
   const [blockId] = id
   const [isEdit, cancelBlockEdit] = utilProps
@@ -70,8 +71,23 @@ const BlockForm: FC<{
     )
   }
 
+  const addUser = () => {
+    if (currentUser === null) return
+    setBlock((prev) => ({
+      ...prev,
+      users: [...prev.users, currentUser],
+    }))
+    setCurrentUser(null)
+  }
+
+  const deleteUser = (userToDelete: number) => {
+    setBlock((prev) => ({
+      ...prev,
+      users: prev.users.filter((user) => user !== userToDelete),
+    }))
+  }
+
   const sendStories = (id: number) => {
-    console.log('sending stories...')
     storiesList.map((story) => {
       createStory(story, id)
     })
@@ -206,14 +222,26 @@ const BlockForm: FC<{
               </div>
             </CCardHeader>
             <CCardBody>
-              <CFormCheck label="User-02" indeterminate className="mb-4" />
+              {block.users?.map((user) => (
+                <CFormCheck
+                  label={user}
+                  indeterminate
+                  className="mb-4"
+                  key={user}
+                  onClick={() => deleteUser(user)}
+                />
+              ))}
               <div className={classNames('d-flex', 'gap-2')}>
-                <CButton color="primary" className="px-2">
+                <CButton color="primary" className="px-2" onClick={addUser}>
                   Добавить
                 </CButton>
                 <CFormInput
                   placeholder="Telegram ID"
                   className={classNames('text-center', 'w-auto')}
+                  onInput={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setCurrentUser(Number(e.target.value))
+                  }
+                  value={currentUser === null ? '' : String(currentUser)}
                 />
               </div>
             </CCardBody>

@@ -16,6 +16,7 @@ const StoriesBlock: FC<{
     name: '',
     active: false,
     stories: [],
+    users: [],
   })
 
   const cancelBlockEdit = () => {
