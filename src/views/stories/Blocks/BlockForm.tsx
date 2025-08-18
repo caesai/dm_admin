@@ -19,8 +19,8 @@ import CIcon from '@coreui/icons-react'
 import { cilInfo } from '@coreui/icons'
 import ImageInput from 'src/components/ImageInput.tsx'
 import StoriesTable from 'src/views/stories/Stories/StoriesTable.tsx'
-import React, { ChangeEvent, Dispatch, FC, SetStateAction, useState } from 'react'
-import { createBlock, createStory, updateBlock } from 'src/dataProviders/stories.ts'
+import React, { ChangeEvent, Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
+import { createBlock, createStory, deleteBlock, updateBlock } from 'src/dataProviders/stories.ts'
 import toast from 'react-hot-toast'
 import { IStoriesBlock, IStory } from 'src/types/Stories.ts'
 import { uploadFile } from 'src/dataProviders/s3.ts'
@@ -30,7 +30,7 @@ const BlockForm: FC<{
   id: [number | null, Dispatch<number | null>]
   utilProps: [boolean, () => void]
 }> = ({ currentBlock, id, utilProps }) => {
-  const [isForAll, setIsForAll] = useState(false)
+  const [isForAll, setIsForAll] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
   const [openStoryPopup, setOpenStoryPopup] = useState(false)
   const [storiesList, setStoriesList] = useState<IStory[]>([])
@@ -93,13 +93,18 @@ const BlockForm: FC<{
     })
   }
 
-  const sendBlock = () => {
+  const handleSendBlock = () => {
     if (isEdit) {
       setIsLoading(true)
       updateBlock({
         id: blockId,
         ...block,
       })
+        .then(() => {
+          if (blockId !== null) {
+            sendStories(blockId)
+          }
+        })
         .then(() => toast('Блок обновлён'))
         .catch((e) => toast.error(e))
         .finally(() => setIsLoading(false))
@@ -121,6 +126,19 @@ const BlockForm: FC<{
         .finally(() => cancelBlockEdit())
     }
   }
+
+  const handleDeleteBlock = () => {
+    if (blockId === null) return
+    deleteBlock(blockId)
+      .then(() => toast('Блок удалёе'))
+      .catch((e) => toast.error(e))
+      .finally(() => cancelBlockEdit())
+  }
+
+  useEffect(() => {
+    if (block.users === null) return
+    setIsForAll(block.users.length === 0)
+  }, [block])
   return (
     <CForm>
       <CRow className="mb-3">
@@ -167,7 +185,7 @@ const BlockForm: FC<{
           <CFormInput
             type="text"
             placeholder="URL обложки"
-            defaultValue={block.thumbnail === null ? '' : block.thumbnail}
+            value={block.thumbnail === null ? '' : block.thumbnail}
             onInput={changeBlockThumbnail}
           />
           <ImageInput onChange={(e) => handleImageChange(e.target.files)} />
@@ -207,10 +225,10 @@ const BlockForm: FC<{
         <CFormCheck
           label="Доступен всем пользователям"
           onChange={() => setIsForAll(!isForAll)}
-          checked={!isForAll}
+          checked={isForAll}
         />
       </CRow>
-      {isForAll && (
+      {!isForAll && (
         <CRow className="mb-3">
           <CCard className="p-0">
             <CCardHeader className="d-flex">
@@ -238,10 +256,10 @@ const BlockForm: FC<{
                 <CFormInput
                   placeholder="Telegram ID"
                   className={classNames('text-center', 'w-auto')}
+                  value={currentUser === null ? '' : String(currentUser)}
                   onInput={(e: React.ChangeEvent<HTMLInputElement>) =>
                     setCurrentUser(Number(e.target.value))
                   }
-                  value={currentUser === null ? '' : String(currentUser)}
                 />
               </div>
             </CCardBody>
@@ -277,14 +295,23 @@ const BlockForm: FC<{
       <CRow className="mb-3">
         <div className={classNames('mb-3', 'd-flex', 'flex-nowrap', 'gap-2', 'p-0')}>
           {isEdit && (
-            <CButton color="danger" className={classNames('px-2', 'text-white')}>
+            <CButton
+              color="danger"
+              className={classNames('px-2', 'text-white')}
+              onClick={handleDeleteBlock}
+            >
               Удалить
             </CButton>
           )}
           <CButton color="secondary" className="w-100" onClick={cancelBlockEdit}>
             Отмена
           </CButton>
-          <CLoadingButton color="primary" className="w-100" loading={isLoading} onClick={sendBlock}>
+          <CLoadingButton
+            color="primary"
+            className="w-100"
+            loading={isLoading}
+            onClick={handleSendBlock}
+          >
             {isEdit ? 'Сохранить изменения' : 'Опубликовать'}
           </CLoadingButton>
         </div>

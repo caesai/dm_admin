@@ -16,10 +16,12 @@ import { cilInfo } from '@coreui/icons'
 import { IStory, StoryType } from 'src/types/Stories.ts'
 import ImageInput from 'src/components/ImageInput.tsx'
 import { uploadFile } from 'src/dataProviders/s3.ts'
+// import {getStoriesList} from "src/dataProviders/stories.ts";
 
 const StoryPopup: FC<{
   popup: [boolean, Dispatch<SetStateAction<boolean>>]
   isEdit: [boolean, Dispatch<SetStateAction<boolean>>]
+  currentStoryId: [number | null, Dispatch<SetStateAction<number | null>>]
   setStoriesList: Dispatch<SetStateAction<IStory[]>>
 }> = ({ popup, isEdit, setStoriesList }) => {
   const [open, setOpen] = popup
@@ -128,6 +130,10 @@ const StoryPopup: FC<{
     closePopup()
   }
 
+  // useEffect(() => {
+  //   getStoriesList()
+  // }, [])
+
   return (
     <CModal alignment="center" size="lg" visible={open} onClose={closePopup}>
       <CModalHeader>
@@ -160,7 +166,7 @@ const StoryPopup: FC<{
             <CFormInput
               type="text"
               placeholder={story.type === 'COMPONENT' ? 'Контент URL' : 'URL обложки'}
-              defaultValue={story.url === null ? '' : story.url}
+              value={story.url === null ? '' : story.url}
               onInput={changeStoryUrl}
             />
             <ImageInput onChange={(e) => handleImageChange(e.target.files)} />

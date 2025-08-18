@@ -22,6 +22,7 @@ const StoriesTable: FC<{
 }> = ({ popup, stories, blockId }) => {
   const [, setOpenStoryPopup] = popup
   const [isEdit, setEdit] = useState(false)
+  const [currentStoryId, setCurrentStoryId] = useState<number | null>(null)
   const [storiesList, setStoriesList] = stories
 
   const setStoryType = (type: StoryType) => {
@@ -73,6 +74,7 @@ const StoriesTable: FC<{
                   color="primary"
                   onClick={() => {
                     setEdit(true)
+                    setCurrentStoryId(story.id ? story.id : null)
                     setOpenStoryPopup(true)
                   }}
                 >
@@ -92,7 +94,12 @@ const StoriesTable: FC<{
           ))}
         </CTableBody>
       </CTable>
-      <StoryPopup popup={popup} isEdit={[isEdit, setEdit]} setStoriesList={setStoriesList} />
+      <StoryPopup
+        popup={popup}
+        isEdit={[isEdit, setEdit]}
+        setStoriesList={setStoriesList}
+        currentStoryId={[currentStoryId, setCurrentStoryId]}
+      />
     </>
   )
 }

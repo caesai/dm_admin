@@ -18,6 +18,22 @@ export const createStory = async (data: IStory, block_id: number) => {
   })
 }
 
+export const updateStory = async (data: IStory, id: number) => {
+  return await axios.put<IStory>(`${BASEURL}/stories/stories/${id}`, data, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+    },
+  })
+}
+
+export const deleteStory = async (id: number) => {
+  return await axios.delete(`${BASEURL}/stories/stories/${id}`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+    },
+  })
+}
+
 export const getBlocksList = async () => {
   return await axios.get<IStoriesBlock[]>(`${BASEURL}/stories/blocks`, {
     headers: {
@@ -43,7 +59,15 @@ export const createBlock = async (data: IStoriesBlock) => {
 }
 
 export const updateBlock = async (data: IStoriesBlock) => {
-  return await axios.patch<IStoriesBlock>(`${BASEURL}/stories/blocks${data.id}`, data, {
+  return await axios.put<IStoriesBlock>(`${BASEURL}/stories/blocks/${data.id}`, data, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+    },
+  })
+}
+
+export const deleteBlock = async (id: number) => {
+  return await axios.delete(`${BASEURL}/stories/blocks/${id}`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },
