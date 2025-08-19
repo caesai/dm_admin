@@ -20,6 +20,6 @@ export interface IStoriesBlock {
   active: boolean
   stories: IStory[]
   thumbnail?: string | null
-  cities: number[] | null
+  cities: number[]
   users: number[]
 }

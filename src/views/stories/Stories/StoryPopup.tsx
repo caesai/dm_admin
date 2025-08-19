@@ -16,7 +16,6 @@ import { cilInfo } from '@coreui/icons'
 import { IStory, StoryType } from 'src/types/Stories.ts'
 import ImageInput from 'src/components/ImageInput.tsx'
 import { uploadFile } from 'src/dataProviders/s3.ts'
-// import {getStoriesList} from "src/dataProviders/stories.ts";
 
 const StoryPopup: FC<{
   popup: [boolean, Dispatch<SetStateAction<boolean>>]
@@ -129,10 +128,6 @@ const StoryPopup: FC<{
     setStoriesList((prev) => [...prev, story])
     closePopup()
   }
-
-  // useEffect(() => {
-  //   getStoriesList()
-  // }, [])
 
   return (
     <CModal alignment="center" size="lg" visible={open} onClose={closePopup}>

@@ -52,6 +52,15 @@ const BlockForm: FC<{
     }))
   }
 
+  const changeBlockCities = (cityId: number) => {
+    setBlock((prev) => ({
+      ...prev,
+      cities: prev.cities.includes(cityId)
+        ? prev.cities.filter((id) => id !== cityId)
+        : [...prev.cities, cityId],
+    }))
+  }
+
   const changeBlockThumbnail = (e: ChangeEvent<HTMLInputElement>) => {
     setBlock((prev) => ({
       ...prev,
@@ -185,7 +194,7 @@ const BlockForm: FC<{
           <CFormInput
             type="text"
             placeholder="URL обложки"
-            value={block.thumbnail === null ? '' : block.thumbnail}
+            value={block.thumbnail || ''}
             onInput={changeBlockThumbnail}
           />
           <ImageInput onChange={(e) => handleImageChange(e.target.files)} />
@@ -207,16 +216,23 @@ const BlockForm: FC<{
             </CAccordionHeader>
             <CAccordionBody>
               <CFormCheck
-                id="MoscowCheckbox"
                 label="Москва"
                 className={classNames('py-2', 'border-bottom')}
+                checked={(block.cities || []).includes(1)}
+                onChange={() => changeBlockCities(1)}
               />
               <CFormCheck
-                id="StPetersburgCheckbox"
                 label="Санкт-Петербург"
                 className={classNames('py-2', 'border-bottom')}
+                checked={(block.cities || []).includes(2)}
+                onChange={() => changeBlockCities(2)}
               />
-              <CFormCheck id="EkaterinburgCheckbox" label="Екатеринбург" className="py-2" />
+              <CFormCheck
+                label="Екатеринбург"
+                className="py-2"
+                checked={(block.cities || []).includes(3)}
+                onChange={() => changeBlockCities(3)}
+              />
             </CAccordionBody>
           </CAccordionItem>
         </CAccordion>
