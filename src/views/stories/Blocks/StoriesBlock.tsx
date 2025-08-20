@@ -15,8 +15,9 @@ const StoriesBlock: FC<{
   const [block, setBlock] = useState<IStoriesBlock>({
     name: '',
     active: false,
-    stories: [],
     users: [],
+    cities: [],
+    stories: [],
   })
 
   const cancelBlockEdit = () => {

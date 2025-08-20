@@ -96,10 +96,12 @@ const BlockForm: FC<{
     }))
   }
 
-  const sendStories = (id: number) => {
-    storiesList.map((story) => {
-      createStory(story, id)
-    })
+  const sendStories = async (blockId: number) => {
+    // если нет id - создаём историю
+    const newStories = storiesList.filter((story) => !story.id)
+    for (const story of newStories) {
+      await createStory(story, blockId)
+    }
   }
 
   const handleSendBlock = () => {

@@ -10,6 +10,14 @@ export const getStoriesList = async (blockId: number) => {
   })
 }
 
+export const getStoryById = async (storyId: number) => {
+  return await axios.get<IStory>(`${BASEURL}/stories/stories/${storyId}`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+    },
+  })
+}
+
 export const createStory = async (data: IStory, block_id: number) => {
   return await axios.post<IStory>(`${BASEURL}/stories/blocks/${block_id}/stories`, data, {
     headers: {
