@@ -20,7 +20,13 @@ import { cilInfo } from '@coreui/icons'
 import MediaInput from 'src/components/MediaInput.tsx'
 import StoriesTable from 'src/views/stories/Stories/StoriesTable.tsx'
 import React, { ChangeEvent, Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
-import { createBlock, createStory, deleteBlock, updateBlock } from 'src/dataProviders/stories.ts'
+import {
+  createBlock,
+  createStory,
+  deleteBlock,
+  deleteStory,
+  updateBlock,
+} from 'src/dataProviders/stories.ts'
 import toast from 'react-hot-toast'
 import { IStoriesBlock, IStory } from 'src/types/Stories.ts'
 import { uploadFile } from 'src/dataProviders/s3.ts'
@@ -39,6 +45,7 @@ const BlockForm: FC<{
 
   const [block, setBlock] = currentBlock
   const [storiesList, setStoriesList] = useState<IStory[]>(block.stories)
+  const [storiesToDelete, setStoriesToDelete] = useState<IStory[]>([])
 
   const changeBlockName = (e: ChangeEvent<HTMLInputElement>) => {
     setBlock((prev) => ({
@@ -106,6 +113,13 @@ const BlockForm: FC<{
     }
   }
 
+  const deleteStories = async () => {
+    for (const story of storiesToDelete) {
+      if (!story.id) return
+      await deleteStory(story.id)
+    }
+  }
+
   const handleSendBlock = () => {
     if (isEdit) {
       setIsLoading(true)
@@ -116,6 +130,7 @@ const BlockForm: FC<{
         .then(() => {
           if (blockId !== null) {
             sendStories(blockId)
+            deleteStories()
           }
         })
         .then(() => toast('Блок обновлён'))
@@ -321,6 +336,7 @@ const BlockForm: FC<{
         <StoriesTable
           popup={[openStoryPopup, setOpenStoryPopup]}
           stories={[storiesList, setStoriesList]}
+          deleteStories={[storiesToDelete, setStoriesToDelete]}
         />
       </CRow>
       <CRow className="mb-3">

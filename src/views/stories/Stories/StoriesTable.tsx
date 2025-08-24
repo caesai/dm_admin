@@ -13,18 +13,18 @@ import { cilArrowBottom, cilArrowTop } from '@coreui/icons'
 import { Dispatch, FC, SetStateAction, useState } from 'react'
 import StoryPopup from 'src/views/stories/Stories/StoryPopup.tsx'
 import { IStory, StoryType } from 'src/types/Stories.ts'
-import { deleteStory } from 'src/dataProviders/stories.ts'
-import toast from 'react-hot-toast'
 
 const StoriesTable: FC<{
   popup: [boolean, Dispatch<SetStateAction<boolean>>]
   stories: [IStory[], Dispatch<SetStateAction<IStory[]>>]
-}> = ({ popup, stories }) => {
+  deleteStories: [IStory[], Dispatch<SetStateAction<IStory[]>>]
+}> = ({ popup, stories, deleteStories }) => {
   const [, setOpenStoryPopup] = popup
   const [isEdit, setIsEdit] = useState(false)
   const [currentStoryId, setCurrentStoryId] = useState<number | null>(null)
-  const [storiesList, setStoriesList] = stories
 
+  const [storiesList, setStoriesList] = stories
+  const [, setStoriesToDelete] = deleteStories
   const setStoryType = (type: StoryType) => {
     switch (type) {
       case 'IMAGE':
@@ -36,17 +36,13 @@ const StoriesTable: FC<{
     }
   }
 
-  const handleStoryDelete = (id: number | null, index: number) => {
-    if (typeof id === 'number') {
-      deleteStory(id)
-        .then(() => toast('История удалена'))
-        .catch((e) => toast.error(e))
-    } else {
-      const newStoriesList = [...storiesList]
-      newStoriesList.splice(index, 1)
-      setStoriesList(newStoriesList)
-      toast('История удалена')
-    }
+  const handleStoryDelete = (story: IStory) => {
+    setStoriesToDelete((prev) => [...prev, story])
+    setStoriesList((prevStories) =>
+      prevStories.filter((s) => {
+        return s !== story
+      }),
+    )
   }
   return (
     <>
@@ -69,7 +65,7 @@ const StoriesTable: FC<{
           </CTableRow>
         </CTableHead>
         <CTableBody>
-          {storiesList.map((story, index) => (
+          {storiesList.map((story) => (
             <CTableRow key={story.id}>
               <CTableDataCell className="text-start">{story.id ? story.id : 'Нет'}</CTableDataCell>
               <CTableDataCell className="text-start">{setStoryType(story.type)}</CTableDataCell>
@@ -95,10 +91,7 @@ const StoriesTable: FC<{
                 <CIcon icon={cilArrowTop} size="xl" style={{ cursor: 'pointer' }} />
               </CTableDataCell>
               <CTableDataCell className={classNames('text-end', 'pe-0')}>
-                <CButton
-                  color="primary"
-                  onClick={() => handleStoryDelete(story.id ? story.id : null, index)}
-                >
+                <CButton color="primary" onClick={() => handleStoryDelete(story)}>
                   Удалить
                 </CButton>
               </CTableDataCell>
