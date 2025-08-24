@@ -14,7 +14,7 @@ import classNames from 'classnames'
 import CIcon from '@coreui/icons-react'
 import { cilInfo } from '@coreui/icons'
 import { IStory, StoryType } from 'src/types/Stories.ts'
-import ImageInput from 'src/components/ImageInput.tsx'
+import MediaInput from 'src/components/MediaInput.tsx'
 import { uploadFile } from 'src/dataProviders/s3.ts'
 import { getStoryById, updateStory } from 'src/dataProviders/stories.ts'
 import toast from 'react-hot-toast'
@@ -116,11 +116,11 @@ const StoryPopup: FC<{
     }))
   }
 
-  const handleImageChange = (files: FileList | null) => {
+  const handleMediaChange = (files: FileList | null) => {
     if (!files) {
       return
     }
-    uploadFile(files[0]).then((res) =>
+    uploadFile(files[0], story.type === 'VIDEO').then((res) =>
       setStory((prev) => ({
         ...prev,
         url: res.data.url,
@@ -200,7 +200,10 @@ const StoryPopup: FC<{
               value={story.url === null ? '' : story.url}
               onInput={changeStoryUrl}
             />
-            <ImageInput onChange={(e) => handleImageChange(e.target.files)} />
+            <MediaInput
+              onChange={(e) => handleMediaChange(e.target.files)}
+              isVideo={story.type === 'VIDEO'}
+            />
             <CTooltip content="Текст тултипа">
               <CIcon icon={cilInfo} />
             </CTooltip>

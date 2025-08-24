@@ -3,9 +3,10 @@ import CIcon from '@coreui/icons-react'
 import { cilImagePlus } from '@coreui/icons'
 import { ChangeEventHandler, FC } from 'react'
 
-const ImageInput: FC<{
+const MediaInput: FC<{
   onChange: ChangeEventHandler<HTMLInputElement>
-}> = ({ onChange }) => {
+  isVideo?: boolean
+}> = ({ onChange, isVideo }) => {
   return (
     <label
       className={classNames(
@@ -20,8 +21,13 @@ const ImageInput: FC<{
       style={{ cursor: 'pointer' }}
     >
       <CIcon icon={cilImagePlus} />
-      <input type="file" accept="image/*" className="d-none" onChange={onChange} />
+      <input
+        type="file"
+        accept={isVideo ? 'video/*' : 'image/*'}
+        className="d-none"
+        onChange={onChange}
+      />
     </label>
   )
 }
-export default ImageInput
+export default MediaInput

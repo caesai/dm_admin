@@ -17,7 +17,7 @@ import {
 import classNames from 'classnames'
 import CIcon from '@coreui/icons-react'
 import { cilInfo } from '@coreui/icons'
-import ImageInput from 'src/components/ImageInput.tsx'
+import MediaInput from 'src/components/MediaInput.tsx'
 import StoriesTable from 'src/views/stories/Stories/StoriesTable.tsx'
 import React, { ChangeEvent, Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 import { createBlock, createStory, deleteBlock, updateBlock } from 'src/dataProviders/stories.ts'
@@ -74,7 +74,7 @@ const BlockForm: FC<{
     if (!files) {
       return
     }
-    uploadFile(files[0]).then((res) =>
+    uploadFile(files[0], false).then((res) =>
       setBlock((prev) => ({
         ...prev,
         thumbnail: res.data.url,
@@ -213,7 +213,7 @@ const BlockForm: FC<{
             value={block.thumbnail || ''}
             onInput={changeBlockThumbnail}
           />
-          <ImageInput onChange={(e) => handleImageChange(e.target.files)} />
+          <MediaInput onChange={(e) => handleImageChange(e.target.files)} />
           <CTooltip content="Текст тултипа">
             <CIcon icon={cilInfo} />
           </CTooltip>
