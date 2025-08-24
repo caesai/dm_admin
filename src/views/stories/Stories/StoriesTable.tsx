@@ -10,27 +10,20 @@ import {
 } from '@coreui/react-pro'
 import CIcon from '@coreui/icons-react'
 import { cilArrowBottom, cilArrowTop } from '@coreui/icons'
-import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
+import { Dispatch, FC, SetStateAction, useState } from 'react'
 import StoryPopup from 'src/views/stories/Stories/StoryPopup.tsx'
 import { IStory, StoryType } from 'src/types/Stories.ts'
-import { deleteStory, getStoriesList } from 'src/dataProviders/stories.ts'
+import { deleteStory } from 'src/dataProviders/stories.ts'
 import toast from 'react-hot-toast'
 
 const StoriesTable: FC<{
   popup: [boolean, Dispatch<SetStateAction<boolean>>]
   stories: [IStory[], Dispatch<SetStateAction<IStory[]>>]
-  blockId?: number
-}> = ({ popup, stories, blockId }) => {
+}> = ({ popup, stories }) => {
   const [, setOpenStoryPopup] = popup
   const [isEdit, setIsEdit] = useState(false)
   const [currentStoryId, setCurrentStoryId] = useState<number | null>(null)
   const [storiesList, setStoriesList] = stories
-
-  const loadStories = () => {
-    if (blockId) {
-      getStoriesList(blockId).then((res) => setStoriesList(res.data))
-    }
-  }
 
   const setStoryType = (type: StoryType) => {
     switch (type) {
@@ -46,7 +39,6 @@ const StoriesTable: FC<{
   const handleStoryDelete = (id: number | null, index: number) => {
     if (typeof id === 'number') {
       deleteStory(id)
-        .then(() => loadStories())
         .then(() => toast('История удалена'))
         .catch((e) => toast.error(e))
     } else {
@@ -56,10 +48,6 @@ const StoriesTable: FC<{
       toast('История удалена')
     }
   }
-
-  useEffect(() => {
-    loadStories()
-  }, [])
   return (
     <>
       <CTable striped className={classNames('align-middle', 'table-hover', 'mb-0')}>

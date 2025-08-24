@@ -33,11 +33,13 @@ const BlockForm: FC<{
   const [isForAll, setIsForAll] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
   const [openStoryPopup, setOpenStoryPopup] = useState(false)
-  const [storiesList, setStoriesList] = useState<IStory[]>([])
   const [currentUser, setCurrentUser] = useState<number | null>(null)
-  const [block, setBlock] = currentBlock
   const [blockId] = id
   const [isEdit, cancelBlockEdit] = utilProps
+
+  const [block, setBlock] = currentBlock
+  const [storiesList, setStoriesList] = useState<IStory[]>(block.stories)
+
   const changeBlockName = (e: ChangeEvent<HTMLInputElement>) => {
     setBlock((prev) => ({
       ...prev,
@@ -147,9 +149,21 @@ const BlockForm: FC<{
   }
 
   useEffect(() => {
-    if (block.users === null) return
-    setIsForAll(block.users.length === 0)
+    if (block.users !== null) {
+      setIsForAll(block.users.length === 0)
+    }
   }, [block])
+
+  useEffect(() => {
+    setStoriesList(block.stories)
+  }, [block.stories])
+
+  useEffect(() => {
+    setBlock((prev) => ({
+      ...prev,
+      stories: storiesList,
+    }))
+  }, [storiesList, setBlock])
   return (
     <CForm>
       <CRow className="mb-3">
@@ -307,7 +321,6 @@ const BlockForm: FC<{
         <StoriesTable
           popup={[openStoryPopup, setOpenStoryPopup]}
           stories={[storiesList, setStoriesList]}
-          blockId={blockId !== null ? blockId : undefined}
         />
       </CRow>
       <CRow className="mb-3">
