@@ -26,6 +26,7 @@ import {
   deleteBlock,
   deleteStory,
   updateBlock,
+  updateStory,
 } from 'src/dataProviders/stories.ts'
 import toast from 'react-hot-toast'
 import { IStoriesBlock, IStory } from 'src/types/Stories.ts'
@@ -45,6 +46,7 @@ const BlockForm: FC<{
 
   const [block, setBlock] = currentBlock
   const [storiesList, setStoriesList] = useState<IStory[]>(block.stories)
+  const [storiesToUpdate, setStoriesToUpdate] = useState<IStory[]>([])
   const [storiesToDelete, setStoriesToDelete] = useState<IStory[]>([])
 
   const changeBlockName = (e: ChangeEvent<HTMLInputElement>) => {
@@ -106,10 +108,16 @@ const BlockForm: FC<{
   }
 
   const sendStories = async (blockId: number) => {
-    // если нет id - создаём историю
     const newStories = storiesList.filter((story) => !story.id)
     for (const story of newStories) {
       await createStory(story, blockId)
+    }
+  }
+
+  const updateStories = async () => {
+    for (const story of storiesToUpdate) {
+      if (!story.id) return
+      await updateStory(story, story.id)
     }
   }
 
@@ -130,6 +138,7 @@ const BlockForm: FC<{
         .then(() => {
           if (blockId !== null) {
             sendStories(blockId)
+            updateStories()
             deleteStories()
           }
         })
@@ -143,9 +152,9 @@ const BlockForm: FC<{
         ...block,
       })
         .then((res) => {
-          const id = res.data.id ? res.data.id : null
-          if (id) {
-            sendStories(id)
+          const newBlockId = res.data.id ? res.data.id : null
+          if (newBlockId) {
+            sendStories(newBlockId)
           }
         })
         .then(() => toast('Блок создан'))
@@ -336,6 +345,7 @@ const BlockForm: FC<{
         <StoriesTable
           popup={[openStoryPopup, setOpenStoryPopup]}
           stories={[storiesList, setStoriesList]}
+          updateStories={[storiesToUpdate, setStoriesToUpdate]}
           deleteStories={[storiesToDelete, setStoriesToDelete]}
         />
       </CRow>

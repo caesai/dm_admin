@@ -16,7 +16,7 @@ import { cilInfo } from '@coreui/icons'
 import { IStory, StoryType } from 'src/types/Stories.ts'
 import MediaInput from 'src/components/MediaInput.tsx'
 import { uploadFile } from 'src/dataProviders/s3.ts'
-import { getStoryById, updateStory } from 'src/dataProviders/stories.ts'
+import { getStoryById } from 'src/dataProviders/stories.ts'
 import toast from 'react-hot-toast'
 
 const StoryPopup: FC<{
@@ -24,10 +24,12 @@ const StoryPopup: FC<{
   isEdit: [boolean, Dispatch<SetStateAction<boolean>>]
   currentStoryId: [number | null, Dispatch<SetStateAction<number | null>>]
   setStoriesList: Dispatch<SetStateAction<IStory[]>>
-}> = ({ popup, isEdit, setStoriesList, currentStoryId }) => {
+  updateStories: [IStory[], Dispatch<SetStateAction<IStory[]>>]
+}> = ({ popup, isEdit, setStoriesList, currentStoryId, updateStories }) => {
   const [open, setOpen] = popup
   const [edit, setEdit] = isEdit
   const [storyId, setStoryId] = currentStoryId
+  const [, setStoriesToUpdate] = updateStories
   const [story, setStory] = useState<IStory>({
     type: 'IMAGE',
     duration: 0,
@@ -131,12 +133,8 @@ const StoryPopup: FC<{
   const handleChangeStory = () => {
     if (edit) {
       if (storyId === null) return
-      updateStory(story, storyId)
-        .then(() => {
-          setStoriesList((prev) => prev.map((item) => (item.id === storyId ? story : item))) // заменяем старую историю новой
-          toast('История обновлена')
-        })
-        .catch((e) => toast.error(e))
+      setStoriesToUpdate((prev) => [...prev, story])
+      setStoriesList((prev) => prev.map((item) => (item.id === storyId ? story : item))) // заменяем старую историю новой
     } else {
       setStoriesList((prev) => [...prev, story]) // создаём новую историю без id
     }

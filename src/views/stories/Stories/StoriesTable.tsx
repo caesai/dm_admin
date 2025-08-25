@@ -17,8 +17,9 @@ import { IStory, StoryType } from 'src/types/Stories.ts'
 const StoriesTable: FC<{
   popup: [boolean, Dispatch<SetStateAction<boolean>>]
   stories: [IStory[], Dispatch<SetStateAction<IStory[]>>]
+  updateStories: [IStory[], Dispatch<SetStateAction<IStory[]>>]
   deleteStories: [IStory[], Dispatch<SetStateAction<IStory[]>>]
-}> = ({ popup, stories, deleteStories }) => {
+}> = ({ popup, stories, updateStories, deleteStories }) => {
   const [, setOpenStoryPopup] = popup
   const [isEdit, setIsEdit] = useState(false)
   const [currentStoryId, setCurrentStoryId] = useState<number | null>(null)
@@ -104,6 +105,7 @@ const StoriesTable: FC<{
         isEdit={[isEdit, setIsEdit]}
         setStoriesList={setStoriesList}
         currentStoryId={[currentStoryId, setCurrentStoryId]}
+        updateStories={updateStories}
       />
     </>
   )
