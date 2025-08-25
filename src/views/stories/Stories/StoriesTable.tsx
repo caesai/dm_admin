@@ -11,7 +11,7 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilArrowBottom, cilArrowTop } from '@coreui/icons'
 import { Dispatch, FC, SetStateAction, useState } from 'react'
-import StoryPopup from 'src/views/stories/Stories/StoryPopup.tsx'
+import StoryPopup from 'src/views/stories/Stories/Popup/StoryPopup.tsx'
 import { IStory, StoryType } from 'src/types/Stories.ts'
 
 const StoriesTable: FC<{
