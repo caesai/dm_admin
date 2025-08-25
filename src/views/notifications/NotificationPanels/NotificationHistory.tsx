@@ -53,12 +53,14 @@ const NotificationHistory = ({ refreshKey }: NotificationHistoryProps) => {
         <CCardHeader>История рассылки</CCardHeader>
         <CCardBody>
           <CTable striped className={classNames('align-middle', 'table-hover', 'mb-0')}>
-            <CTableHead className="text-center">
-              <CTableHeaderCell className="text-start">Текст рассылки</CTableHeaderCell>
-              <CTableHeaderCell className="text-start">Показать</CTableHeaderCell>
-              <CTableHeaderCell>Дата</CTableHeaderCell>
-              <CTableHeaderCell>Количество получателей</CTableHeaderCell>
-              <CTableHeaderCell>Удалить</CTableHeaderCell>
+            <CTableHead>
+              <CTableRow className="text-center">
+                <CTableHeaderCell className="text-start">Текст рассылки</CTableHeaderCell>
+                <CTableHeaderCell className="text-start">Показать</CTableHeaderCell>
+                <CTableHeaderCell>Дата</CTableHeaderCell>
+                <CTableHeaderCell>Количество получателей</CTableHeaderCell>
+                <CTableHeaderCell>Удалить</CTableHeaderCell>
+              </CTableRow>
             </CTableHead>
             <CTableBody>
               {mailingList.map((mailing: IMailing) => (

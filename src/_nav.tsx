@@ -5,6 +5,7 @@ import {
   cilBuilding,
   cilCash,
   cilCircle,
+  cilHistory,
   cilHome,
   cilLink,
   cilList,
@@ -100,6 +101,12 @@ const _nav: NavItem[] = [
         icon: <CIcon icon={cilCircle} customClassName="nav-icon" />,
       },
     ],
+  },
+  {
+    component: CNavItem,
+    name: 'Истории',
+    to: '/stories',
+    icon: <CIcon icon={cilHistory} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,

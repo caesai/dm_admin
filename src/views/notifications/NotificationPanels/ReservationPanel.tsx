@@ -32,15 +32,17 @@ const ReservationPanel: FC<{
       <CCard className={classNames('p-3', 'border-0')}>
         <CTable striped className={classNames('align-middle', 'table-hover', 'mb-0')}>
           <CTableHead>
-            <CTableHeaderCell className={classNames('text-start', 'pb-3')}>
-              Ресторан
-            </CTableHeaderCell>
-            <CTableHeaderCell className={classNames('text-center', 'pb-3')}>
-              Подтверждение
-            </CTableHeaderCell>
-            <CTableHeaderCell className={classNames('text-end', 'pe-2', 'pb-3')}>
-              Редактировать
-            </CTableHeaderCell>
+            <CTableRow>
+              <CTableHeaderCell className={classNames('text-start', 'pb-3')}>
+                Ресторан
+              </CTableHeaderCell>
+              <CTableHeaderCell className={classNames('text-center', 'pb-3')}>
+                Подтверждение
+              </CTableHeaderCell>
+              <CTableHeaderCell className={classNames('text-end', 'pe-2', 'pb-3')}>
+                Редактировать
+              </CTableHeaderCell>
+            </CTableRow>
           </CTableHead>
           <CTableBody className={classNames('border-top')}>
             {confirmationList.map((confirmation) => (
