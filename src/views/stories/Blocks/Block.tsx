@@ -3,9 +3,9 @@ import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 import { IStoriesBlock } from 'src/types/Stories.ts'
 import { getBlockById } from 'src/dataProviders/stories.ts'
 import toast from 'react-hot-toast'
-import BlockForm from 'src/views/stories/Blocks/BlockForm.tsx'
+import BlockForm from 'src/views/stories/Blocks/Form/BlockForm.tsx'
 
-const StoriesBlock: FC<{
+const Block: FC<{
   id: [number | null, Dispatch<number | null>]
   closeBlock: [Dispatch<SetStateAction<number | null>>, Dispatch<SetStateAction<boolean>>]
 }> = ({ id, closeBlock }) => {
@@ -49,4 +49,4 @@ const StoriesBlock: FC<{
   )
 }
 
-export default StoriesBlock
+export default Block

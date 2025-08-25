@@ -17,15 +17,14 @@ import { IStory, StoryType } from 'src/types/Stories.ts'
 const StoriesTable: FC<{
   popup: [boolean, Dispatch<SetStateAction<boolean>>]
   stories: [IStory[], Dispatch<SetStateAction<IStory[]>>]
-  updateStories: [IStory[], Dispatch<SetStateAction<IStory[]>>]
-  deleteStories: [IStory[], Dispatch<SetStateAction<IStory[]>>]
+  updateStories: Dispatch<SetStateAction<IStory[]>>
+  deleteStories: Dispatch<SetStateAction<IStory[]>>
 }> = ({ popup, stories, updateStories, deleteStories }) => {
   const [, setOpenStoryPopup] = popup
   const [isEdit, setIsEdit] = useState(false)
   const [currentStoryId, setCurrentStoryId] = useState<number | null>(null)
 
   const [storiesList, setStoriesList] = stories
-  const [, setStoriesToDelete] = deleteStories
   const setStoryType = (type: StoryType) => {
     switch (type) {
       case 'IMAGE':
@@ -38,7 +37,7 @@ const StoriesTable: FC<{
   }
 
   const handleStoryDelete = (story: IStory) => {
-    setStoriesToDelete((prev) => [...prev, story])
+    deleteStories((prev) => [...prev, story])
     setStoriesList((prevStories) =>
       prevStories.filter((s) => {
         return s !== story

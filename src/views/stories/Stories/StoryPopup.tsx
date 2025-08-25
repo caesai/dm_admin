@@ -24,12 +24,11 @@ const StoryPopup: FC<{
   isEdit: [boolean, Dispatch<SetStateAction<boolean>>]
   currentStoryId: [number | null, Dispatch<SetStateAction<number | null>>]
   setStoriesList: Dispatch<SetStateAction<IStory[]>>
-  updateStories: [IStory[], Dispatch<SetStateAction<IStory[]>>]
+  updateStories: Dispatch<SetStateAction<IStory[]>>
 }> = ({ popup, isEdit, setStoriesList, currentStoryId, updateStories }) => {
   const [open, setOpen] = popup
   const [edit, setEdit] = isEdit
   const [storyId, setStoryId] = currentStoryId
-  const [, setStoriesToUpdate] = updateStories
   const [story, setStory] = useState<IStory>({
     type: 'IMAGE',
     duration: 0,
@@ -133,7 +132,7 @@ const StoryPopup: FC<{
   const handleChangeStory = () => {
     if (edit) {
       if (storyId === null) return
-      setStoriesToUpdate((prev) => [...prev, story])
+      updateStories((prev) => [...prev, story])
       setStoriesList((prev) => prev.map((item) => (item.id === storyId ? story : item))) // заменяем старую историю новой
     } else {
       setStoriesList((prev) => [...prev, story]) // создаём новую историю без id
