@@ -5,6 +5,7 @@ import {
   createStory,
   deleteBlock,
   deleteStory,
+  reorderStory,
   updateBlock,
   updateStory,
 } from 'src/dataProviders/stories.ts'
@@ -75,7 +76,9 @@ const BlockForm: FC<{
   const sendStories = async (targetBlockId: number) => {
     const newStories = storiesList.filter((story) => !story.id)
     for (const story of newStories) {
-      await createStory(story, targetBlockId)
+      await createStory(story, targetBlockId).then((res) => {
+        if (!res.data.id) return
+      })
     }
   }
   const updateStories = async () => {
@@ -90,6 +93,12 @@ const BlockForm: FC<{
       await deleteStory(story.id)
     }
   }
+  const reorderStories = async (targetBlockId: number) => {
+    const storyIds = storiesList
+      .map((story) => story.id)
+      .filter((id): id is number => id !== null && id !== undefined)
+    await reorderStory(storyIds, targetBlockId)
+  }
   const handleSendBlock = () => {
     setIsLoading(true)
 
@@ -97,7 +106,9 @@ const BlockForm: FC<{
       ? updateBlock({ id: blockId, ...block })
           .then(() => {
             if (blockId !== null) {
-              return Promise.all([sendStories(blockId), updateStories(), deleteStories()])
+              return Promise.all([sendStories(blockId), updateStories(), deleteStories()]).then(
+                () => reorderStories(blockId),
+              )
             }
           })
           .then(() => toast('Блок обновлён'))
