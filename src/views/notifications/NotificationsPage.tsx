@@ -44,7 +44,7 @@ const NotificationsPage = () => {
       )}
       {textId !== null && <EditOtherPopup popup={[textId, setTextId]} onUpdate={loadTexts} />}
       <CTabs defaultActiveItemKey="distribution">
-        <CCardHeader className="">
+        <CCardHeader>
           <CTabList variant="enclosed">
             <CTab itemKey="distribution">Рассылка</CTab>
             <CTab itemKey="reservation">Бронирование</CTab>
