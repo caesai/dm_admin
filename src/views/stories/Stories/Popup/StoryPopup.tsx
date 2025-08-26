@@ -121,12 +121,18 @@ const StoryPopup: FC<StoryPopupProps> = ({
     )
   }
   const handleChangeStory = () => {
+    const newStory = {
+      ...story,
+      tempId: edit ? story.tempId : Date.now(),
+    }
     if (edit) {
       if (storyId === null) return
-      updateStories((prev) => [...prev, story])
-      setStoriesList((prev) => prev.map((item) => (item.id === storyId ? story : item)))
+      updateStories((prev) => [...prev, newStory])
+      setStoriesList((prev) =>
+        prev.map((item) => (item.id === storyId || item.tempId === story.tempId ? newStory : item)),
+      )
     } else {
-      setStoriesList((prev) => [...prev, story])
+      setStoriesList((prev) => [...prev, newStory])
     }
     closePopup()
     setEdit(false)
