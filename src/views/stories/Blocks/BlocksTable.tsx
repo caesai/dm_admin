@@ -12,7 +12,7 @@ const BlocksTable: FC<{
     { key: 'id', _style: { width: '15%' }, label: '#' },
     { key: 'name', _style: { width: '30%' }, label: 'Имя' },
     { key: 'active', _style: { width: '15%' }, label: 'Активная' },
-    { key: 'stories_count', _style: { width: '45%' }, label: 'Колличество историй' },
+    { key: 'stories_count', _style: { width: '45%' }, label: 'Количество историй' },
     {
       key: 'edit',
       label: 'Редактировать',
