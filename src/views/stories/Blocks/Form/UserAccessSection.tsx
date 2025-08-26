@@ -8,7 +8,7 @@ import {
   CButton,
   CRow,
 } from '@coreui/react-pro'
-import TooltipInfo from "src/components/TooltipInfo.tsx";
+import TooltipInfo from 'src/components/TooltipInfo.tsx'
 
 interface UserAccessSectionProps {
   isForAll: boolean

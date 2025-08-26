@@ -2,7 +2,7 @@ import { CFormInput } from '@coreui/react-pro'
 import { ChangeEvent, FC } from 'react'
 import classNames from 'classnames'
 import MediaInput from 'src/components/MediaInput.tsx'
-import TooltipInfo from "src/components/TooltipInfo.tsx";
+import TooltipInfo from 'src/components/TooltipInfo.tsx'
 
 interface MediaUrlInputProps {
   url: string | null

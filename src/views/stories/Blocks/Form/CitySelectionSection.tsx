@@ -7,7 +7,7 @@ import {
   CRow,
 } from '@coreui/react-pro'
 import { FC } from 'react'
-import TooltipInfo from "src/components/TooltipInfo.tsx";
+import TooltipInfo from 'src/components/TooltipInfo.tsx'
 
 interface CitySelectionSectionProps {
   selectedCities: number[]

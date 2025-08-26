@@ -1,7 +1,7 @@
 import { CFormInput } from '@coreui/react-pro'
 import { ChangeEvent, FC } from 'react'
 import classNames from 'classnames'
-import TooltipInfo from "src/components/TooltipInfo.tsx";
+import TooltipInfo from 'src/components/TooltipInfo.tsx'
 
 interface DurationInputProps {
   duration: number
