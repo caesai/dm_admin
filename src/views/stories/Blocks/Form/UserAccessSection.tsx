@@ -7,10 +7,8 @@ import {
   CFormInput,
   CButton,
   CRow,
-  CTooltip,
 } from '@coreui/react-pro'
-import CIcon from '@coreui/icons-react'
-import { cilInfo } from '@coreui/icons'
+import TooltipInfo from "src/components/TooltipInfo.tsx";
 
 interface UserAccessSectionProps {
   isForAll: boolean
@@ -56,9 +54,7 @@ export const UserAccessSection: FC<UserAccessSectionProps> = ({
             <CCardHeader className="d-flex">
               Доступно для аккаунтов:
               <div className="ms-3">
-                <CTooltip content="Текст тултипа">
-                  <CIcon icon={cilInfo} />
-                </CTooltip>
+                <TooltipInfo content="Текст тултипа" />
               </div>
             </CCardHeader>
             <CCardBody>

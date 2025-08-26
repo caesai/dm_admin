@@ -1,8 +1,7 @@
-import { CFormInput, CTooltip } from '@coreui/react-pro'
-import CIcon from '@coreui/icons-react'
-import { cilInfo } from '@coreui/icons'
+import { CFormInput } from '@coreui/react-pro'
 import { ChangeEvent, FC } from 'react'
 import classNames from 'classnames'
+import TooltipInfo from "src/components/TooltipInfo.tsx";
 
 interface DurationInputProps {
   duration: number
@@ -24,9 +23,7 @@ const DurationInput: FC<DurationInputProps> = ({ duration, onChange }) => {
           </strong>
         )}
       </div>
-      <CTooltip content="Текст тултипа">
-        <CIcon icon={cilInfo} />
-      </CTooltip>
+      <TooltipInfo content="Текст тултипа" />
     </div>
   )
 }

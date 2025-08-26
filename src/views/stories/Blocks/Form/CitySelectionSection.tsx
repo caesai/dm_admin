@@ -5,11 +5,9 @@ import {
   CAccordionItem,
   CFormCheck,
   CRow,
-  CTooltip,
 } from '@coreui/react-pro'
-import CIcon from '@coreui/icons-react'
-import { cilInfo } from '@coreui/icons'
 import { FC } from 'react'
+import TooltipInfo from "src/components/TooltipInfo.tsx";
 
 interface CitySelectionSectionProps {
   selectedCities: number[]
@@ -33,9 +31,7 @@ export const CitySelectionSection: FC<CitySelectionSectionProps> = ({
           <CAccordionHeader className="d-flex">
             Выбор города
             <div className="ms-2">
-              <CTooltip content="Текст тултипа">
-                <CIcon icon={cilInfo} />
-              </CTooltip>
+              <TooltipInfo content="Текст тултипа" />
             </div>
           </CAccordionHeader>
           <CAccordionBody>

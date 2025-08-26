@@ -1,8 +1,7 @@
-import { CFormInput, CFormCheck, CTooltip } from '@coreui/react-pro'
-import CIcon from '@coreui/icons-react'
-import { cilInfo } from '@coreui/icons'
+import { CFormInput, CFormCheck } from '@coreui/react-pro'
 import { ChangeEvent, FC } from 'react'
 import classNames from 'classnames'
+import TooltipInfo from "src/components/TooltipInfo.tsx";
 
 interface ComponentFieldsProps {
   title: string | null
@@ -35,9 +34,7 @@ const ComponentFields: FC<ComponentFieldsProps> = ({
       />
       <div className={classNames('d-flex', 'align-items-center', 'gap-2')}>
         <CFormCheck label="Кнопка" checked={isActiveButton} onChange={onButtonToggle} />
-        <CTooltip content="Текст тултипа">
-          <CIcon icon={cilInfo} />
-        </CTooltip>
+        <TooltipInfo content="Текст тултипа" />
       </div>
     </div>
   )

@@ -1,8 +1,7 @@
 import { FC, ChangeEvent } from 'react'
-import { CFormInput, CFormCheck, CTooltip, CRow } from '@coreui/react-pro'
-import CIcon from '@coreui/icons-react'
-import { cilInfo } from '@coreui/icons'
+import { CFormInput, CFormCheck, CRow } from '@coreui/react-pro'
 import MediaInput from 'src/components/MediaInput.tsx'
+import TooltipInfo from "src/components/TooltipInfo.tsx";
 
 interface BlockInfoSectionProps {
   blockName: string
@@ -36,9 +35,7 @@ export const BlockInfoSection: FC<BlockInfoSectionProps> = ({
             )}
           </div>
           <div className="ms-2">
-            <CTooltip content="Текст тултипа">
-              <CIcon icon={cilInfo} />
-            </CTooltip>
+            <TooltipInfo content="Текст тултипа" />
           </div>
         </div>
       </CRow>
@@ -48,9 +45,7 @@ export const BlockInfoSection: FC<BlockInfoSectionProps> = ({
           <strong className="fs-5" style={{ transform: 'translateY(10%)' }}>
             *
           </strong>
-          <CTooltip content="Текст тултипа">
-            <CIcon icon={cilInfo} />
-          </CTooltip>
+         <TooltipInfo content="Текст тултипа" />
         </div>
       </CRow>
 
@@ -63,9 +58,7 @@ export const BlockInfoSection: FC<BlockInfoSectionProps> = ({
             onInput={onThumbnailChange}
           />
           <MediaInput onChange={(e) => onImageUpload(e.target.files)} />
-          <CTooltip content="Текст тултипа">
-            <CIcon icon={cilInfo} />
-          </CTooltip>
+         <TooltipInfo content="Текст тултипа" />
         </div>
       </CRow>
     </>

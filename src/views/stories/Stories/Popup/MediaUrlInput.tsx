@@ -1,9 +1,8 @@
-import { CFormInput, CTooltip } from '@coreui/react-pro'
-import CIcon from '@coreui/icons-react'
-import { cilInfo } from '@coreui/icons'
+import { CFormInput } from '@coreui/react-pro'
 import { ChangeEvent, FC } from 'react'
 import classNames from 'classnames'
 import MediaInput from 'src/components/MediaInput.tsx'
+import TooltipInfo from "src/components/TooltipInfo.tsx";
 
 interface MediaUrlInputProps {
   url: string | null
@@ -22,9 +21,7 @@ const MediaUrlInput: FC<MediaUrlInputProps> = ({ url, type, onUrlChange, onMedia
         onInput={onUrlChange}
       />
       <MediaInput onChange={(e) => onMediaChange(e.target.files)} isVideo={type === 'VIDEO'} />
-      <CTooltip content="Текст тултипа">
-        <CIcon icon={cilInfo} />
-      </CTooltip>
+      <TooltipInfo content="Текст тултипа" />
     </div>
   )
 }
