@@ -86,7 +86,7 @@ const StoriesTable: FC<{
         </CTableHead>
         <CTableBody>
           {storiesList.map((story, index) => (
-            <CTableRow key={index}>
+            <CTableRow key={story.id || story.tempId || index}>
               <CTableDataCell className="text-start">{story.id ? story.id : 'Нет'}</CTableDataCell>
               <CTableDataCell className="text-start">{setStoryType(story.type)}</CTableDataCell>
               <CTableDataCell className="text-start">

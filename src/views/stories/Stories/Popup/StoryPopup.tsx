@@ -136,7 +136,7 @@ const StoryPopup: FC<StoryPopupProps> = ({
     } else {
       const newStory = {
         ...story,
-        tempId: `temp-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        tempId: `temp-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
       }
       setStoriesList((prev) => [...prev, newStory])
     }

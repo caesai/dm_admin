@@ -99,10 +99,10 @@ const BlockForm: FC<{
   }
   const reorderStories = async (targetBlockId: number, tempIdMap?: Map<number, number>) => {
     const storiesWithRealIds = storiesList.map((story) => {
-      if (!story.id && story.tempId && tempIdMap?.has(story.tempId)) {
+      if (!story.id && story.tempId && tempIdMap?.has(Number(story.tempId))) {
         return {
           ...story,
-          id: tempIdMap.get(story.tempId),
+          id: tempIdMap.get(Number(story.tempId)),
         }
       }
       return story
