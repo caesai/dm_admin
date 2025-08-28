@@ -121,19 +121,26 @@ const StoryPopup: FC<StoryPopupProps> = ({
     )
   }
   const handleChangeStory = () => {
-    const newStory = {
-      ...story,
-      tempId: edit ? story.tempId : Date.now(),
-    }
     if (edit) {
       if (storyId === null) return
-      updateStories((prev) => [...prev, newStory])
-      setStoriesList((prev) =>
-        prev.map((item) => (item.id === storyId || item.tempId === story.tempId ? newStory : item)),
-      )
+      if (storyId) {
+        const updatedStory = { ...story }
+        setStoriesList((prev) => prev.map((item) => (item.id === storyId ? updatedStory : item)))
+        updateStories((prev) => [...prev, updatedStory])
+      } else if (story.tempId) {
+        const updatedStory = { ...story }
+        setStoriesList((prev) =>
+          prev.map((item) => (item.tempId === story.tempId ? updatedStory : item)),
+        )
+      }
     } else {
+      const newStory = {
+        ...story,
+        tempId: `temp-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      }
       setStoriesList((prev) => [...prev, newStory])
     }
+
     closePopup()
     setEdit(false)
   }
