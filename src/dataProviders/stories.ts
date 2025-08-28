@@ -34,8 +34,8 @@ export const deleteStory = async (id: number) => {
   })
 }
 
-export const reorderStory = async (data: number[], id: number) => {
-  return await axios.post(`${BASEURL}/stories/blocks/${id}/reorder`, data, {
+export const reorderStory = async (data: object, id: number) => {
+  return await axios.post(`${BASEURL}/stories/blocks/${id}/reorder-stories`, data, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },

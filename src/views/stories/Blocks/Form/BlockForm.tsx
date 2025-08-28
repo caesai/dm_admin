@@ -111,7 +111,12 @@ const BlockForm: FC<{
     const storyIds = storiesWithRealIds
       .map((story) => story.id)
       .filter((id): id is number => id !== null && id !== undefined)
-    await reorderStory(storyIds, targetBlockId)
+    await reorderStory(
+      {
+        story_ids: storyIds,
+      },
+      targetBlockId,
+    )
     setStoriesList(storiesWithRealIds)
     setBlock((prev) => ({ ...prev, stories: storiesWithRealIds }))
   }
