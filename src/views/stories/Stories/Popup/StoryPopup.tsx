@@ -70,7 +70,7 @@ const StoryPopup: FC<StoryPopupProps> = ({
   const changeStoryDuration = (e: ChangeEvent<HTMLInputElement>) => {
     setStory((prev) => ({
       ...prev,
-      duration: Number(e.target.value),
+      duration: Number(e.target.value) * 1000,
     }))
   }
   const changeStoryUrl = (e: ChangeEvent<HTMLInputElement>) => {
@@ -175,7 +175,7 @@ const StoryPopup: FC<StoryPopupProps> = ({
             onUrlChange={changeStoryUrl}
             onMediaChange={handleMediaChange}
           />
-          {story.type === 'COMPONENT' && (
+          {story.type === 'component' && (
             <ComponentFields
               title={story.title}
               description={story.description}
