@@ -30,7 +30,7 @@ const StoryPopup: FC<StoryPopupProps> = ({
   const [edit, setEdit] = isEdit
   const [storyId, setStoryId] = currentStoryId
   const [story, setStory] = useState<IStory>({
-    type: 'IMAGE',
+    type: 'image',
     duration: 0,
     url: null,
     title: null,
@@ -49,7 +49,7 @@ const StoryPopup: FC<StoryPopupProps> = ({
     setStoryId(null)
     setIsActiveButton(false)
     setStory({
-      type: 'IMAGE',
+      type: 'image',
       duration: 0,
       url: null,
       title: null,
@@ -113,7 +113,7 @@ const StoryPopup: FC<StoryPopupProps> = ({
     if (!files) {
       return
     }
-    uploadFile(files[0], story.type === 'VIDEO').then((res) =>
+    uploadFile(files[0], story.type === 'video').then((res) =>
       setStory((prev) => ({
         ...prev,
         url: res.data.url,
@@ -161,9 +161,9 @@ const StoryPopup: FC<StoryPopupProps> = ({
         <div className={classNames('w-75', 'd-flex', 'flex-column', 'gap-2')}>
           <CFormSelect
             options={[
-              { label: 'Изображение', value: 'IMAGE' },
-              { label: 'Видео', value: 'VIDEO' },
-              { label: 'Компонент', value: 'COMPONENT' },
+              { label: 'Изображение', value: 'image' },
+              { label: 'Видео', value: 'video' },
+              { label: 'Компонент', value: 'component' },
             ]}
             value={story.type}
             onChange={changeStoryType}

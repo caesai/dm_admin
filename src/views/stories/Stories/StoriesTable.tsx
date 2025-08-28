@@ -27,11 +27,11 @@ const StoriesTable: FC<{
   const [storiesList, setStoriesList] = stories
   const setStoryType = (type: StoryType) => {
     switch (type) {
-      case 'IMAGE':
+      case 'image':
         return 'Изображение'
-      case 'VIDEO':
+      case 'video':
         return 'Видео'
-      case 'COMPONENT':
+      case 'component':
         return 'Компонент'
     }
   }
