@@ -5,6 +5,7 @@ import {
   createStory,
   deleteBlock,
   deleteStory,
+  reorderStory,
   updateBlock,
   updateStory,
 } from 'src/dataProviders/stories.ts'
@@ -74,9 +75,15 @@ const BlockForm: FC<{
   }
   const sendStories = async (targetBlockId: number) => {
     const newStories = storiesList.filter((story) => !story.id)
+    const tempIdMap = new Map()
     for (const story of newStories) {
-      await createStory(story, targetBlockId)
+      await createStory(story, targetBlockId).then((res) => {
+        if (res.data.id && story.tempId) {
+          tempIdMap.set(story.tempId, res.data.id)
+        }
+      })
     }
+    return tempIdMap
   }
   const updateStories = async () => {
     for (const story of storiesToUpdate) {
@@ -90,14 +97,42 @@ const BlockForm: FC<{
       await deleteStory(story.id)
     }
   }
+  const reorderStories = async (targetBlockId: number, tempIdMap?: Map<number, number>) => {
+    const storiesWithRealIds = storiesList.map((story) => {
+      if (!story.id && story.tempId && tempIdMap?.has(Number(story.tempId))) {
+        return {
+          ...story,
+          id: tempIdMap.get(Number(story.tempId)),
+        }
+      }
+      return story
+    })
+
+    const storyIds = storiesWithRealIds
+      .map((story) => story.id)
+      .filter((id): id is number => id !== null && id !== undefined)
+    await reorderStory(
+      {
+        story_ids: storyIds,
+      },
+      targetBlockId,
+    )
+    setStoriesList(storiesWithRealIds)
+    setBlock((prev) => ({ ...prev, stories: storiesWithRealIds }))
+  }
   const handleSendBlock = () => {
     setIsLoading(true)
-
     const operation = isEdit
       ? updateBlock({ id: blockId, ...block })
           .then(() => {
             if (blockId !== null) {
-              return Promise.all([sendStories(blockId), updateStories(), deleteStories()])
+              return Promise.all([
+                sendStories(blockId).then((tempIdMap) => {
+                  return Promise.all([updateStories(), deleteStories()]).then(() =>
+                    reorderStories(blockId, tempIdMap),
+                  )
+                }),
+              ])
             }
           })
           .then(() => toast('Блок обновлён'))
@@ -105,7 +140,9 @@ const BlockForm: FC<{
           .then((res) => {
             const newBlockId = res.data.id
             if (newBlockId) {
-              return sendStories(newBlockId)
+              return sendStories(newBlockId).then((tempIdMap) =>
+                reorderStories(newBlockId, tempIdMap),
+              )
             }
           })
           .then(() => toast('Блок создан'))
@@ -118,7 +155,6 @@ const BlockForm: FC<{
   }
   const handleDeleteBlock = () => {
     if (blockId === null) return
-
     deleteBlock(blockId)
       .then(() => toast('Блок удалён'))
       .catch((e) => toast.error(e))

@@ -27,11 +27,11 @@ const StoriesTable: FC<{
   const [storiesList, setStoriesList] = stories
   const setStoryType = (type: StoryType) => {
     switch (type) {
-      case 'IMAGE':
+      case 'image':
         return 'Изображение'
-      case 'VIDEO':
+      case 'video':
         return 'Видео'
-      case 'COMPONENT':
+      case 'component':
         return 'Компонент'
     }
   }
@@ -44,6 +44,26 @@ const StoriesTable: FC<{
       }),
     )
   }
+
+  const moveStoryUp = (index: number) => {
+    if (index <= 0) return
+    const newStoriesList = [...storiesList]
+    ;[newStoriesList[index - 1], newStoriesList[index]] = [
+      newStoriesList[index],
+      newStoriesList[index - 1],
+    ]
+    setStoriesList(newStoriesList)
+  }
+  const moveStoryDown = (index: number) => {
+    if (index >= storiesList.length - 1) return
+    const newStoriesList = [...storiesList]
+    ;[newStoriesList[index], newStoriesList[index + 1]] = [
+      newStoriesList[index + 1],
+      newStoriesList[index],
+    ]
+    setStoriesList(newStoriesList)
+  }
+
   return (
     <>
       <CTable striped className={classNames('align-middle', 'table-hover', 'mb-0')}>
@@ -65,8 +85,8 @@ const StoriesTable: FC<{
           </CTableRow>
         </CTableHead>
         <CTableBody>
-          {storiesList.map((story) => (
-            <CTableRow key={story.id}>
+          {storiesList.map((story, index) => (
+            <CTableRow key={story.id || story.tempId || index}>
               <CTableDataCell className="text-start">{story.id ? story.id : 'Нет'}</CTableDataCell>
               <CTableDataCell className="text-start">{setStoryType(story.type)}</CTableDataCell>
               <CTableDataCell className="text-start">
@@ -85,10 +105,20 @@ const StoriesTable: FC<{
                 </CButton>
               </CTableDataCell>
               <CTableDataCell className="text-end">
-                <CIcon icon={cilArrowBottom} size="xl" style={{ cursor: 'pointer' }} />
+                <CIcon
+                  icon={cilArrowBottom}
+                  size="xl"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => moveStoryDown(index)}
+                />
               </CTableDataCell>
               <CTableDataCell className="text-end">
-                <CIcon icon={cilArrowTop} size="xl" style={{ cursor: 'pointer' }} />
+                <CIcon
+                  icon={cilArrowTop}
+                  size="xl"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => moveStoryUp(index)}
+                />
               </CTableDataCell>
               <CTableDataCell className={classNames('text-end', 'pe-0')}>
                 <CButton color="primary" onClick={() => handleStoryDelete(story)}>

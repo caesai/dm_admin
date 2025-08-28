@@ -14,7 +14,7 @@ const DurationInput: FC<DurationInputProps> = ({ duration, onChange }) => {
       <div className={classNames('position-relative', 'w-100')}>
         <CFormInput
           placeholder="Длительность в секундах"
-          value={duration !== 0 ? duration : ''}
+          value={duration !== 0 ? duration / 1000 : ''}
           onChange={onChange}
         />
         {!duration && (

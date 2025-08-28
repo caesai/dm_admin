@@ -30,7 +30,7 @@ const StoryPopup: FC<StoryPopupProps> = ({
   const [edit, setEdit] = isEdit
   const [storyId, setStoryId] = currentStoryId
   const [story, setStory] = useState<IStory>({
-    type: 'IMAGE',
+    type: 'image',
     duration: 0,
     url: null,
     title: null,
@@ -49,7 +49,7 @@ const StoryPopup: FC<StoryPopupProps> = ({
     setStoryId(null)
     setIsActiveButton(false)
     setStory({
-      type: 'IMAGE',
+      type: 'image',
       duration: 0,
       url: null,
       title: null,
@@ -70,7 +70,7 @@ const StoryPopup: FC<StoryPopupProps> = ({
   const changeStoryDuration = (e: ChangeEvent<HTMLInputElement>) => {
     setStory((prev) => ({
       ...prev,
-      duration: Number(e.target.value),
+      duration: Number(e.target.value) * 1000,
     }))
   }
   const changeStoryUrl = (e: ChangeEvent<HTMLInputElement>) => {
@@ -113,7 +113,7 @@ const StoryPopup: FC<StoryPopupProps> = ({
     if (!files) {
       return
     }
-    uploadFile(files[0], story.type === 'VIDEO').then((res) =>
+    uploadFile(files[0], story.type === 'video').then((res) =>
       setStory((prev) => ({
         ...prev,
         url: res.data.url,
@@ -123,11 +123,24 @@ const StoryPopup: FC<StoryPopupProps> = ({
   const handleChangeStory = () => {
     if (edit) {
       if (storyId === null) return
-      updateStories((prev) => [...prev, story])
-      setStoriesList((prev) => prev.map((item) => (item.id === storyId ? story : item)))
+      if (storyId) {
+        const updatedStory = { ...story }
+        setStoriesList((prev) => prev.map((item) => (item.id === storyId ? updatedStory : item)))
+        updateStories((prev) => [...prev, updatedStory])
+      } else if (story.tempId) {
+        const updatedStory = { ...story }
+        setStoriesList((prev) =>
+          prev.map((item) => (item.tempId === story.tempId ? updatedStory : item)),
+        )
+      }
     } else {
-      setStoriesList((prev) => [...prev, story])
+      const newStory = {
+        ...story,
+        tempId: `temp-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+      }
+      setStoriesList((prev) => [...prev, newStory])
     }
+
     closePopup()
     setEdit(false)
   }
@@ -155,9 +168,9 @@ const StoryPopup: FC<StoryPopupProps> = ({
         <div className={classNames('w-75', 'd-flex', 'flex-column', 'gap-2')}>
           <CFormSelect
             options={[
-              { label: 'Изображение', value: 'IMAGE' },
-              { label: 'Видео', value: 'VIDEO' },
-              { label: 'Компонент', value: 'COMPONENT' },
+              { label: 'Изображение', value: 'image' },
+              { label: 'Видео', value: 'video' },
+              { label: 'Компонент', value: 'component' },
             ]}
             value={story.type}
             onChange={changeStoryType}
@@ -169,7 +182,7 @@ const StoryPopup: FC<StoryPopupProps> = ({
             onUrlChange={changeStoryUrl}
             onMediaChange={handleMediaChange}
           />
-          {story.type === 'COMPONENT' && (
+          {story.type === 'component' && (
             <ComponentFields
               title={story.title}
               description={story.description}

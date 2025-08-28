@@ -34,6 +34,14 @@ export const deleteStory = async (id: number) => {
   })
 }
 
+export const reorderStory = async (data: object, id: number) => {
+  return await axios.post(`${BASEURL}/stories/blocks/${id}/reorder-stories`, data, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+    },
+  })
+}
+
 export const getBlocksList = async () => {
   return await axios.get<IStoriesBlock[]>(`${BASEURL}/stories/blocks`, {
     headers: {

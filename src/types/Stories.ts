@@ -1,7 +1,8 @@
-export type StoryType = 'IMAGE' | 'VIDEO' | 'COMPONENT'
+export type StoryType = 'image' | 'video' | 'component'
 
 export interface IStory {
   id?: number
+  tempId?: string
   type: StoryType
   duration: number
   url: string | null
