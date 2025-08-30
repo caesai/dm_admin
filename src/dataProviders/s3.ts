@@ -5,12 +5,15 @@ export interface IFileUpload {
   url: string
 }
 
-export const uploadFile = async (file: File) => {
+export const uploadFile = async (file: File, isVideo: boolean) => {
   const formData = new FormData()
-  const compressedFile = await compressImage(file, 50)
-  formData.append('file', compressedFile)
-  console.log('compressed!')
-  return axios.put<IFileUpload>(`${BASEURL}/s3/upload/`, formData, {
+  let fileToUpload: Blob | File = file
+  if (!isVideo) {
+    fileToUpload = await compressImage(file, 50)
+  }
+  formData.append('file', fileToUpload)
+  console.log('Uploading file...')
+  return axios.put<IFileUpload>(`${BASEURL}/s3/upload`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
       Authorization: 'Bearer ' + localStorage.getItem('access_token'),

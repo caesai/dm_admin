@@ -15,6 +15,7 @@ const CitiesPage = React.lazy(() => import('./views/dicts/cities/CItyListPage.ts
 const RestaurantsPage = React.lazy(() => import('./views/restaurants/RestaurantsListPage.tsx'))
 const RestaurantPage = React.lazy(() => import('./views/restaurants/RestaurantPage'))
 const ChefsPage = React.lazy(() => import('./views/chefs/ChefsPage.tsx'))
+const StoriesPage = React.lazy(() => import('./views/stories/StoriesPage.tsx'))
 const InviteLinksPage = React.lazy(() => import('./views/inviteLinks/InviteLinksPage.tsx'))
 const NotificationsPage = React.lazy(() => import('./views/notifications/NotificationsPage.tsx'))
 
@@ -52,6 +53,11 @@ const routes: Route[] = [
     path: '/restaurants/:id',
     name: 'Ресторан',
     element: RestaurantPage,
+  },
+  {
+    path: '/stories',
+    name: 'Истории',
+    element: StoriesPage,
   },
   {
     path: '/invite-links',

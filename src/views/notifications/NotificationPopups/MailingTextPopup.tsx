@@ -1,5 +1,6 @@
 import { CModal, CModalBody, CModalHeader, CModalTitle } from '@coreui/react-pro'
 import { Dispatch, FC, SetStateAction } from 'react'
+import { renderHTMLContent } from 'src/utils'
 
 const MailingTextPopup: FC<{
   popup: [string, Dispatch<SetStateAction<string | null>>]
@@ -11,7 +12,7 @@ const MailingTextPopup: FC<{
       <CModalHeader>
         <CModalTitle>Текст рассылки</CModalTitle>
       </CModalHeader>
-      <CModalBody>{text}</CModalBody>
+      <CModalBody>{renderHTMLContent(text)}</CModalBody>
     </CModal>
   )
 }
