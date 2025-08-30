@@ -121,7 +121,7 @@ export const TextEditor: React.FC<IProps> = ({
   }
 
   const convertNewLinesToHtml = (text: string): string => {
-    return text.replace(/\n/g, '<br>')
+    return text.replace(/\n\s*\n/g, '<p><br></p>').replace(/\n/g, '<br>')
   }
 
   if (!editor) {
@@ -173,6 +173,17 @@ export const TextEditor: React.FC<IProps> = ({
       filter: ['br'],
       replacement: function () {
         return '\n'
+      },
+    })
+
+    service.addRule('emptyParagraphWithBr', {
+      filter: function (node) {
+        return (
+          node.nodeName === 'P' && (node.innerHTML === '<br>' || node.innerHTML.trim() === '<br>')
+        )
+      },
+      replacement: function () {
+        return '\n\n'
       },
     })
 
