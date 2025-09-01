@@ -11,7 +11,7 @@ const InviteLinksPage = () => {
   const [currentCodeId, setCurrentCodeId] = useState<number | null | undefined>(undefined)
   const loadLinks = async () => {
     const response = await getCodesList()
-    setLinks([...response.data].sort((a, b) => a.id - b.id))
+    setLinks([...response.data].sort((a, b) => a.id! - b.id!))
   }
 
   useEffect(() => {
