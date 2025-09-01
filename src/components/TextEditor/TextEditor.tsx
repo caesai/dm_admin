@@ -25,10 +25,7 @@ interface IProps {
   onUpdate: (a: any) => void
 }
 
-export const TextEditor: React.FC<IProps> = ({
-  onUpdate,
-  initialContent = 'Текст рассылки...',
-}) => {
+export const TextEditor: React.FC<IProps> = ({ onUpdate, initialContent }) => {
   const [editorContent, setEditorContent] = useState('')
   const [isEmoji, setIsEmoji] = useState<boolean>(false)
   const emojiPickerRef = useRef<HTMLDivElement>(null)

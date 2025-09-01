@@ -1,5 +1,5 @@
 export interface ICode {
-  id: number
+  id?: number
   name: string
   code: string
   text: string | null

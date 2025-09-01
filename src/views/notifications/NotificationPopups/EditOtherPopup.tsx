@@ -57,7 +57,10 @@ const EditOtherPopup: FC<{
           </CCard>
           <CCard className="border-0">
             <CCardBody className={classNames('border', 'rounded')}>
-              <TextEditor onUpdate={setEditorContent} initialContent={text?.content} />
+              <TextEditor
+                onUpdate={setEditorContent}
+                initialContent={text?.content ? text.content : 'Текст рассылки...'}
+              />
             </CCardBody>
           </CCard>
         </CCardGroup>

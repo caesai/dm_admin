@@ -1,12 +1,14 @@
 import { ICode } from 'src/types/Code.ts'
 import { CButton, CSmartTable } from '@coreui/react-pro'
 import { Item } from '@coreui/react-pro/src/components/smart-table/types'
+import { Dispatch, SetStateAction } from 'react'
 
 interface IInviteLinksTable {
   links: ICode[]
+  setPopupId: Dispatch<SetStateAction<number | null | undefined>>
 }
 
-const InviteLinksTable = ({ links }: IInviteLinksTable) => {
+const InviteLinksTable = ({ links, setPopupId }: IInviteLinksTable) => {
   const columns = [
     { key: 'code', _style: { width: '35%' }, label: 'Ссылка' },
     { key: 'copy', _style: { width: '5%' }, label: 'Копировать', filter: false },
@@ -45,9 +47,11 @@ const InviteLinksTable = ({ links }: IInviteLinksTable) => {
         name: (item: Item) => <td>{item.name || 'Не установлено'}</td>,
         restaurant_id: (item: Item) => <td>{item.restaurant_id || '—'}</td>,
         text: (item: Item) => <td>{item.text || 'Не установлено'}</td>,
-        edit: () => (
+        edit: (item: Item) => (
           <td>
-            <CButton color="primary">Редактировать</CButton>
+            <CButton color="primary" onClick={() => setPopupId(item.id)}>
+              Редактировать
+            </CButton>
           </td>
         ),
       }}
