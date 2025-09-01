@@ -25,3 +25,11 @@ export const createCode = async (data: ICode) => {
     },
   })
 }
+
+export const updateCode = async (data: ICode, id: number) => {
+  return await axios.put<ICode>(`${BASEURL}/codes/${id}`, data, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+    },
+  })
+}

@@ -15,7 +15,7 @@ import { ChangeEvent, Dispatch, FC, SetStateAction, useEffect, useState } from '
 import classNames from 'classnames'
 import { TextEditor } from 'src/components/TextEditor/TextEditor.tsx'
 import { ICode } from 'src/types/Code.ts'
-import { createCode, getCodeById } from 'src/dataProviders/codes.ts'
+import { createCode, getCodeById, updateCode } from 'src/dataProviders/codes.ts'
 import toast from 'react-hot-toast'
 
 const InviteLinkPopup: FC<{
@@ -35,25 +35,34 @@ const InviteLinkPopup: FC<{
       if (id === null || id === undefined) return
       const response = await getCodeById(id)
       setCode(response.data)
+      setEditorContent(response.data.text ? response.data.text : '')
     } catch (error) {
       console.error('Failed to fetch code:', error)
     }
   }
 
-  const addNewCode = async () => {
-    if (id !== null) return
-    await createCode({
-      ...code,
-      text: editorContent,
-    })
-      .then(() => toast('Инвайт-ссылка создана'))
-      .catch(() => toast.error('Ошибка при создании'))
-      .finally(() => {
-        setId(undefined)
-        if (onUpdate) {
-          onUpdate()
-        }
-      })
+  const handleSaveCode = async () => {
+    if (id === undefined) return
+    try {
+      const codeData = {
+        ...code,
+        text: editorContent,
+      }
+      if (id === null) {
+        await createCode(codeData)
+        toast('Инвайт-ссылка создана')
+      } else {
+        await updateCode(codeData, id)
+        toast('Инвайт-ссылка обновлена')
+      }
+      setId(undefined)
+      if (onUpdate) {
+        await onUpdate()
+      }
+    } catch (error) {
+      toast.error(id === null ? 'Ошибка при создании' : 'Ошибка при обновлении')
+      console.error('Failed to save code:', error)
+    }
   }
 
   const changeLinkCode = (e: ChangeEvent<HTMLInputElement>) => {
@@ -112,7 +121,7 @@ const InviteLinkPopup: FC<{
         <CButton color="secondary" className="w-100" onClick={() => setId(undefined)}>
           {id === null ? 'Отменить' : 'Удалить'}
         </CButton>
-        <CButton color="primary" className="w-100" onClick={addNewCode}>
+        <CButton color="primary" className="w-100" onClick={handleSaveCode}>
           {id === null ? 'Добавить' : 'Сохранить'}
         </CButton>
       </CModalFooter>
