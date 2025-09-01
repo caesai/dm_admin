@@ -33,3 +33,11 @@ export const updateCode = async (data: ICode, id: number) => {
     },
   })
 }
+
+export const deleteCode = async (id: number) => {
+  return await axios.delete(`${BASEURL}/codes/${id}`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+    },
+  })
+}

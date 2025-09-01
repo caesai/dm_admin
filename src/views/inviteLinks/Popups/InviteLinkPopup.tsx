@@ -15,7 +15,7 @@ import { ChangeEvent, Dispatch, FC, SetStateAction, useEffect, useState } from '
 import classNames from 'classnames'
 import { TextEditor } from 'src/components/TextEditor/TextEditor.tsx'
 import { ICode } from 'src/types/Code.ts'
-import { createCode, getCodeById, updateCode } from 'src/dataProviders/codes.ts'
+import { createCode, deleteCode, getCodeById, updateCode } from 'src/dataProviders/codes.ts'
 import toast from 'react-hot-toast'
 
 const InviteLinkPopup: FC<{
@@ -37,7 +37,7 @@ const InviteLinkPopup: FC<{
       setCode(response.data)
       setEditorContent(response.data.text ? response.data.text : '')
     } catch (error) {
-      console.error('Failed to fetch code:', error)
+      console.error(error)
     }
   }
 
@@ -61,7 +61,26 @@ const InviteLinkPopup: FC<{
       }
     } catch (error) {
       toast.error(id === null ? 'Ошибка при создании' : 'Ошибка при обновлении')
-      console.error('Failed to save code:', error)
+      console.error(error)
+    }
+  }
+
+  const handleDeleteCode = async () => {
+    if (id === undefined) return
+    try {
+      if (id === null) {
+        setId(undefined)
+        return
+      }
+      await deleteCode(id)
+      toast('Инвайт-ссылка удалена')
+      setId(undefined)
+      if (onUpdate) {
+        await onUpdate()
+      }
+    } catch (error) {
+      toast.error('Ошибка при удалении')
+      console.error(error)
     }
   }
 
@@ -118,7 +137,7 @@ const InviteLinkPopup: FC<{
         </CCardGroup>
       </CModalBody>
       <CModalFooter className="flex-nowrap">
-        <CButton color="secondary" className="w-100" onClick={() => setId(undefined)}>
+        <CButton color="secondary" className="w-100" onClick={handleDeleteCode}>
           {id === null ? 'Отменить' : 'Удалить'}
         </CButton>
         <CButton color="primary" className="w-100" onClick={handleSaveCode}>
