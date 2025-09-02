@@ -35,7 +35,7 @@ export const BlockInfoSection: FC<BlockInfoSectionProps> = ({
             )}
           </div>
           <div className="ms-2">
-            <TooltipInfo content="Текст тултипа" />
+            <TooltipInfo content="Название блока историй" />
           </div>
         </div>
       </CRow>
@@ -45,7 +45,7 @@ export const BlockInfoSection: FC<BlockInfoSectionProps> = ({
           <strong className="fs-5" style={{ transform: 'translateY(10%)' }}>
             *
           </strong>
-          <TooltipInfo content="Текст тултипа" />
+          <TooltipInfo content="В приложении показываются только активные блоки историй. Если чекбокс отключен, история будет не доступна" />
         </div>
       </CRow>
 
@@ -58,7 +58,7 @@ export const BlockInfoSection: FC<BlockInfoSectionProps> = ({
             onInput={onThumbnailChange}
           />
           <MediaInput onChange={(e) => onImageUpload(e.target.files)} />
-          <TooltipInfo content="Текст тултипа" />
+          <TooltipInfo content="Обложка истории отображается на главной странице приложения в блоке историй. Вставьте ссылку на изображение, либо загрузите его, нажав на кнопку. Избражение должно быть квадратное" />
         </div>
       </CRow>
     </>

@@ -54,7 +54,7 @@ export const UserAccessSection: FC<UserAccessSectionProps> = ({
             <CCardHeader className="d-flex">
               Доступно для аккаунтов:
               <div className="ms-3">
-                <TooltipInfo content="Текст тултипа" />
+                <TooltipInfo content="Укажите Телеграм ID пользователей, которым будет доступен блок историй. Если список пользователей пуст, блок будет доступен всем пользователям" />
               </div>
             </CCardHeader>
             <CCardBody>

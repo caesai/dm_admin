@@ -34,7 +34,7 @@ const ComponentFields: FC<ComponentFieldsProps> = ({
       />
       <div className={classNames('d-flex', 'align-items-center', 'gap-2')}>
         <CFormCheck label="Кнопка" checked={isActiveButton} onChange={onButtonToggle} />
-        <TooltipInfo content="Текст тултипа" />
+        <TooltipInfo content="Если хотите добавить к истории кнопку, нажмите на чекбокс и введите необходимые параметры" />
       </div>
     </div>
   )

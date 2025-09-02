@@ -10,6 +10,7 @@ import DurationInput from './DurationInput'
 import MediaUrlInput from './MediaUrlInput'
 import ComponentFields from './ComponentFields'
 import ButtonFields from './ButtonFields'
+import TooltipInfo from 'src/components/TooltipInfo'
 
 interface StoryPopupProps {
   popup: [boolean, Dispatch<SetStateAction<boolean>>]
@@ -166,15 +167,18 @@ const StoryPopup: FC<StoryPopupProps> = ({
       </CModalHeader>
       <CModalBody className="d-flex">
         <div className={classNames('w-75', 'd-flex', 'flex-column', 'gap-2')}>
-          <CFormSelect
-            options={[
-              { label: 'Изображение', value: 'image' },
-              { label: 'Видео', value: 'video' },
-              { label: 'Компонент', value: 'component' },
-            ]}
-            value={story.type}
-            onChange={changeStoryType}
-          />
+          <div className={classNames('d-flex', 'align-items-center', 'gap-2')}>
+            <CFormSelect
+              options={[
+                { label: 'Изображение', value: 'image' },
+                { label: 'Видео', value: 'video' },
+                { label: 'Компонент', value: 'component' },
+              ]}
+              value={story.type}
+              onChange={changeStoryType}
+            />
+            <TooltipInfo content="Выберите тип контента для истории" />
+          </div>
           <DurationInput duration={story.duration} onChange={changeStoryDuration} />
           <MediaUrlInput
             url={story.url}
