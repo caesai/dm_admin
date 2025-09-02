@@ -178,9 +178,7 @@ export const TextEditor: React.FC<IProps> = ({
 
     service.addRule('emptyParagraphWithBr', {
       filter: function (node) {
-        return (
-          node.nodeName === 'P' && (node.innerHTML === '<br>' || node.innerHTML.trim() === '<br>')
-        )
+        return node.nodeName === 'P' && node.innerHTML.trim() === '<br>'
       },
       replacement: function () {
         return '\n\n'
