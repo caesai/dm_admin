@@ -126,7 +126,7 @@ const DistributionPanel = () => {
 
   useEffect(() => {
     setIsActiveNotificationButton(false)
-  }, [testUserName, editorContent, photo, video, document, buttonText, buttonUrl])
+  }, [editorContent, photo, video, document, buttonText, buttonUrl])
   return (
     <>
       <CTabPanel itemKey="distribution">
@@ -217,7 +217,7 @@ const DistributionPanel = () => {
                 Рассылка
               </CButton>
               <div className="ms-2">
-                <TooltipInfo content="Разослать сообщение всем пользователям" />
+                <TooltipInfo content="Разослать сообщение всем пользователям. Функция доступна только после теста рассылки." />
               </div>
             </div>
           </CCardBody>
