@@ -132,19 +132,45 @@ const InviteLinkPopup: FC<{
       </CModalHeader>
       <CModalBody>
         <CCardGroup className={classNames('flex-column', 'gap-2')}>
-          <CCard className="border-0">
+          <CCard className={classNames('border-0', 'position-relative')}>
             <CFormInput
               placeholder="Код-ссылки"
               defaultValue={code?.code}
               onInput={changeLinkCode}
             />
+            {code?.code === '' && (
+              <strong
+                style={{
+                  position: 'absolute',
+                  top: '15%',
+                  right: '1em',
+                  color: 'red',
+                  fontSize: '1.5em',
+                }}
+              >
+                *
+              </strong>
+            )}
           </CCard>
-          <CCard className="border-0">
+          <CCard className={classNames('border-0', 'position-relative')}>
             <CFormInput
               placeholder="Имя ссылки"
               defaultValue={code?.name}
               onInput={changeLinkName}
             />
+            {code?.name === '' && (
+              <strong
+                style={{
+                  position: 'absolute',
+                  top: '15%',
+                  right: '1em',
+                  color: 'red',
+                  fontSize: '1.5em',
+                }}
+              >
+                *
+              </strong>
+            )}
           </CCard>
           <CCard className="border-0">
             <CFormSelect
