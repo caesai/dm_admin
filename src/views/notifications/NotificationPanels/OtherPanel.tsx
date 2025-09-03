@@ -23,11 +23,15 @@ const OtherPanel: FC<{
       <CCard className={classNames('p-3', 'border-0')}>
         <CTable striped className={classNames('align-middle', 'table-hover', 'mb-0')}>
           <CTableHead>
-            <CTableHeaderCell className={classNames('text-start', 'pb-3')}>Имя</CTableHeaderCell>
-            <CTableHeaderCell className={classNames('text-center', 'pb-3')}>Текст</CTableHeaderCell>
-            <CTableHeaderCell className={classNames('text-end', 'pe-2', 'pb-3')}>
-              Редактировать
-            </CTableHeaderCell>
+            <CTableRow>
+              <CTableHeaderCell className={classNames('text-start', 'pb-3')}>Имя</CTableHeaderCell>
+              <CTableHeaderCell className={classNames('text-center', 'pb-3')}>
+                Текст
+              </CTableHeaderCell>
+              <CTableHeaderCell className={classNames('text-end', 'pe-2', 'pb-3')}>
+                Редактировать
+              </CTableHeaderCell>
+            </CTableRow>
           </CTableHead>
           <CTableBody className={classNames('border-top')}>
             {texts.map((text) => (
