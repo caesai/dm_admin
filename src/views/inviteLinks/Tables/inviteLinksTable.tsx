@@ -9,6 +9,11 @@ interface IInviteLinksTable {
 }
 
 const InviteLinksTable = ({ links, setPopupId }: IInviteLinksTable) => {
+  const copyCode = (id: number) => {
+    const currentLink = links.find((link) => link.id === id)
+    if (!currentLink) return
+    navigator.clipboard.writeText(currentLink?.code)
+  }
   const columns = [
     { key: 'code', _style: { width: '35%' }, label: 'Ссылка' },
     { key: 'copy', _style: { width: '5%' }, label: 'Копировать', filter: false },
@@ -39,9 +44,11 @@ const InviteLinksTable = ({ links, setPopupId }: IInviteLinksTable) => {
       itemsPerPage={20}
       pagination
       scopedColumns={{
-        copy: () => (
+        copy: (item: Item) => (
           <td>
-            <CButton color="primary">Копировать</CButton>
+            <CButton color="primary" onClick={() => copyCode(item.id)}>
+              Копировать
+            </CButton>
           </td>
         ),
         name: (item: Item) => <td>{item.name || 'Не установлено'}</td>,
