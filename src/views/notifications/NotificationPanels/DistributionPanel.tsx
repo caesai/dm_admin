@@ -13,7 +13,7 @@ import {
 } from '@coreui/react-pro'
 import classNames from 'classnames'
 import { TextEditor } from 'src/components/TextEditor/TextEditor.tsx'
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import ConfirmDistributionPopup from 'src/views/notifications/NotificationPopups/ConfirmDistributionPopup.tsx'
 import {
   sendMailingDocument,
@@ -35,6 +35,7 @@ const DistributionPanel = () => {
   const [buttonText, setButtonText] = useState<string>('')
   const [buttonUrl, setButtonUrl] = useState<string>('')
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false)
+  const [isActiveNotificationButton, setIsActiveNotificationButton] = useState<boolean>(false)
   const [refreshHistoryKey, setRefreshHistoryKey] = useState<number>(0)
 
   // Function to refresh the notification history.
@@ -90,6 +91,7 @@ const DistributionPanel = () => {
       toast.error('Ошибка в тестовой рассылке: ' + error)
     } finally {
       setGroupNotificationIsInProgress(false)
+      setIsActiveNotificationButton(true)
     }
   }
   // Notify all users
@@ -121,6 +123,10 @@ const DistributionPanel = () => {
       setDocument(e.target.files[0])
     }
   }
+
+  useEffect(() => {
+    setIsActiveNotificationButton(false)
+  }, [editorContent, photo, video, document, buttonText, buttonUrl])
   return (
     <>
       <CTabPanel itemKey="distribution">
@@ -202,11 +208,16 @@ const DistributionPanel = () => {
           </CCard>
           <CCardBody className="d-flex">
             <div className="d-flex align-items-center">
-              <CButton color="primary" className="px-4" onClick={() => setIsPopupOpen(true)}>
+              <CButton
+                color="primary"
+                className="px-4"
+                onClick={() => setIsPopupOpen(true)}
+                disabled={!isActiveNotificationButton}
+              >
                 Рассылка
               </CButton>
               <div className="ms-2">
-                <TooltipInfo content="Разослать сообщение всем пользователям" />
+                <TooltipInfo content="Разослать сообщение всем пользователям. Функция доступна только после теста рассылки." />
               </div>
             </div>
           </CCardBody>

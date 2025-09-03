@@ -23,7 +23,7 @@ const DurationInput: FC<DurationInputProps> = ({ duration, onChange }) => {
           </strong>
         )}
       </div>
-      <TooltipInfo content="Текст тултипа" />
+      <TooltipInfo content="Продолжительность показа истории в секундах" />
     </div>
   )
 }

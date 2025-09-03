@@ -19,6 +19,7 @@ import css from './editor.module.css'
 import TurndownService from 'turndown'
 import EmojiPicker from 'emoji-picker-react'
 import useClickOutside from 'src/hooks/useClickOutside.ts'
+import HardBreak from '@tiptap/extension-hard-break'
 
 interface IProps {
   initialContent?: string | undefined
@@ -47,12 +48,18 @@ export const TextEditor: React.FC<IProps> = ({ onUpdate, initialContent }) => {
       Italic,
       Strike,
       Code,
+      HardBreak.configure({
+        HTMLAttributes: {
+          class: 'hard-break',
+        },
+      }),
     ],
     content: initialContent,
   }) as Editor
   useEffect(() => {
     if (editor && initialContent) {
-      editor.commands.setContent(initialContent)
+      const formattedContent = convertNewLinesToHtml(initialContent)
+      editor.commands.setContent(formattedContent)
     }
   }, [initialContent, editor])
   const [modalIsOpen, setIsOpen] = useState(false)
@@ -110,6 +117,10 @@ export const TextEditor: React.FC<IProps> = ({ onUpdate, initialContent }) => {
     setIsEmoji(false)
   }
 
+  const convertNewLinesToHtml = (text: string): string => {
+    return text.replace(/\n\s*\n/g, '<p><br></p>').replace(/\n/g, '<br>')
+  }
+
   if (!editor) {
     return null
   }
@@ -152,6 +163,22 @@ export const TextEditor: React.FC<IProps> = ({ onUpdate, initialContent }) => {
       filter: ['code'],
       replacement: function (content) {
         return '<pre>' + content + '</pre>'
+      },
+    })
+
+    service.addRule('lineBreak', {
+      filter: ['br'],
+      replacement: function () {
+        return '\n'
+      },
+    })
+
+    service.addRule('emptyParagraphWithBr', {
+      filter: function (node) {
+        return node.nodeName === 'P' && node.innerHTML.trim() === '<br>'
+      },
+      replacement: function () {
+        return '\n\n'
       },
     })
 

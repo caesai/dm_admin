@@ -31,7 +31,7 @@ export const CitySelectionSection: FC<CitySelectionSectionProps> = ({
           <CAccordionHeader className="d-flex">
             Выбор города
             <div className="ms-2">
-              <TooltipInfo content="Текст тултипа" />
+              <TooltipInfo content="Выберите города, для которых будет доступен блок. Если не выбрано ни одного города, блок будет доступен во всех городах." />
             </div>
           </CAccordionHeader>
           <CAccordionBody>

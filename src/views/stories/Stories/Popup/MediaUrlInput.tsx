@@ -12,6 +12,13 @@ interface MediaUrlInputProps {
 }
 
 const MediaUrlInput: FC<MediaUrlInputProps> = ({ url, type, onUrlChange, onMediaChange }) => {
+  let tooltipText = 'Введите ссылку на изображение или загрузите его, нажав на кнопку'
+  if (type === 'component')
+    tooltipText = 'Введите ссылку на изображение или загрузите его, нажав на кнопку'
+  if (type === 'video')
+    tooltipText =
+      'Введите ссылку на видео в формате mp4. Загрузка видео через кнопку в данный момент не работает'
+
   return (
     <div className={classNames('d-flex', 'align-items-center', 'gap-2', 'p-0')}>
       <CFormInput
@@ -21,7 +28,7 @@ const MediaUrlInput: FC<MediaUrlInputProps> = ({ url, type, onUrlChange, onMedia
         onInput={onUrlChange}
       />
       <MediaInput onChange={(e) => onMediaChange(e.target.files)} isVideo={type === 'video'} />
-      <TooltipInfo content="Текст тултипа" />
+      <TooltipInfo content={tooltipText} />
     </div>
   )
 }
