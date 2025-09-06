@@ -41,6 +41,7 @@ const EditOtherPopup: FC<{
     try {
       const response = await getTextById(textId)
       setText(response.data)
+      setEditorContent(response.data.content)
     } catch (error) {
       console.error('Failed to fetch text:', error)
     }
