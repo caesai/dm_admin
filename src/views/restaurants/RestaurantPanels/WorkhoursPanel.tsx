@@ -35,7 +35,7 @@ export const WorkhoursPanel: FC<{
           worktime: prev!.worktime.filter((v) => v.id !== wt.id),
         })),
       )
-      .then(() => toast('Запись удалена'))
+      .then(() => toast.success('Запись удалена'))
   }
 
   return (

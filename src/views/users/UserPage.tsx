@@ -52,8 +52,8 @@ const UserPage = () => {
     }
     toast('Обработка')
     setUserAdmin(user.id, user.administrator.id)
-      .then(() => toast('Сохранено'))
-      .catch(() => toast('Произошла ошибка при выполнении запроса.'))
+      .then(() => toast.success('Сохранено'))
+      .catch(() => toast.error('Произошла ошибка при выполнении запроса.'))
   }
 
   const getBadge = (status: boolean) => {

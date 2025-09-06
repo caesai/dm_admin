@@ -57,7 +57,10 @@ const EditReservationPopup: FC<{
           </CCard>
           <CCard className="border-0">
             <CCardBody className={classNames('border', 'rounded')}>
-              <TextEditor onUpdate={setEditorContent} initialContent={reservation?.text} />
+              <TextEditor
+                onUpdate={setEditorContent}
+                initialContent={reservation?.text ? reservation.text : 'Текст рассылки...'}
+              />
             </CCardBody>
           </CCard>
         </CCardGroup>

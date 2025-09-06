@@ -135,7 +135,7 @@ const BlockForm: FC<{
               ])
             }
           })
-          .then(() => toast('Блок обновлён'))
+          .then(() => toast.success('Блок обновлён'))
       : createBlock({ ...block })
           .then((res) => {
             const newBlockId = res.data.id
@@ -145,7 +145,7 @@ const BlockForm: FC<{
               )
             }
           })
-          .then(() => toast('Блок создан'))
+          .then(() => toast.success('Блок создан'))
     operation
       .catch((e) => toast.error(e))
       .finally(() => {
@@ -156,7 +156,7 @@ const BlockForm: FC<{
   const handleDeleteBlock = () => {
     if (blockId === null) return
     deleteBlock(blockId)
-      .then(() => toast('Блок удалён'))
+      .then(() => toast.success('Блок удалён'))
       .catch((e) => toast.error(e))
       .finally(() => cancelBlockEdit())
   }

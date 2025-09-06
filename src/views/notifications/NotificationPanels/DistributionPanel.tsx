@@ -134,7 +134,7 @@ const DistributionPanel = () => {
           <CCardBody>
             <CCardGroup className="flex-column">
               <CCardBody className={classNames('d-flex', 'flex-row')}>
-                <TextEditor onUpdate={setEditorContent} />
+                <TextEditor onUpdate={setEditorContent} initialContent="Текст рассылки..." />
               </CCardBody>
             </CCardGroup>
           </CCardBody>
