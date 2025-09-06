@@ -29,7 +29,7 @@ export const MenuPanel: FC<{
           menu_imgs: [...prev!.menu_imgs.filter((v) => v.id !== menu.id)],
         })),
       )
-      .then(() => toast('Запись удалена'))
+      .then(() => toast.success('Запись удалена'))
   }
 
   return (
