@@ -59,10 +59,10 @@ const InviteLinkPopup: FC<{
       }
       if (id === null) {
         await createCode(codeData)
-        toast('Инвайт-ссылка создана')
+        toast.success('Инвайт-ссылка создана')
       } else {
         await updateCode(codeData, id)
-        toast('Инвайт-ссылка обновлена')
+        toast.success('Инвайт-ссылка обновлена')
       }
       setId(undefined)
       if (onUpdate) {
@@ -82,7 +82,7 @@ const InviteLinkPopup: FC<{
         return
       }
       await deleteCode(id)
-      toast('Инвайт-ссылка удалена')
+      toast.success('Инвайт-ссылка удалена')
       setId(undefined)
       if (onUpdate) {
         await onUpdate()
@@ -133,11 +133,7 @@ const InviteLinkPopup: FC<{
       <CModalBody>
         <CCardGroup className={classNames('flex-column', 'gap-2')}>
           <CCard className={classNames('border-0', 'position-relative')}>
-            <CFormInput
-              placeholder="Код-ссылки"
-              defaultValue={code?.code}
-              onInput={changeLinkCode}
-            />
+            <CFormInput placeholder="Код-ссылки" value={code?.code} onInput={changeLinkCode} />
             {code?.code === '' && (
               <strong
                 style={{
@@ -153,11 +149,7 @@ const InviteLinkPopup: FC<{
             )}
           </CCard>
           <CCard className={classNames('border-0', 'position-relative')}>
-            <CFormInput
-              placeholder="Имя ссылки"
-              defaultValue={code?.name}
-              onInput={changeLinkName}
-            />
+            <CFormInput placeholder="Имя ссылки" value={code?.name} onInput={changeLinkName} />
             {code?.name === '' && (
               <strong
                 style={{

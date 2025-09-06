@@ -38,7 +38,7 @@ const NewGreetingPopup: FC<{
       ...text,
       content: editorContent,
     })
-      .then(() => toast('Приветствие обновлено'))
+      .then(() => toast.success('Приветствие обновлено'))
       .catch(() => toast.error('Ошибка обновления'))
       .finally(() => setActivePopup(false))
   }

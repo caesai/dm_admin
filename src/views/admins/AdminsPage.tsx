@@ -50,7 +50,7 @@ const AdminsPage = () => {
   const handleResetPassword = (admin_id: number, new_password: string) => {
     resetAdminPassword(admin_id, new_password).then(() => {
       updateAdminList()
-      toast('Пароль обновлен')
+      toast.success('Пароль обновлен')
       setNewPassword('')
       setResetPassword(false)
     })
@@ -100,7 +100,9 @@ const AdminsPage = () => {
           <CButton
             color="primary"
             onClick={() =>
-              selectedAdmin ? handleResetPassword(selectedAdmin.id, newPassword) : toast('Ошибка')
+              selectedAdmin
+                ? handleResetPassword(selectedAdmin.id, newPassword)
+                : toast.error('Ошибка')
             }
           >
             Обновить

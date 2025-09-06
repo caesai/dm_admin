@@ -2,6 +2,8 @@ import { ICode } from 'src/types/Code.ts'
 import { CButton, CSmartTable } from '@coreui/react-pro'
 import { Item } from '@coreui/react-pro/src/components/smart-table/types'
 import { Dispatch, SetStateAction } from 'react'
+import { INVITE_LINK } from 'src/api.ts'
+import toast from 'react-hot-toast'
 
 interface IInviteLinksTable {
   links: ICode[]
@@ -12,7 +14,8 @@ const InviteLinksTable = ({ links, setPopupId }: IInviteLinksTable) => {
   const copyCode = (id: number) => {
     const currentLink = links.find((link) => link.id === id)
     if (!currentLink) return
-    navigator.clipboard.writeText(currentLink?.code)
+    navigator.clipboard.writeText(`${INVITE_LINK}${currentLink.code}`)
+    toast.success('Скопировано')
   }
   const columns = [
     { key: 'code', _style: { width: '35%' }, label: 'Ссылка' },
