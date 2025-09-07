@@ -41,6 +41,7 @@ const EditReservationPopup: FC<{
     try {
       const response = await getConfirmationById(textId)
       setReservation(response.data)
+      setEditorContent(response.data.text)
     } catch (error) {
       console.error('Failed to fetch reservation:', error)
     }
