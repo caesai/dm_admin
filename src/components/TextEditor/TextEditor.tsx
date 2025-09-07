@@ -140,7 +140,7 @@ export const TextEditor: React.FC<IProps> = ({ onUpdate, initialContent }) => {
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
-    // теперь обрабатывается вручную
+    // now handled manually
     service.remove('lineBreak')
 
     service.addRule('underline', {
@@ -301,7 +301,6 @@ export const TextEditor: React.FC<IProps> = ({ onUpdate, initialContent }) => {
           Remove
         </button>
       </BubbleMenu>
-      {editorContent}
       <EditorContent editor={editor} />
 
       <LinkModal
