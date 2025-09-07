@@ -4,6 +4,7 @@ import { Item } from '@coreui/react-pro/src/components/smart-table/types'
 import { Dispatch, SetStateAction } from 'react'
 import { INVITE_LINK } from 'src/api.ts'
 import toast from 'react-hot-toast'
+import { renderHTMLContent } from 'src/utils.tsx'
 
 interface IInviteLinksTable {
   links: ICode[]
@@ -56,7 +57,7 @@ const InviteLinksTable = ({ links, setPopupId }: IInviteLinksTable) => {
         ),
         name: (item: Item) => <td>{item.name || 'Не установлено'}</td>,
         restaurant_id: (item: Item) => <td>{item.restaurant_id || '—'}</td>,
-        text: (item: Item) => <td>{item.text || 'Не установлено'}</td>,
+        text: (item: Item) => <td>{renderHTMLContent(item.text) || 'Не установлено'}</td>,
         edit: (item: Item) => (
           <td>
             <CButton color="primary" onClick={() => setPopupId(item.id)}>
