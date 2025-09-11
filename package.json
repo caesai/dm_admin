@@ -19,9 +19,10 @@
   "author": "The CoreUI Team (https://github.com/orgs/coreui/people)",
   "scripts": {
     "build": "vite build",
+    "build:dev": "vite build --mode development",
     "lint": "eslint . --fix",
     "serve": "vite preview",
-    "start": "vite",
+    "start": "vite --mode development",
     "type-check": "tsc --noEmit",
     "zip": "git archive -o $npm_package_config_zipPrefix-$npm_package_config_theme-$npm_package_config_bundler-v$npm_package_version.zip -9 HEAD"
   },
