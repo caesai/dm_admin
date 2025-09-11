@@ -41,6 +41,7 @@ const EditOtherPopup: FC<{
     try {
       const response = await getTextById(textId)
       setText(response.data)
+      setEditorContent(response.data.content)
     } catch (error) {
       console.error('Failed to fetch text:', error)
     }
@@ -57,7 +58,10 @@ const EditOtherPopup: FC<{
           </CCard>
           <CCard className="border-0">
             <CCardBody className={classNames('border', 'rounded')}>
-              <TextEditor onUpdate={setEditorContent} initialContent={text?.content} />
+              <TextEditor
+                onUpdate={setEditorContent}
+                initialContent={text?.content ? text.content : 'Текст рассылки...'}
+              />
             </CCardBody>
           </CCard>
         </CCardGroup>

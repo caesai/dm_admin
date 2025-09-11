@@ -1,106 +1,51 @@
-import { CCard, CCardBody, CCardHeader, CSpinner } from '@coreui/react-pro'
+import { CButton, CCard, CCardBody, CCardHeader } from '@coreui/react-pro'
 import classNames from 'classnames'
 import { useEffect, useState } from 'react'
-import { getCodes } from 'src/dataProviders/codes'
+import { getCodesList } from 'src/dataProviders/codes'
 import { ICode } from 'src/types/Code'
-
-export const MOCK_CODES: ICode[] = [
-  {
-    name: 'тургид',
-    code: 'main_dt',
-    text: null,
-    restaurant_id: null,
-  },
-  {
-    name: 'тургид',
-    code: 'submain_dt',
-    text: 'Здравствуйте!👋Добро пожаловать в личного консьержа от команды Dreamteam.',
-    restaurant_id: 1,
-  },
-  {
-    name: 'тургид',
-    code: 'subsubmain_dt',
-    text: '',
-    restaurant_id: null,
-  },
-  {
-    name: 'тургид',
-    code: 'main_dt',
-    text: 'Здравствуйте!👋Добро пожаловать в личного консьержа от команды Dreamteam. Здравствуйте!👋Добро пожаловать в личного консьержа от команды Dreamteam.',
-    restaurant_id: 2,
-  },
-  {
-    name: 'тургид',
-    code: 'main_dt',
-    text: 'Здравствуйте!👋Добро пожаловать в личного консьержа от ...',
-    restaurant_id: null,
-  },
-  {
-    name: 'тургид',
-    code: 'main_dt',
-    text: '',
-    restaurant_id: 3,
-  },
-  {
-    name: 'тургид',
-    code: 'main_dt',
-    text: '',
-    restaurant_id: null,
-  },
-  {
-    name: 'тургид',
-    code: 'main_dt',
-    text: 'Здравствуйте!👋Добро пожаловать в личного консьержа от ...',
-    restaurant_id: 1,
-  },
-  {
-    name: 'тургид',
-    code: 'main_dt',
-    text: null,
-    restaurant_id: 1,
-  },
-  {
-    name: 'тургид',
-    code: 'main_dt',
-    text: 'Здравствуйте!👋Добро пожаловать в личного консьержа от ...',
-    restaurant_id: 1,
-  },
-  {
-    name: 'тургид',
-    code: 'main_dt',
-    text: null,
-    restaurant_id: 1,
-  },
-  {
-    name: 'тургид',
-    code: 'main_dt',
-    text: 'Здравствуйте!👋Добро пожаловать в личного консьержа от ...',
-    restaurant_id: 1,
-  },
-]
+import InviteLinksTable from 'src/views/inviteLinks/Tables/inviteLinksTable.tsx'
+import InviteLinkPopup from 'src/views/inviteLinks/Popups/InviteLinkPopup.tsx'
+import NewGreetingPopup from 'src/views/inviteLinks/Popups/NewGreetingPopup.tsx'
 
 const InviteLinksPage = () => {
   const [links, setLinks] = useState<ICode[]>([])
-  const [loading, setLoading] = useState(true)
-  console.log('InviteLinks: ', links)
-
-  useEffect(() => {
-    getCodes()
-      //.then((resp) => setLinks(resp.data))
-      // @ts-expect-error
-      .then((resp) => setLinks(MOCK_CODES))
-      .finally(() => setLoading(false))
-  }, [])
-
-  if (loading) {
-    return <CSpinner color={'primary'} />
+  const [currentCodeId, setCurrentCodeId] = useState<number | null | undefined>(undefined)
+  const [isActivePopup, setActivePopup] = useState<boolean>(false)
+  const loadLinks = async () => {
+    const response = await getCodesList()
+    setLinks([...response.data].sort((a, b) => a.id! - b.id!))
   }
 
+  useEffect(() => {
+    loadLinks()
+  }, [])
   return (
-    <CCard>
-      <CCardHeader>Invite Links Page</CCardHeader>
-      <CCardBody className={classNames('d-flex', 'flex-row', 'gap-2')}>Hello</CCardBody>
-    </CCard>
+    <>
+      <CCard className="border-0">
+        <CCardHeader
+          className={classNames('d-flex', 'justify-content-between', 'align-items-center')}
+        >
+          <strong>Инвайт-ссылки</strong>
+          <div className={classNames('d-flex', 'gap-2')}>
+            <CButton color="primary" onClick={() => setCurrentCodeId(null)}>
+              + Новая ссылка
+            </CButton>
+            <CButton color="primary" onClick={() => setActivePopup(true)}>
+              Дефолтное приветствие
+            </CButton>
+          </div>
+        </CCardHeader>
+        <CCardBody className="pt-0">
+          <InviteLinksTable links={links} setPopupId={setCurrentCodeId} />
+        </CCardBody>
+      </CCard>
+      {currentCodeId !== undefined && (
+        <InviteLinkPopup popupId={[currentCodeId, setCurrentCodeId]} onUpdate={loadLinks} />
+      )}
+      {currentCodeId === undefined && isActivePopup && (
+        <NewGreetingPopup popup={[isActivePopup, setActivePopup]} />
+      )}
+    </>
   )
 }
 

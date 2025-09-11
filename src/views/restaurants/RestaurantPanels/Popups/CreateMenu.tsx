@@ -38,7 +38,7 @@ export const CreateMenu: FC<{
         })),
       )
       .then(() => {
-        toast('Запись создана')
+        toast.success('Запись создана')
         setOpen(false)
       })
   }
@@ -47,7 +47,7 @@ export const CreateMenu: FC<{
     if (!files) {
       return
     }
-    uploadFile(files[0]).then((d) => setMenu((prev) => ({ ...prev, image_url: d.data.url })))
+    uploadFile(files[0], false).then((d) => setMenu((prev) => ({ ...prev, image_url: d.data.url })))
   }
   return (
     <CModal visible={open} onClose={() => setOpen(false)}>

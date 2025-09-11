@@ -38,8 +38,8 @@ export const MainPanel = ({ restaurant }: IMainPanel) => {
 
   const saveChanges = () => {
     UpdateRestaurantMain(res)
-      .then(() => toast('Изменения сохранены'))
-      .catch(() => toast('Произошла ошибка при сохранении изменений'))
+      .then(() => toast.success('Изменения сохранены'))
+      .catch(() => toast.error('Произошла ошибка при сохранении изменений'))
   }
 
   const handleChangeFileLogo = async (files: FileList | null) => {

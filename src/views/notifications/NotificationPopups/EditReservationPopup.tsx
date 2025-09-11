@@ -41,6 +41,7 @@ const EditReservationPopup: FC<{
     try {
       const response = await getConfirmationById(textId)
       setReservation(response.data)
+      setEditorContent(response.data.text)
     } catch (error) {
       console.error('Failed to fetch reservation:', error)
     }
@@ -57,7 +58,10 @@ const EditReservationPopup: FC<{
           </CCard>
           <CCard className="border-0">
             <CCardBody className={classNames('border', 'rounded')}>
-              <TextEditor onUpdate={setEditorContent} initialContent={reservation?.text} />
+              <TextEditor
+                onUpdate={setEditorContent}
+                initialContent={reservation?.text ? reservation.text : 'Текст рассылки...'}
+              />
             </CCardBody>
           </CCard>
         </CCardGroup>
