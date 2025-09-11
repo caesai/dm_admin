@@ -43,7 +43,7 @@ const App = () => {
   }, [])
 
   return (
-    <BrowserRouter basename={'/'}>
+    <BrowserRouter basename={import.meta.env.MODE !== 'development' ? undefined : '/dm_admin/'}>
       <LoginWatchdog />
       <Toaster position={'top-right'} />
       <Suspense
