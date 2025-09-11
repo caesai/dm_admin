@@ -7,7 +7,7 @@ import mkcert from 'vite-plugin-mkcert';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-    base: './',
+    base: '/',
     build: {
       outDir: 'build',
     },
@@ -32,15 +32,15 @@ export default defineConfig({
       ],
       extensions: ['.mjs', '.mts', '.js', '.ts', '.jsx', '.tsx', '.json', '.scss'],
     },
-    server: {
-      // port: 3000,
-      host: true,
-      proxy: {
-        // https://vitejs.dev/config/server-options.html
-        '/admin': {
-          target: 'https://devsoko.ru',
-          changeOrigin: true,
-        },
-      },
-    },
+    // server: {
+    //   // port: 3000,
+    //   host: true,
+    //   proxy: {
+    //     // https://vitejs.dev/config/server-options.html
+    //     '/admin': {
+    //       target: 'https://devsoko.ru',
+    //       changeOrigin: true,
+    //     },
+    //   },
+    // },
 })
