@@ -30,6 +30,7 @@ import { sendMailingContent, sendMailingGroup } from 'src/dataProviders/mailing.
 
 interface IMedia {
   id: string
+  name: string
   url: string
   type: 'photo' | 'video' | 'document'
 }
@@ -79,6 +80,13 @@ const NotificationPanel = () => {
           button_url: btnUrl,
           media_items: mediaItems,
         })
+      } else {
+        await sendMailingContent({
+          users_ids: users_ids,
+          text: text,
+          button_text: btnText,
+          button_url: btnUrl,
+        })
       }
       handleSuccess()
     } catch (error) {
@@ -125,12 +133,14 @@ const NotificationPanel = () => {
   const handlePhoto = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const fileId = Math.random().toString(36).slice(2)
+      const fileName = e.target.files[0].name
       uploadFile(e.target.files[0], false)
         .then((res) =>
           setMedia((prev) => [
             ...prev,
             {
               id: fileId,
+              name: fileName,
               url: res.data.url,
               type: 'photo',
             },
@@ -143,12 +153,14 @@ const NotificationPanel = () => {
   const handleVideo = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const fileId = Math.random().toString(36).slice(2)
+      const fileName = e.target.files[0].name
       uploadFile(e.target.files[0], true)
         .then((res) =>
           setMedia((prev) => [
             ...prev,
             {
               id: fileId,
+              name: fileName,
               url: res.data.url,
               type: 'video',
             },
@@ -161,10 +173,12 @@ const NotificationPanel = () => {
   const handleDocument = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const fileId = Math.random().toString(36).slice(2)
+      const fileName = e.target.files[0].name
       uploadFile(e.target.files[0], true)
         .then((res) =>
           setDocument({
             id: fileId,
+            name: fileName,
             url: res.data.url,
             type: 'document',
           }),
@@ -235,7 +249,7 @@ const NotificationPanel = () => {
               <CTable>
                 <CTableHead>
                   <CTableRow>
-                    <CTableHeaderCell>URL</CTableHeaderCell>
+                    <CTableHeaderCell>Файл</CTableHeaderCell>
                     <CTableHeaderCell>Тип</CTableHeaderCell>
                     <CTableHeaderCell>Вверх</CTableHeaderCell>
                     <CTableHeaderCell>Вниз</CTableHeaderCell>
@@ -245,7 +259,7 @@ const NotificationPanel = () => {
                 <CTableBody>
                   {media.map((file, index) => (
                     <CTableRow key={file.id}>
-                      <CTableDataCell>{file.url}</CTableDataCell>
+                      <CTableDataCell>{file.name}</CTableDataCell>
                       <CTableDataCell>{setFileType(file.type)}</CTableDataCell>
                       <CTableDataCell>
                         <CIcon
