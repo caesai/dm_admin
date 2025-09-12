@@ -54,9 +54,7 @@ const BlockForm: FC<{
   }
   const handleImageChange = (files: FileList | null) => {
     if (!files) return
-    uploadFile(files[0], false).then((res) =>
-      setBlock((prev) => ({ ...prev, thumbnail: res.data.url })),
-    )
+    uploadFile(files[0]).then((res) => setBlock((prev) => ({ ...prev, thumbnail: res.data.url })))
   }
   const addUser = (userId: number) => {
     setBlock((prev) => ({ ...prev, users: [...prev.users, userId] }))
@@ -91,6 +89,7 @@ const BlockForm: FC<{
       await updateStory(story, story.id)
     }
   }
+
   const deleteStories = async () => {
     for (const story of storiesToDelete) {
       if (!story.id) return

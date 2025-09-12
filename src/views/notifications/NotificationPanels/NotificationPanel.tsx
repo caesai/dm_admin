@@ -18,7 +18,7 @@ import {
 } from '@coreui/react-pro'
 import classNames from 'classnames'
 import { TextEditor } from 'src/components/TextEditor/TextEditor.tsx'
-import { ChangeEvent, useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import ConfirmNotificationPopup from 'src/views/notifications/NotificationPopups/ConfirmNotificationPopup.tsx'
 import toast from 'react-hot-toast'
 import NotificationHistory from 'src/views/notifications/NotificationPanels/NotificationHistory.tsx'
@@ -47,8 +47,12 @@ const NotificationPanel = () => {
   const [isActiveNotificationButton, setIsActiveNotificationButton] = useState<boolean>(false)
   const [refreshHistoryKey, setRefreshHistoryKey] = useState<number>(0)
 
+  const imageInputRef = useRef<HTMLInputElement>(null)
+  const videoInputRef = useRef<HTMLInputElement>(null)
+  const documentInputRef = useRef<HTMLInputElement>(null)
+
   const handleSuccess = () => {
-    setRefreshHistoryKey((key) => key + 1) // increment refreshKey
+    setRefreshHistoryKey((key) => key + 1)
   }
 
   const sendMailing = async (
@@ -118,6 +122,7 @@ const NotificationPanel = () => {
       setIsActiveNotificationButton(true)
     }
   }
+
   // Notify all users
   const notifyAll = async () => {
     try {
@@ -126,16 +131,17 @@ const NotificationPanel = () => {
     } catch (error) {
       console.log(error)
       toast.error('Ошибка в рассылке: ' + error)
-    } finally {
     }
   }
 
   const handlePhoto = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const fileId = Math.random().toString(36).slice(2)
-      const fileName = e.target.files[0].name
-      uploadFile(e.target.files[0], false)
-        .then((res) =>
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0]
+      const fileId = `photo-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`
+      const fileName = file.name
+
+      uploadFile(file)
+        .then((res) => {
           setMedia((prev) => [
             ...prev,
             {
@@ -144,18 +150,23 @@ const NotificationPanel = () => {
               url: res.data.url,
               type: 'photo',
             },
-          ]),
-        )
+          ])
+          if (imageInputRef.current) {
+            imageInputRef.current.value = ''
+          }
+        })
         .catch(() => toast.error('Не удалось загрузить изображение'))
     }
   }
 
   const handleVideo = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const fileId = Math.random().toString(36).slice(2)
-      const fileName = e.target.files[0].name
-      uploadFile(e.target.files[0], true)
-        .then((res) =>
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0]
+      const fileId = `video-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`
+      const fileName = file.name
+
+      uploadFile(file)
+        .then((res) => {
           setMedia((prev) => [
             ...prev,
             {
@@ -164,25 +175,33 @@ const NotificationPanel = () => {
               url: res.data.url,
               type: 'video',
             },
-          ]),
-        )
+          ])
+          if (videoInputRef.current) {
+            videoInputRef.current.value = ''
+          }
+        })
         .catch(() => toast.error('Не удалось загрузить видео'))
     }
   }
 
   const handleDocument = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const fileId = Math.random().toString(36).slice(2)
-      const fileName = e.target.files[0].name
-      uploadFile(e.target.files[0], true)
-        .then((res) =>
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0]
+      const fileId = `document-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`
+      const fileName = file.name
+
+      uploadFile(file)
+        .then((res) => {
           setDocument({
             id: fileId,
             name: fileName,
             url: res.data.url,
             type: 'document',
-          }),
-        )
+          })
+          if (documentInputRef.current) {
+            documentInputRef.current.value = ''
+          }
+        })
         .catch(() => toast.error('Не удалось загрузить документ'))
     }
   }
@@ -225,6 +244,7 @@ const NotificationPanel = () => {
   useEffect(() => {
     setIsActiveNotificationButton(false)
   }, [editorContent, media, document, buttonText, buttonUrl])
+
   return (
     <>
       <CTabPanel itemKey="distribution">
@@ -291,6 +311,7 @@ const NotificationPanel = () => {
                   <label htmlFor="imageInput">+ Прикрепить Изображение</label>
                 </CButton>
                 <input
+                  ref={imageInputRef}
                   type="file"
                   id="imageInput"
                   onChange={handlePhoto}
@@ -301,6 +322,7 @@ const NotificationPanel = () => {
                   <label htmlFor="videoInput">+ Прикрепить Видео</label>
                 </CButton>
                 <input
+                  ref={videoInputRef}
                   type="file"
                   id="videoInput"
                   onChange={handleVideo}
@@ -310,6 +332,7 @@ const NotificationPanel = () => {
               </div>
               <div className="mt-3">
                 <CFormInput
+                  ref={documentInputRef}
                   type="file"
                   label={
                     <div className="d-flex align-items-center">

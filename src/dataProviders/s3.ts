@@ -5,13 +5,9 @@ export interface IFileUpload {
   url: string
 }
 
-export const uploadFile = async (file: File, isVideo: boolean) => {
+export const uploadFile = async (file: File) => {
   const formData = new FormData()
-  let fileToUpload: Blob | File = file
-  if (!isVideo) {
-    fileToUpload = await compressImage(file, 50)
-  }
-  formData.append('file', fileToUpload)
+  formData.append('file', file)
   console.log('Uploading file...')
   return axios.put<IFileUpload>(`${BASEURL}/s3/upload`, formData, {
     headers: {
@@ -19,17 +15,6 @@ export const uploadFile = async (file: File, isVideo: boolean) => {
       Authorization: 'Bearer ' + localStorage.getItem('access_token'),
     },
   })
-}
-
-async function compressImage(blobImg: any, percent: number) {
-  const bitmap = await createImageBitmap(blobImg)
-  const canvas = document.createElement('canvas')
-  const ctx = canvas.getContext('2d')
-  canvas.width = bitmap.width
-  canvas.height = bitmap.height
-  ctx?.drawImage(bitmap, 0, 0)
-  const dataUrl = canvas.toDataURL('image/jpeg', percent / 100)
-  return dataURLToBlob(dataUrl)
 }
 
 var dataURLToBlob = function (dataURL: any) {
