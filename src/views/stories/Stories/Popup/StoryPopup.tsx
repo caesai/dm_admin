@@ -39,6 +39,7 @@ const StoryPopup: FC<StoryPopupProps> = ({
     button_url: null,
     button_text: null,
     button_color: null,
+    component_type: null,
     order_index: 0,
     views_count: 0,
   })
@@ -58,14 +59,17 @@ const StoryPopup: FC<StoryPopupProps> = ({
       button_url: null,
       button_text: null,
       button_color: null,
+      component_type: null,
       order_index: 0,
       views_count: 0,
     })
   }
   const changeStoryType = (e: ChangeEvent<HTMLSelectElement>) => {
+    const newType = e.target.value as StoryType
     setStory((prev) => ({
       ...prev,
       type: e.target.value as StoryType,
+      component_type: newType !== 'component' ? null : prev.component_type,
     }))
   }
   const changeStoryDuration = (e: ChangeEvent<HTMLInputElement>) => {
@@ -114,12 +118,48 @@ const StoryPopup: FC<StoryPopupProps> = ({
     if (!files) {
       return
     }
-    uploadFile(files[0], story.type === 'video').then((res) =>
-      setStory((prev) => ({
-        ...prev,
-        url: res.data.url,
-      })),
-    )
+    const file = files[0]
+    if (story.type === 'video') {
+      uploadFile(file).then((res) =>
+        setStory((prev) => ({
+          ...prev,
+          url: res.data.url,
+        })),
+      )
+    } else {
+      const img = new Image()
+      const objectUrl = URL.createObjectURL(file)
+
+      img.onload = () => {
+        const imageRatio = img.height / img.width
+        let component_type: number | null = null
+
+        if (story.type === 'component') {
+          component_type = imageRatio <= 1 ? 1 : 2
+        }
+
+        uploadFile(file).then((res) =>
+          setStory((prev) => ({
+            ...prev,
+            url: res.data.url,
+            component_type: component_type,
+          })),
+        )
+        URL.revokeObjectURL(objectUrl)
+      }
+
+      img.onerror = () => {
+        uploadFile(file).then((res) =>
+          setStory((prev) => ({
+            ...prev,
+            url: res.data.url,
+            component_type: null,
+          })),
+        )
+        URL.revokeObjectURL(objectUrl)
+      }
+      img.src = objectUrl
+    }
   }
   const handleChangeStory = () => {
     if (edit) {
