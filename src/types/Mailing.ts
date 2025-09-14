@@ -14,6 +14,7 @@ export interface IMailingSend {
   text?: string
   media_url?: string
   media_type?: 'photo' | 'video' | 'document'
+  media_filename?: string
   button_text?: string | null
   button_url?: string
   media_items?: Array<string[]>

@@ -49,7 +49,6 @@ const NotificationPanel = () => {
 
   const imageInputRef = useRef<HTMLInputElement>(null)
   const videoInputRef = useRef<HTMLInputElement>(null)
-  const documentInputRef = useRef<HTMLInputElement>(null)
 
   const handleSuccess = () => {
     setRefreshHistoryKey((key) => key + 1)
@@ -66,7 +65,7 @@ const NotificationPanel = () => {
     try {
       const btnText = button_text || undefined
       const btnUrl = button_url || undefined
-      const mediaItems = mediaList.map((item) => [item.url, item.type])
+      const mediaItems = mediaList.map((item) => [item.url, item.type, item.name])
       if (documentFile || media.length === 1) {
         await sendMailingContent({
           users_ids: users_ids,
@@ -75,6 +74,7 @@ const NotificationPanel = () => {
           button_url: btnUrl,
           media_url: documentFile ? documentFile.url : media[0].url,
           media_type: documentFile ? documentFile.type : media[0].type,
+          media_filename: documentFile ? documentFile.name : media[0].name,
         })
       } else if (!documentFile && media.length > 1) {
         await sendMailingGroup({
@@ -198,9 +198,6 @@ const NotificationPanel = () => {
             url: res.data.url,
             type: 'document',
           })
-          if (documentInputRef.current) {
-            documentInputRef.current.value = ''
-          }
         })
         .catch(() => toast.error('Не удалось загрузить документ'))
     }
@@ -214,6 +211,8 @@ const NotificationPanel = () => {
         return 'Видео'
       case 'document':
         return 'Документ'
+      default:
+        return 'Ошибка'
     }
   }
 
@@ -306,66 +305,81 @@ const NotificationPanel = () => {
                   ))}
                 </CTableBody>
               </CTable>
-              <div className={classNames('d-flex', 'gap-3', 'justify-content-end')}>
-                <CButton color="primary">
-                  <label htmlFor="imageInput">+ Прикрепить Изображение</label>
-                </CButton>
-                <input
-                  ref={imageInputRef}
-                  type="file"
-                  id="imageInput"
-                  onChange={handlePhoto}
-                  accept="image/*"
-                  className="d-none"
-                />
-                <CButton color="primary">
-                  <label htmlFor="videoInput">+ Прикрепить Видео</label>
-                </CButton>
-                <input
-                  ref={videoInputRef}
-                  type="file"
-                  id="videoInput"
-                  onChange={handleVideo}
-                  accept="video/*"
-                  className="d-none"
-                />
-              </div>
-              <div className="mt-3">
-                <CFormInput
-                  ref={documentInputRef}
-                  type="file"
-                  label={
-                    <div className="d-flex align-items-center">
-                      Документ
-                      <div className="ms-2">
-                        <TooltipInfo content="текст тултипа" />
+              {!document && (
+                <div className={classNames('d-flex', 'gap-3', 'justify-content-end')}>
+                  <CButton
+                    color="primary"
+                    disabled={
+                      (media.length === 1 && !!(buttonText || buttonUrl)) || media.length >= 10
+                    }
+                  >
+                    <label htmlFor="imageInput">+ Прикрепить Изображение</label>
+                  </CButton>
+                  <input
+                    ref={imageInputRef}
+                    type="file"
+                    id="imageInput"
+                    onChange={handlePhoto}
+                    accept="image/*"
+                    className="d-none"
+                  />
+                  <CButton
+                    color="primary"
+                    disabled={
+                      (media.length === 1 && !!(buttonText || buttonUrl)) || media.length >= 10
+                    }
+                  >
+                    <label htmlFor="videoInput">+ Прикрепить Видео</label>
+                  </CButton>
+                  <input
+                    ref={videoInputRef}
+                    type="file"
+                    id="videoInput"
+                    onChange={handleVideo}
+                    accept="video/*"
+                    className="d-none"
+                  />
+                </div>
+              )}
+              {media.length === 0 && (
+                <div className="mt-3">
+                  <CFormInput
+                    type="file"
+                    label={
+                      <div className="d-flex align-items-center">
+                        Документ
+                        <div className="ms-2">
+                          <TooltipInfo content="текст тултипа" />
+                        </div>
                       </div>
-                    </div>
-                  }
-                  onChange={handleDocument}
-                />
-              </div>
+                    }
+                    onChange={handleDocument}
+                  />
+                </div>
+              )}
             </CCardBody>
           </CCard>
-          <CCard className="mb-4 mx-2">
-            <CCardHeader>Кнопка</CCardHeader>
-            <CCardBody>
-              <CForm className="flex-column gap-4" style={{ display: 'flex' }}>
-                <CFormInput
-                  placeholder="Текст кнопки"
-                  type="text"
-                  value={buttonText}
-                  onChange={(e) => setButtonText(e.target.value)}
-                />
-                <CFormInput
-                  placeholder="Url кнопки"
-                  type="text"
-                  value={buttonUrl}
-                  onChange={(e) => setButtonUrl(e.target.value)}
-                />
-              </CForm>
-            </CCardBody>
-          </CCard>
+          {media.length <= 1 && (
+            <CCard className="mb-4 mx-2">
+              <CCardHeader>Кнопка</CCardHeader>
+              <CCardBody>
+                <CForm className="flex-column gap-4" style={{ display: 'flex' }}>
+                  <CFormInput
+                    placeholder="Текст кнопки"
+                    type="text"
+                    value={buttonText}
+                    onChange={(e) => setButtonText(e.target.value)}
+                  />
+                  <CFormInput
+                    placeholder="Url кнопки"
+                    type="text"
+                    value={buttonUrl}
+                    onChange={(e) => setButtonUrl(e.target.value)}
+                  />
+                </CForm>
+              </CCardBody>
+            </CCard>
+          )}
           <CCard className="mx-2">
             <CCardHeader>
               <div className="d-flex align-items-center">
