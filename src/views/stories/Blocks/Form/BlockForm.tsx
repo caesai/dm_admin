@@ -201,6 +201,7 @@ const BlockForm: FC<{
       />
       <ActionButtons
         isEdit={isEdit}
+        isActive={block.name !== ''}
         isLoading={isLoading}
         onCancel={cancelBlockEdit}
         onSave={handleSendBlock}

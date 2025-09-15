@@ -42,13 +42,9 @@ export const BlockInfoSection: FC<BlockInfoSectionProps> = ({
       <CRow className="mb-3">
         <div className="d-flex align-items-center gap-2 p-0">
           <CFormCheck label="Активный блок" onChange={onActiveChange} checked={isActive} />
-          <strong className="fs-5" style={{ transform: 'translateY(10%)' }}>
-            *
-          </strong>
           <TooltipInfo content="В приложении показываются только активные блоки историй. Если чекбокс отключен, история будет не доступна" />
         </div>
       </CRow>
-
       <CRow className="mb-3">
         <div className="d-flex align-items-center gap-2 p-0">
           <CFormInput
