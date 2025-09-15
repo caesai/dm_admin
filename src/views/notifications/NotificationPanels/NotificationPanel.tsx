@@ -37,9 +37,11 @@ interface IMedia {
 
 const NotificationPanel = () => {
   const [testUserName, setTestUserName] = useState<string>('')
-  const [editorContent, setEditorContent] = useState<any>(null)
+  const [editorContent, setEditorContent] = useState(null)
   const [groupNotificationIsInProgress, setGroupNotificationIsInProgress] = useState(false)
   const [media, setMedia] = useState<IMedia[]>([])
+  const [imageUploadInProgress, setImageUploadInProgress] = useState<boolean>(false)
+  const [videoUploadInProgress, setVideoUploadInProgress] = useState<boolean>(false)
   const [document, setDocument] = useState<IMedia | undefined>(undefined)
   const [buttonText, setButtonText] = useState<string>('')
   const [buttonUrl, setButtonUrl] = useState<string>('')
@@ -49,7 +51,6 @@ const NotificationPanel = () => {
 
   const imageInputRef = useRef<HTMLInputElement>(null)
   const videoInputRef = useRef<HTMLInputElement>(null)
-  const documentInputRef = useRef<HTMLInputElement>(null)
 
   const handleSuccess = () => {
     setRefreshHistoryKey((key) => key + 1)
@@ -66,7 +67,7 @@ const NotificationPanel = () => {
     try {
       const btnText = button_text || undefined
       const btnUrl = button_url || undefined
-      const mediaItems = mediaList.map((item) => [item.url, item.type])
+      const mediaItems = mediaList.map((item) => [item.url, item.type, item.name])
       if (documentFile || media.length === 1) {
         await sendMailingContent({
           users_ids: users_ids,
@@ -75,6 +76,7 @@ const NotificationPanel = () => {
           button_url: btnUrl,
           media_url: documentFile ? documentFile.url : media[0].url,
           media_type: documentFile ? documentFile.type : media[0].type,
+          media_filename: documentFile ? documentFile.name : media[0].name,
         })
       } else if (!documentFile && media.length > 1) {
         await sendMailingGroup({
@@ -134,53 +136,63 @@ const NotificationPanel = () => {
     }
   }
 
-  const handlePhoto = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0]
-      const fileId = `photo-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`
-      const fileName = file.name
+  const handlePhoto = async (e: ChangeEvent<HTMLInputElement>) => {
+    try {
+      setImageUploadInProgress(true)
+      if (e.target.files && e.target.files[0]) {
+        const file = e.target.files[0]
+        const fileId = `photo-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`
+        const fileName = file.name
 
-      uploadFile(file)
-        .then((res) => {
-          setMedia((prev) => [
-            ...prev,
-            {
-              id: fileId,
-              name: fileName,
-              url: res.data.url,
-              type: 'photo',
-            },
-          ])
-          if (imageInputRef.current) {
-            imageInputRef.current.value = ''
-          }
-        })
-        .catch(() => toast.error('Не удалось загрузить изображение'))
+        const res = await uploadFile(file)
+        setMedia((prev) => [
+          ...prev,
+          {
+            id: fileId,
+            name: fileName,
+            url: res.data.url,
+            type: 'photo',
+          },
+        ])
+        if (imageInputRef.current) {
+          imageInputRef.current.value = ''
+        }
+      }
+    } catch (error) {
+      toast.error('Ошибка при загрузке изображения')
+      console.log(error)
+    } finally {
+      setImageUploadInProgress(false)
     }
   }
 
-  const handleVideo = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0]
-      const fileId = `video-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`
-      const fileName = file.name
+  const handleVideo = async (e: ChangeEvent<HTMLInputElement>) => {
+    try {
+      setVideoUploadInProgress(true)
+      if (e.target.files && e.target.files[0]) {
+        const file = e.target.files[0]
+        const fileId = `video-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`
+        const fileName = file.name
 
-      uploadFile(file)
-        .then((res) => {
-          setMedia((prev) => [
-            ...prev,
-            {
-              id: fileId,
-              name: fileName,
-              url: res.data.url,
-              type: 'video',
-            },
-          ])
-          if (videoInputRef.current) {
-            videoInputRef.current.value = ''
-          }
-        })
-        .catch(() => toast.error('Не удалось загрузить видео'))
+        const res = await uploadFile(file)
+        setMedia((prev) => [
+          ...prev,
+          {
+            id: fileId,
+            name: fileName,
+            url: res.data.url,
+            type: 'video',
+          },
+        ])
+        if (videoInputRef.current) {
+          videoInputRef.current.value = ''
+        }
+      }
+    } catch (error) {
+      toast.error('Ошибка при загрузке видео')
+      console.log(error)
+    } finally {
+      setVideoUploadInProgress(false)
     }
   }
 
@@ -198,9 +210,6 @@ const NotificationPanel = () => {
             url: res.data.url,
             type: 'document',
           })
-          if (documentInputRef.current) {
-            documentInputRef.current.value = ''
-          }
         })
         .catch(() => toast.error('Не удалось загрузить документ'))
     }
@@ -214,6 +223,8 @@ const NotificationPanel = () => {
         return 'Видео'
       case 'document':
         return 'Документ'
+      default:
+        return 'Ошибка'
     }
   }
 
@@ -261,111 +272,139 @@ const NotificationPanel = () => {
               <div className="d-flex align-items-center">
                 <p>Прикреплённые Медиа</p>
                 <div className="ms-2">
-                  <TooltipInfo content="текст тултипа" />
+                  <TooltipInfo content="Можно прикрепить до 10 медиафайлов, либо один медиафайл и кнопку. Прикрепление документов при этом будет недоступно." />
                 </div>
               </div>
             </CCardHeader>
             <CCardBody>
-              <CTable>
-                <CTableHead>
-                  <CTableRow>
-                    <CTableHeaderCell>Файл</CTableHeaderCell>
-                    <CTableHeaderCell>Тип</CTableHeaderCell>
-                    <CTableHeaderCell>Вверх</CTableHeaderCell>
-                    <CTableHeaderCell>Вниз</CTableHeaderCell>
-                    <CTableHeaderCell className="text-center">Удалить</CTableHeaderCell>
-                  </CTableRow>
-                </CTableHead>
-                <CTableBody>
-                  {media.map((file, index) => (
-                    <CTableRow key={file.id}>
-                      <CTableDataCell>{file.name}</CTableDataCell>
-                      <CTableDataCell>{setFileType(file.type)}</CTableDataCell>
-                      <CTableDataCell>
-                        <CIcon
-                          icon={cilArrowTop}
-                          size="xl"
-                          style={{ cursor: 'pointer' }}
-                          onClick={() => moveMediaUp(index)}
-                        />
-                      </CTableDataCell>
-                      <CTableDataCell>
-                        <CIcon
-                          icon={cilArrowBottom}
-                          size="xl"
-                          style={{ cursor: 'pointer' }}
-                          onClick={() => moveMediaDown(index)}
-                        />
-                      </CTableDataCell>
-                      <CTableDataCell className="text-center">
-                        <CButton color="primary" onClick={() => handleDeleteMedia(file.id)}>
-                          Удалить
-                        </CButton>
-                      </CTableDataCell>
+              {media.length > 0 && (
+                <CTable>
+                  <CTableHead>
+                    <CTableRow>
+                      <CTableHeaderCell>#</CTableHeaderCell>
+                      <CTableHeaderCell>Файл</CTableHeaderCell>
+                      <CTableHeaderCell>Тип</CTableHeaderCell>
+                      <CTableHeaderCell>Вверх</CTableHeaderCell>
+                      <CTableHeaderCell>Вниз</CTableHeaderCell>
+                      <CTableHeaderCell className="text-center">Удалить</CTableHeaderCell>
                     </CTableRow>
-                  ))}
-                </CTableBody>
-              </CTable>
-              <div className={classNames('d-flex', 'gap-3', 'justify-content-end')}>
-                <CButton color="primary">
-                  <label htmlFor="imageInput">+ Прикрепить Изображение</label>
-                </CButton>
-                <input
-                  ref={imageInputRef}
-                  type="file"
-                  id="imageInput"
-                  onChange={handlePhoto}
-                  accept="image/*"
-                  className="d-none"
-                />
-                <CButton color="primary">
-                  <label htmlFor="videoInput">+ Прикрепить Видео</label>
-                </CButton>
-                <input
-                  ref={videoInputRef}
-                  type="file"
-                  id="videoInput"
-                  onChange={handleVideo}
-                  accept="video/*"
-                  className="d-none"
-                />
-              </div>
-              <div className="mt-3">
-                <CFormInput
-                  ref={documentInputRef}
-                  type="file"
-                  label={
-                    <div className="d-flex align-items-center">
-                      Документ
-                      <div className="ms-2">
-                        <TooltipInfo content="текст тултипа" />
+                  </CTableHead>
+                  <CTableBody>
+                    {media.map((file, index) => (
+                      <CTableRow key={file.id}>
+                        <CTableDataCell>{index + 1}</CTableDataCell>
+                        <CTableDataCell>{file.name}</CTableDataCell>
+                        <CTableDataCell>{setFileType(file.type)}</CTableDataCell>
+                        <CTableDataCell>
+                          <CIcon
+                            icon={cilArrowTop}
+                            size="xl"
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => moveMediaUp(index)}
+                          />
+                        </CTableDataCell>
+                        <CTableDataCell>
+                          <CIcon
+                            icon={cilArrowBottom}
+                            size="xl"
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => moveMediaDown(index)}
+                          />
+                        </CTableDataCell>
+                        <CTableDataCell className="text-center">
+                          <CButton color="primary" onClick={() => handleDeleteMedia(file.id)}>
+                            Удалить
+                          </CButton>
+                        </CTableDataCell>
+                      </CTableRow>
+                    ))}
+                  </CTableBody>
+                </CTable>
+              )}
+              {!document && (
+                <div className={classNames('d-flex', 'gap-3', 'justify-content-end')}>
+                  <CLoadingButton
+                    color="primary"
+                    disabled={
+                      (media.length === 1 && !!(buttonText || buttonUrl)) || media.length >= 10
+                    }
+                    loading={imageUploadInProgress}
+                  >
+                    <label htmlFor="imageInput">+ Прикрепить Изображение</label>
+                  </CLoadingButton>
+                  <input
+                    ref={imageInputRef}
+                    type="file"
+                    id="imageInput"
+                    onChange={handlePhoto}
+                    accept="image/*"
+                    className="d-none"
+                  />
+                  <CLoadingButton
+                    color="primary"
+                    disabled={
+                      (media.length === 1 && !!(buttonText || buttonUrl)) || media.length >= 10
+                    }
+                    loading={videoUploadInProgress}
+                  >
+                    <label htmlFor="videoInput">+ Прикрепить Видео</label>
+                  </CLoadingButton>
+                  <input
+                    ref={videoInputRef}
+                    type="file"
+                    id="videoInput"
+                    onChange={handleVideo}
+                    accept="video/*"
+                    className="d-none"
+                  />
+                </div>
+              )}
+              {media.length === 0 && (
+                <div className="mt-3">
+                  <CFormInput
+                    type="file"
+                    label={
+                      <div className="d-flex align-items-center">
+                        Документ
+                        <div className="ms-2">
+                          <TooltipInfo content="Если прикрепить документ, то добавление медиайфйлов будет недоступно." />
+                        </div>
                       </div>
-                    </div>
-                  }
-                  onChange={handleDocument}
-                />
-              </div>
+                    }
+                    onChange={handleDocument}
+                  />
+                </div>
+              )}
             </CCardBody>
           </CCard>
-          <CCard className="mb-4 mx-2">
-            <CCardHeader>Кнопка</CCardHeader>
-            <CCardBody>
-              <CForm className="flex-column gap-4" style={{ display: 'flex' }}>
-                <CFormInput
-                  placeholder="Текст кнопки"
-                  type="text"
-                  value={buttonText}
-                  onChange={(e) => setButtonText(e.target.value)}
-                />
-                <CFormInput
-                  placeholder="Url кнопки"
-                  type="text"
-                  value={buttonUrl}
-                  onChange={(e) => setButtonUrl(e.target.value)}
-                />
-              </CForm>
-            </CCardBody>
-          </CCard>
+          {media.length <= 1 && (
+            <CCard className="mb-4 mx-2">
+              <CCardHeader>
+                <div className="d-flex align-items-center">
+                  <p>Кнопка</p>
+                  <div className="ms-2">
+                    <TooltipInfo content="Если прикрепить к рассылке кнопку, то возможно прикрепление только одного медиафайла." />
+                  </div>
+                </div>
+              </CCardHeader>
+              <CCardBody>
+                <CForm className="flex-column gap-4" style={{ display: 'flex' }}>
+                  <CFormInput
+                    placeholder="Текст кнопки"
+                    type="text"
+                    value={buttonText}
+                    onChange={(e) => setButtonText(e.target.value)}
+                  />
+                  <CFormInput
+                    placeholder="Url кнопки"
+                    type="text"
+                    value={buttonUrl}
+                    onChange={(e) => setButtonUrl(e.target.value)}
+                  />
+                </CForm>
+              </CCardBody>
+            </CCard>
+          )}
           <CCard className="mx-2">
             <CCardHeader>
               <div className="d-flex align-items-center">
