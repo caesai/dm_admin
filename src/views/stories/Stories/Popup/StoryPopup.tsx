@@ -142,7 +142,7 @@ const StoryPopup: FC<StoryPopupProps> = ({
           setStory((prev) => ({
             ...prev,
             url: res.data.url,
-            component_type: component_type,
+            component_type,
           })),
         )
         URL.revokeObjectURL(objectUrl)
@@ -212,7 +212,7 @@ const StoryPopup: FC<StoryPopupProps> = ({
               options={[
                 { label: 'Изображение', value: 'image' },
                 { label: 'Видео', value: 'video' },
-                { label: 'Компонент', value: 'component' },
+                { label: 'Кастомная история', value: 'component' },
               ]}
               value={story.type}
               onChange={changeStoryType}
