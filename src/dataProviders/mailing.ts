@@ -1,9 +1,25 @@
 import axios from 'axios'
 import { BASEURL } from 'src/api.ts'
-import { IMailing } from 'src/types/Mailing.ts'
+import { IMailing, IMailingSend } from 'src/types/Mailing.ts'
 
 export const getMailingList = async () => {
   return await axios.get<IMailing[]>(`${BASEURL}/mailing/`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+    },
+  })
+}
+
+export const sendMailingContent = async (data: IMailingSend) => {
+  return await axios.post<IMailingSend>(`${BASEURL}/mailing/send`, data, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+    },
+  })
+}
+
+export const sendMailingGroup = async (data: IMailingSend) => {
+  return await axios.post<IMailingSend>(`${BASEURL}/mailing/media-group`, data, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },
@@ -14,98 +30,6 @@ export const deleteMailing = async (id: number) => {
   return await axios.delete(`${BASEURL}/mailing/${id}`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-    },
-  })
-}
-
-export const sendMailingText = async (
-  text: string,
-  button_text: string | undefined,
-  button_url: string | undefined,
-  users_ids: string | null,
-) => {
-  const formData = new FormData()
-  formData.append('text', text)
-  if (button_text) formData.append('button_text', button_text)
-  if (button_url) formData.append('button_url', button_url)
-  if (users_ids) formData.append('users_ids', users_ids)
-
-  return axios.post(`${BASEURL}/mailing/text`, formData, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-      'Content-Type': 'multipart/form-data',
-    },
-  })
-}
-
-export const sendMailingPhoto = async (
-  photoFile: File | null,
-  text: string,
-  button_text: string | undefined,
-  button_url: string | undefined,
-  users_ids: string | null,
-) => {
-  if (!photoFile) return
-
-  const formData = new FormData()
-  formData.append('photo', photoFile)
-  if (text) formData.append('text', text)
-  if (button_text) formData.append('button_text', button_text)
-  if (button_url) formData.append('button_url', button_url)
-  if (users_ids) formData.append('users_ids', users_ids)
-
-  return axios.post(`${BASEURL}/mailing/photo`, formData, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-      'Content-Type': 'multipart/form-data',
-    },
-  })
-}
-
-export const sendMailingVideo = async (
-  videoFile: File | null,
-  text: string,
-  button_text: string | undefined,
-  button_url: string | undefined,
-  users_ids: string | null,
-) => {
-  if (!videoFile) return
-
-  const formData = new FormData()
-  formData.append('video', videoFile)
-  if (text) formData.append('text', text)
-  if (button_text) formData.append('button_text', button_text)
-  if (button_url) formData.append('button_url', button_url)
-  if (users_ids) formData.append('users_ids', users_ids)
-
-  return axios.post(`${BASEURL}/mailing/video`, formData, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-      'Content-Type': 'multipart/form-data',
-    },
-  })
-}
-
-export const sendMailingDocument = async (
-  documentFile: File | null,
-  text: string,
-  button_text: string | undefined,
-  button_url: string | undefined,
-  users_ids: string | null,
-) => {
-  if (!documentFile) return
-
-  const formData = new FormData()
-  formData.append('document', documentFile)
-  if (text) formData.append('text', text)
-  if (button_text) formData.append('button_text', button_text)
-  if (button_url) formData.append('button_url', button_url)
-  if (users_ids) formData.append('users_ids', users_ids)
-
-  return axios.post(`${BASEURL}/mailing/document`, formData, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-      'Content-Type': 'multipart/form-data',
     },
   })
 }
