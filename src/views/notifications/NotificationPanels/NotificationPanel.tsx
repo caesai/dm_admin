@@ -272,7 +272,7 @@ const NotificationPanel = () => {
               <div className="d-flex align-items-center">
                 <p>Прикреплённые Медиа</p>
                 <div className="ms-2">
-                  <TooltipInfo content="текст тултипа" />
+                  <TooltipInfo content="Можно прикрепить до 10 медиафайлов, либо один медиафайл и кнопку. Прикрепление документов при этом будет недоступно." />
                 </div>
               </div>
             </CCardHeader>
@@ -367,7 +367,7 @@ const NotificationPanel = () => {
                       <div className="d-flex align-items-center">
                         Документ
                         <div className="ms-2">
-                          <TooltipInfo content="текст тултипа" />
+                          <TooltipInfo content="Если прикрепить документ, то добавление медиайфйлов будет недоступно." />
                         </div>
                       </div>
                     }
@@ -383,7 +383,7 @@ const NotificationPanel = () => {
                 <div className="d-flex align-items-center">
                   <p>Кнопка</p>
                   <div className="ms-2">
-                    <TooltipInfo content="Текст тултипа" />
+                    <TooltipInfo content="Если прикрепить к рассылке кнопку, то возможно прикрепление только одного медиафайла." />
                   </div>
                 </div>
               </CCardHeader>
