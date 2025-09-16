@@ -42,15 +42,16 @@ const NotificationPanel = () => {
   const [media, setMedia] = useState<IMedia[]>([])
   const [imageUploadInProgress, setImageUploadInProgress] = useState<boolean>(false)
   const [videoUploadInProgress, setVideoUploadInProgress] = useState<boolean>(false)
-  const [document, setDocument] = useState<IMedia | undefined>(undefined)
   const [buttonText, setButtonText] = useState<string>('')
   const [buttonUrl, setButtonUrl] = useState<string>('')
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false)
   const [isActiveNotificationButton, setIsActiveNotificationButton] = useState<boolean>(false)
   const [refreshHistoryKey, setRefreshHistoryKey] = useState<number>(0)
+  const [documentFile, setDocumentFile] = useState<IMedia | null>(null)
 
   const imageInputRef = useRef<HTMLInputElement>(null)
   const videoInputRef = useRef<HTMLInputElement>(null)
+  const documentInputRef = useRef<HTMLInputElement>(null)
 
   const handleSuccess = () => {
     setRefreshHistoryKey((key) => key + 1)
@@ -60,7 +61,7 @@ const NotificationPanel = () => {
     users_ids: Array<string>,
     text: string,
     mediaList: IMedia[],
-    documentFile: IMedia | undefined,
+    documentFile: IMedia | null,
     button_text: string,
     button_url: string,
   ) => {
@@ -68,17 +69,28 @@ const NotificationPanel = () => {
       const btnText = button_text || undefined
       const btnUrl = button_url || undefined
       const mediaItems = mediaList.map((item) => [item.url, item.type, item.name])
-      if (documentFile || media.length === 1) {
+
+      if (documentFile) {
         await sendMailingContent({
           users_ids: users_ids,
           text: text,
           button_text: btnText,
           button_url: btnUrl,
-          media_url: documentFile ? documentFile.url : media[0].url,
-          media_type: documentFile ? documentFile.type : media[0].type,
-          media_filename: documentFile ? documentFile.name : media[0].name,
+          media_url: documentFile.url,
+          media_type: documentFile.type,
+          media_filename: documentFile.name,
         })
-      } else if (!documentFile && media.length > 1) {
+      } else if (mediaList.length === 1) {
+        await sendMailingContent({
+          users_ids: users_ids,
+          text: text,
+          button_text: btnText,
+          button_url: btnUrl,
+          media_url: mediaList[0].url,
+          media_type: mediaList[0].type,
+          media_filename: mediaList[0].name,
+        })
+      } else if (mediaList.length > 1) {
         await sendMailingGroup({
           users_ids: users_ids,
           text: text,
@@ -109,12 +121,12 @@ const NotificationPanel = () => {
         toast.error('Отсутствует Telegram ID для теста.')
         return
       }
-      if (!editorContent && !media && !document) {
+      if (!editorContent && media.length === 0 && !documentFile) {
         toast.error('Отсутствует контент для рассылки.')
         return
       }
 
-      await sendMailing([testUserName], editorContent, media, document, buttonText, buttonUrl)
+      await sendMailing([testUserName], editorContent, media, documentFile, buttonText, buttonUrl)
       toast.success('Тестовая рассылка успешно отправлена.')
     } catch (error) {
       console.log(error)
@@ -128,7 +140,7 @@ const NotificationPanel = () => {
   // Notify all users
   const notifyAll = async () => {
     try {
-      await sendMailing([], editorContent, media, document, buttonText, buttonUrl)
+      await sendMailing([], editorContent, media, documentFile, buttonText, buttonUrl)
       toast.success('Рассылка успешно отправлена.')
     } catch (error) {
       console.log(error)
@@ -196,23 +208,33 @@ const NotificationPanel = () => {
     }
   }
 
-  const handleDocument = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0]
-      const fileId = `document-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`
-      const fileName = file.name
+  const handleDocument = async (e: ChangeEvent<HTMLInputElement>) => {
+    try {
+      if (e.target.files && e.target.files[0]) {
+        const file = e.target.files[0]
+        const fileId = `document-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`
+        const fileName = file.name
 
-      uploadFile(file)
-        .then((res) => {
-          setDocument({
-            id: fileId,
-            name: fileName,
-            url: res.data.url,
-            type: 'document',
-          })
+        const res = await uploadFile(file)
+        setDocumentFile({
+          id: fileId,
+          name: fileName,
+          url: res.data.url,
+          type: 'document',
         })
-        .catch(() => toast.error('Не удалось загрузить документ'))
+
+        if (documentInputRef.current) {
+          documentInputRef.current.value = ''
+        }
+      }
+    } catch (error) {
+      toast.error('Не удалось загрузить документ')
+      console.log(error)
     }
+  }
+
+  const handleDeleteDocument = () => {
+    setDocumentFile(null)
   }
 
   const setFileType = (type: string) => {
@@ -254,7 +276,7 @@ const NotificationPanel = () => {
 
   useEffect(() => {
     setIsActiveNotificationButton(false)
-  }, [editorContent, media, document, buttonText, buttonUrl])
+  }, [editorContent, media, documentFile, buttonText, buttonUrl])
 
   return (
     <>
@@ -277,6 +299,30 @@ const NotificationPanel = () => {
               </div>
             </CCardHeader>
             <CCardBody>
+              {documentFile && (
+                <div className="mb-3">
+                  <CTable>
+                    <CTableHead>
+                      <CTableRow>
+                        <CTableHeaderCell>Файл</CTableHeaderCell>
+                        <CTableHeaderCell>Тип</CTableHeaderCell>
+                        <CTableHeaderCell className="text-center">Удалить</CTableHeaderCell>
+                      </CTableRow>
+                    </CTableHead>
+                    <CTableBody>
+                      <CTableRow>
+                        <CTableDataCell>{documentFile.name}</CTableDataCell>
+                        <CTableDataCell>{setFileType(documentFile.type)}</CTableDataCell>
+                        <CTableDataCell className="text-center">
+                          <CButton color="primary" onClick={handleDeleteDocument}>
+                            Удалить
+                          </CButton>
+                        </CTableDataCell>
+                      </CTableRow>
+                    </CTableBody>
+                  </CTable>
+                </div>
+              )}
               {media.length > 0 && (
                 <CTable>
                   <CTableHead>
@@ -321,7 +367,7 @@ const NotificationPanel = () => {
                   </CTableBody>
                 </CTable>
               )}
-              {!document && (
+              {!documentFile && (
                 <div className={classNames('d-flex', 'gap-3', 'justify-content-end')}>
                   <CLoadingButton
                     color="primary"
@@ -330,7 +376,7 @@ const NotificationPanel = () => {
                     }
                     loading={imageUploadInProgress}
                   >
-                    <label htmlFor="imageInput">+ Прикрепить Изображение</label>
+                    <label htmlFor="imageInput" style={{ cursor: 'pointer' }}>+ Прикрепить Изображение</label>
                   </CLoadingButton>
                   <input
                     ref={imageInputRef}
@@ -347,7 +393,7 @@ const NotificationPanel = () => {
                     }
                     loading={videoUploadInProgress}
                   >
-                    <label htmlFor="videoInput">+ Прикрепить Видео</label>
+                    <label htmlFor="videoInput" style={{ cursor: 'pointer' }}>+ Прикрепить Видео</label>
                   </CLoadingButton>
                   <input
                     ref={videoInputRef}
@@ -359,10 +405,11 @@ const NotificationPanel = () => {
                   />
                 </div>
               )}
-              {media.length === 0 && (
+              {media.length === 0 && !documentFile && (
                 <div className="mt-3">
                   <CFormInput
                     type="file"
+                    ref={documentInputRef}
                     label={
                       <div className="d-flex align-items-center">
                         Документ
@@ -377,7 +424,7 @@ const NotificationPanel = () => {
               )}
             </CCardBody>
           </CCard>
-          {media.length <= 1 && (
+          {media.length <= 1 && !documentFile && (
             <CCard className="mb-4 mx-2">
               <CCardHeader>
                 <div className="d-flex align-items-center">
