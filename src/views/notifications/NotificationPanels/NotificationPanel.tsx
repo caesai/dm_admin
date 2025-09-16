@@ -51,7 +51,6 @@ const NotificationPanel = () => {
 
   const imageInputRef = useRef<HTMLInputElement>(null)
   const videoInputRef = useRef<HTMLInputElement>(null)
-  const documentInputRef = useRef<HTMLInputElement>(null)
 
   const handleSuccess = () => {
     setRefreshHistoryKey((key) => key + 1)
@@ -222,19 +221,14 @@ const NotificationPanel = () => {
           url: res.data.url,
           type: 'document',
         })
-
-        if (documentInputRef.current) {
-          documentInputRef.current.value = ''
-        }
+      } else {
+        setDocumentFile(null)
       }
     } catch (error) {
       toast.error('Не удалось загрузить документ')
+      setDocumentFile(null)
       console.log(error)
     }
-  }
-
-  const handleDeleteDocument = () => {
-    setDocumentFile(null)
   }
 
   const setFileType = (type: string) => {
@@ -299,30 +293,6 @@ const NotificationPanel = () => {
               </div>
             </CCardHeader>
             <CCardBody>
-              {documentFile && (
-                <div className="mb-3">
-                  <CTable>
-                    <CTableHead>
-                      <CTableRow>
-                        <CTableHeaderCell>Файл</CTableHeaderCell>
-                        <CTableHeaderCell>Тип</CTableHeaderCell>
-                        <CTableHeaderCell className="text-center">Удалить</CTableHeaderCell>
-                      </CTableRow>
-                    </CTableHead>
-                    <CTableBody>
-                      <CTableRow>
-                        <CTableDataCell>{documentFile.name}</CTableDataCell>
-                        <CTableDataCell>{setFileType(documentFile.type)}</CTableDataCell>
-                        <CTableDataCell className="text-center">
-                          <CButton color="primary" onClick={handleDeleteDocument}>
-                            Удалить
-                          </CButton>
-                        </CTableDataCell>
-                      </CTableRow>
-                    </CTableBody>
-                  </CTable>
-                </div>
-              )}
               {media.length > 0 && (
                 <CTable>
                   <CTableHead>
@@ -376,7 +346,9 @@ const NotificationPanel = () => {
                     }
                     loading={imageUploadInProgress}
                   >
-                    <label htmlFor="imageInput" style={{ cursor: 'pointer' }}>+ Прикрепить Изображение</label>
+                    <label htmlFor="imageInput" style={{ cursor: 'pointer' }}>
+                      + Прикрепить Изображение
+                    </label>
                   </CLoadingButton>
                   <input
                     ref={imageInputRef}
@@ -393,7 +365,9 @@ const NotificationPanel = () => {
                     }
                     loading={videoUploadInProgress}
                   >
-                    <label htmlFor="videoInput" style={{ cursor: 'pointer' }}>+ Прикрепить Видео</label>
+                    <label htmlFor="videoInput" style={{ cursor: 'pointer' }}>
+                      + Прикрепить Видео
+                    </label>
                   </CLoadingButton>
                   <input
                     ref={videoInputRef}
@@ -405,11 +379,10 @@ const NotificationPanel = () => {
                   />
                 </div>
               )}
-              {media.length === 0 && !documentFile && (
+              {media.length === 0 && (
                 <div className="mt-3">
                   <CFormInput
                     type="file"
-                    ref={documentInputRef}
                     label={
                       <div className="d-flex align-items-center">
                         Документ
