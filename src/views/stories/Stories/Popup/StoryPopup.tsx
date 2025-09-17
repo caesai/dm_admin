@@ -246,7 +246,11 @@ const StoryPopup: FC<StoryPopupProps> = ({
               onColorChange={changeButtonColor}
             />
           )}
-          <ButtonSection onCancel={closePopup} onSave={handleChangeStory} />
+          <ButtonSection
+            onCancel={closePopup}
+            onSave={handleChangeStory}
+            isActive={story.duration !== 0}
+          />
         </div>
         <div className={classNames('w-25', 'h-100', 'ms-4')}>
           <strong>Превью</strong>
