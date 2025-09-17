@@ -24,7 +24,7 @@ const MediaUrlInput: FC<MediaUrlInputProps> = ({ url, type, onUrlChange, onMedia
       <CFormInput
         type="text"
         placeholder={
-          type === 'component' || type === 'image' ? 'Добавить изображение' : 'Добавить видео'
+          type === 'component' || type === 'image' ? 'Ссылка на изображение' : 'Ссылка на видео'
         }
         value={url === null ? '' : url}
         onInput={onUrlChange}

@@ -49,7 +49,7 @@ export const BlockInfoSection: FC<BlockInfoSectionProps> = ({
         <div className="d-flex align-items-center gap-2 p-0">
           <CFormInput
             type="text"
-            placeholder="URL обложки"
+            placeholder="Обложка блока историй"
             value={thumbnail || ''}
             onInput={onThumbnailChange}
           />
