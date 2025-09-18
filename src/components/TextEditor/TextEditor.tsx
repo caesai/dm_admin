@@ -26,10 +26,7 @@ interface IProps {
   onUpdate: (a: any) => void
 }
 
-export const TextEditor: React.FC<IProps> = ({
-  onUpdate,
-  initialContent = 'Текст рассылки...',
-}) => {
+export const TextEditor: React.FC<IProps> = ({ onUpdate, initialContent }) => {
   const [editorContent, setEditorContent] = useState('')
   const [isEmoji, setIsEmoji] = useState<boolean>(false)
   const emojiPickerRef = useRef<HTMLDivElement>(null)
@@ -51,7 +48,13 @@ export const TextEditor: React.FC<IProps> = ({
       Italic,
       Strike,
       Code,
-      HardBreak.configure({
+      HardBreak.extend({
+        addKeyboardShortcuts() {
+          return {
+            Enter: () => this.editor.commands.setHardBreak(),
+          }
+        },
+      }).configure({
         HTMLAttributes: {
           class: 'hard-break',
         },
@@ -121,7 +124,7 @@ export const TextEditor: React.FC<IProps> = ({
   }
 
   const convertNewLinesToHtml = (text: string): string => {
-    return text.replace(/\n\s*\n/g, '<p><br></p>').replace(/\n/g, '<br>')
+    return text.replace(/\n/g, '<br>')
   }
 
   if (!editor) {
@@ -134,6 +137,12 @@ export const TextEditor: React.FC<IProps> = ({
 
   const turndownService = useMemo(() => {
     const service = new TurndownService()
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    // now handled manually
+    service.remove('lineBreak')
+
     service.addRule('underline', {
       filter: ['u'],
       replacement: function (content) {
@@ -141,22 +150,22 @@ export const TextEditor: React.FC<IProps> = ({
       },
     })
 
-    service.addRule('s', {
+    service.addRule('strike', {
       filter: ['s'],
       replacement: function (content) {
         return '<s>' + content + '</s>'
       },
     })
 
-    service.addRule('em', {
-      filter: ['em'],
+    service.addRule('italic', {
+      filter: ['em', 'i'],
       replacement: function (content) {
         return '<i>' + content + '</i>'
       },
     })
 
-    service.addRule('strong', {
-      filter: ['strong'],
+    service.addRule('bold', {
+      filter: ['strong', 'b'],
       replacement: function (content) {
         return '<b>' + content + '</b>'
       },
@@ -169,27 +178,12 @@ export const TextEditor: React.FC<IProps> = ({
       },
     })
 
-    service.addRule('lineBreak', {
-      filter: ['br'],
-      replacement: function () {
-        return '\n'
-      },
-    })
-
-    service.addRule('emptyParagraphWithBr', {
-      filter: function (node) {
-        return node.nodeName === 'P' && node.innerHTML.trim() === '<br>'
-      },
-      replacement: function () {
-        return '\n\n'
-      },
-    })
-
     service.addRule('external-link', {
       filter: function (node) {
         return node.nodeName === 'A'
       },
       replacement: function (content, node) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
         const url = node.getAttribute('href')
         if (!url?.startsWith('http')) return content
@@ -200,8 +194,15 @@ export const TextEditor: React.FC<IProps> = ({
     return service
   }, [])
 
+  const convertHtmlToMarkdownWithFormatting = (html: string): string => {
+    let markdown = turndownService.turndown(html)
+    markdown = markdown.replace(/<br\s*[^>]*>/gi, '\n')
+    markdown = markdown.replace(/<p[^>]*>/gi, '').replace(/<\/p>/gi, '\n\n')
+    return markdown.trim()
+  }
+
   useEffect(() => {
-    const markdown = turndownService.turndown(editorContent)
+    const markdown = convertHtmlToMarkdownWithFormatting(editorContent)
     onUpdate(markdown)
   }, [editorContent])
 
@@ -300,7 +301,6 @@ export const TextEditor: React.FC<IProps> = ({
           Remove
         </button>
       </BubbleMenu>
-
       <EditorContent editor={editor} />
 
       <LinkModal

@@ -2,7 +2,7 @@ import { CCard, CCardHeader, CTab, CTabContent, CTabList, CTabs } from '@coreui/
 import { useEffect, useState } from 'react'
 import classNames from 'classnames'
 import ReservationPanel from 'src/views/notifications/NotificationPanels/ReservationPanel.tsx'
-import DistributionPanel from 'src/views/notifications/NotificationPanels/DistributionPanel.tsx'
+import NotificationPanel from 'src/views/notifications/NotificationPanels/NotificationPanel.tsx'
 import EditReservationPopup from 'src/views/notifications/NotificationPopups/EditReservationPopup.tsx'
 import { getConfirmationList, getTextsList } from 'src/dataProviders/texts.ts'
 import { IConfirmation, IText } from 'src/types/Texts.ts'
@@ -52,7 +52,7 @@ const NotificationsPage = () => {
           </CTabList>
         </CCardHeader>
         <CTabContent>
-          <DistributionPanel />
+          <NotificationPanel />
           <ReservationPanel
             setConfirmationId={setConfirmationId}
             confirmationList={confirmation}

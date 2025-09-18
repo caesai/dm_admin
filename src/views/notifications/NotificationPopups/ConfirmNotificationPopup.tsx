@@ -8,7 +8,7 @@ import {
 } from '@coreui/react-pro'
 import { Dispatch, FC, SetStateAction, useState } from 'react'
 
-const ConfirmDistributionPopup: FC<{
+const ConfirmNotificationPopup: FC<{
   popup: [boolean, Dispatch<SetStateAction<boolean>>]
   onConfirm: () => Promise<void>
 }> = ({ popup, onConfirm }) => {
@@ -45,4 +45,4 @@ const ConfirmDistributionPopup: FC<{
   )
 }
 
-export default ConfirmDistributionPopup
+export default ConfirmNotificationPopup

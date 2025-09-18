@@ -32,7 +32,7 @@ const StoriesTable: FC<{
       case 'video':
         return 'Видео'
       case 'component':
-        return 'Компонент'
+        return 'Кастомная'
     }
   }
 
@@ -87,7 +87,7 @@ const StoriesTable: FC<{
         <CTableBody>
           {storiesList.map((story, index) => (
             <CTableRow key={story.id || story.tempId || index}>
-              <CTableDataCell className="text-start">{story.id ? story.id : 'Нет'}</CTableDataCell>
+              <CTableDataCell className="text-start">{index + 1}</CTableDataCell>
               <CTableDataCell className="text-start">{setStoryType(story.type)}</CTableDataCell>
               <CTableDataCell className="text-start">
                 {story.title ? story.title : 'Отсутствует'}

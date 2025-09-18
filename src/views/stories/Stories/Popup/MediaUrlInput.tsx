@@ -23,7 +23,9 @@ const MediaUrlInput: FC<MediaUrlInputProps> = ({ url, type, onUrlChange, onMedia
     <div className={classNames('d-flex', 'align-items-center', 'gap-2', 'p-0')}>
       <CFormInput
         type="text"
-        placeholder={type === 'component' ? 'Контент URL' : 'URL обложки'}
+        placeholder={
+          type === 'component' || type === 'image' ? 'Ссылка на изображение' : 'Ссылка на видео'
+        }
         value={url === null ? '' : url}
         onInput={onUrlChange}
       />

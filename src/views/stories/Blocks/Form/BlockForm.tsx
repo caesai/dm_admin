@@ -54,9 +54,7 @@ const BlockForm: FC<{
   }
   const handleImageChange = (files: FileList | null) => {
     if (!files) return
-    uploadFile(files[0], false).then((res) =>
-      setBlock((prev) => ({ ...prev, thumbnail: res.data.url })),
-    )
+    uploadFile(files[0]).then((res) => setBlock((prev) => ({ ...prev, thumbnail: res.data.url })))
   }
   const addUser = (userId: number) => {
     setBlock((prev) => ({ ...prev, users: [...prev.users, userId] }))
@@ -91,6 +89,7 @@ const BlockForm: FC<{
       await updateStory(story, story.id)
     }
   }
+
   const deleteStories = async () => {
     for (const story of storiesToDelete) {
       if (!story.id) return
@@ -135,7 +134,7 @@ const BlockForm: FC<{
               ])
             }
           })
-          .then(() => toast('Блок обновлён'))
+          .then(() => toast.success('Блок обновлён'))
       : createBlock({ ...block })
           .then((res) => {
             const newBlockId = res.data.id
@@ -145,7 +144,7 @@ const BlockForm: FC<{
               )
             }
           })
-          .then(() => toast('Блок создан'))
+          .then(() => toast.success('Блок создан'))
     operation
       .catch((e) => toast.error(e))
       .finally(() => {
@@ -156,7 +155,7 @@ const BlockForm: FC<{
   const handleDeleteBlock = () => {
     if (blockId === null) return
     deleteBlock(blockId)
-      .then(() => toast('Блок удалён'))
+      .then(() => toast.success('Блок удалён'))
       .catch((e) => toast.error(e))
       .finally(() => cancelBlockEdit())
   }
@@ -202,6 +201,7 @@ const BlockForm: FC<{
       />
       <ActionButtons
         isEdit={isEdit}
+        isActive={block.name !== ''}
         isLoading={isLoading}
         onCancel={cancelBlockEdit}
         onSave={handleSendBlock}

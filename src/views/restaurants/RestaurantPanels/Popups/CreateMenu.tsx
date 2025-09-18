@@ -38,7 +38,7 @@ export const CreateMenu: FC<{
         })),
       )
       .then(() => {
-        toast('Запись создана')
+        toast.success('Запись создана')
         setOpen(false)
       })
   }

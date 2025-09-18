@@ -7,3 +7,15 @@ export interface IMailing {
   total_count: number
   created_at: number
 }
+
+export interface IMailingSend {
+  users_ids: Array<string>
+  restaurant_id?: number
+  text?: string
+  media_url?: string
+  media_type?: 'photo' | 'video' | 'document'
+  media_filename?: string
+  button_text?: string | null
+  button_url?: string
+  media_items?: Array<string[]>
+}
