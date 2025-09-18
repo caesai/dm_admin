@@ -37,8 +37,8 @@ interface IMedia {
 
 const NotificationPanel = () => {
   const [testUserName, setTestUserName] = useState<string>('')
-  const [editorContent, setEditorContent] = useState(null)
-  const [groupNotificationIsInProgress, setGroupNotificationIsInProgress] = useState(false)
+  const [editorContent, setEditorContent] = useState<string>('')
+  const [groupNotificationIsInProgress, setGroupNotificationIsInProgress] = useState<boolean>(false)
   const [media, setMedia] = useState<IMedia[]>([])
   const [imageUploadInProgress, setImageUploadInProgress] = useState<boolean>(false)
   const [videoUploadInProgress, setVideoUploadInProgress] = useState<boolean>(false)
@@ -387,7 +387,7 @@ const NotificationPanel = () => {
                       <div className="d-flex align-items-center">
                         Документ
                         <div className="ms-2">
-                          <TooltipInfo content="Если прикрепить документ, то добавление медиайфйлов будет недоступно." />
+                          <TooltipInfo content="Если прикрепить документ, то добавление медиафайлов будет недоступно." />
                         </div>
                       </div>
                     }
