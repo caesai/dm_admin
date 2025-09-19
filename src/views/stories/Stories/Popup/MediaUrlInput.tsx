@@ -21,14 +21,21 @@ const MediaUrlInput: FC<MediaUrlInputProps> = ({ url, type, onUrlChange, onMedia
 
   return (
     <div className={classNames('d-flex', 'align-items-center', 'gap-2', 'p-0')}>
-      <CFormInput
-        type="text"
-        placeholder={
-          type === 'component' || type === 'image' ? 'Ссылка на изображение' : 'Ссылка на видео'
-        }
-        value={url === null ? '' : url}
-        onInput={onUrlChange}
-      />
+      <div className={classNames('position-relative', 'w-100')}>
+        <CFormInput
+          type="text"
+          placeholder={
+            type === 'component' || type === 'image' ? 'Ссылка на изображение' : 'Ссылка на видео'
+          }
+          value={url === null ? '' : url}
+          onInput={onUrlChange}
+        />
+        {!url && (
+          <strong className="fs-5" style={{ position: 'absolute', top: '20%', left: '20ex' }}>
+            *
+          </strong>
+        )}
+      </div>
       <MediaInput onChange={(e) => onMediaChange(e.target.files)} isVideo={type === 'video'} />
       <TooltipInfo content={tooltipText} />
     </div>

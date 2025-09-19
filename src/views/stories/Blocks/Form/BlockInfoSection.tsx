@@ -47,12 +47,19 @@ export const BlockInfoSection: FC<BlockInfoSectionProps> = ({
       </CRow>
       <CRow className="mb-3">
         <div className="d-flex align-items-center gap-2 p-0">
-          <CFormInput
-            type="text"
-            placeholder="Обложка блока историй"
-            value={thumbnail || ''}
-            onInput={onThumbnailChange}
-          />
+          <div className="position-relative w-100">
+            <CFormInput
+              type="text"
+              placeholder="Обложка блока историй"
+              value={thumbnail}
+              onInput={onThumbnailChange}
+            />
+            {thumbnail === '' && (
+              <div className="position-absolute" style={{ top: '20%', left: '24ex' }}>
+                <strong className="fs-5">*</strong>
+              </div>
+            )}
+          </div>
           <MediaInput onChange={(e) => onImageUpload(e.target.files)} />
           <TooltipInfo content="Обложка истории отображается на главной странице приложения в блоке историй. Вставьте ссылку на изображение, либо загрузите его, нажав на кнопку. Избражение должно быть квадратное" />
         </div>
