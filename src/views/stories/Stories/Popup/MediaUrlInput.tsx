@@ -31,7 +31,10 @@ const MediaUrlInput: FC<MediaUrlInputProps> = ({ url, type, onUrlChange, onMedia
           onInput={onUrlChange}
         />
         {!url && (
-          <strong className="fs-5" style={{ position: 'absolute', top: '20%', left: '20ex' }}>
+          <strong
+            className="fs-5"
+            style={{ position: 'absolute', top: '20%', left: type === 'video' ? '14ex' : '20ex' }}
+          >
             *
           </strong>
         )}
