@@ -18,7 +18,7 @@ const DurationInput: FC<DurationInputProps> = ({ duration, onChange }) => {
           onChange={onChange}
         />
         {!duration && (
-          <strong className="fs-5" style={{ position: 'absolute', top: '20%', left: '21ex' }}>
+          <strong className="fs-5" style={{ position: 'absolute', top: '20%', left: '20ex' }}>
             *
           </strong>
         )}

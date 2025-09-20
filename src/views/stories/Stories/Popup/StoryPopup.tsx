@@ -32,7 +32,7 @@ const StoryPopup: FC<StoryPopupProps> = ({
   const [storyId, setStoryId] = currentStoryId
   const [story, setStory] = useState<IStory>({
     type: 'image',
-    duration: 0,
+    duration: 5000,
     url: null,
     title: null,
     description: null,
@@ -52,7 +52,7 @@ const StoryPopup: FC<StoryPopupProps> = ({
     setIsActiveButton(false)
     setStory({
       type: 'image',
-      duration: 0,
+      duration: 5000,
       url: null,
       title: null,
       description: null,
@@ -249,7 +249,7 @@ const StoryPopup: FC<StoryPopupProps> = ({
           <ButtonSection
             onCancel={closePopup}
             onSave={handleChangeStory}
-            isActive={story.duration !== 0}
+            isActive={story.duration !== 0 && !Number.isNaN(story.duration) && !!story.url}
           />
         </div>
         <div className={classNames('w-25', 'h-100', 'ms-4')}>
