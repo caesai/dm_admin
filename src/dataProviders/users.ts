@@ -1,9 +1,9 @@
 import axios from 'axios'
 import { BASEURL } from 'src/api.ts'
-import { IUserFull, IUserWithDates } from 'src/types/User.ts'
+import { IUserFull, IUserList } from 'src/types/User.ts'
 
 export const getUsers = async () => {
-  return await axios.get<IUserWithDates[]>(`${BASEURL}/users/`, {
+  return await axios.get<IUserList>(`${BASEURL}/users/`, {
     headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
   })
 }
