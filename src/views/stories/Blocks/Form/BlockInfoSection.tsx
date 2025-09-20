@@ -55,7 +55,7 @@ export const BlockInfoSection: FC<BlockInfoSectionProps> = ({
               onInput={onThumbnailChange}
             />
             {thumbnail === '' && (
-              <div className="position-absolute" style={{ top: '20%', left: '24ex' }}>
+              <div className="position-absolute" style={{ top: '20%', left: '25ex' }}>
                 <strong className="fs-5">*</strong>
               </div>
             )}
