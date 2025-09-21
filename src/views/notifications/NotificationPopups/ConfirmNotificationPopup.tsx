@@ -7,11 +7,13 @@ import {
   CModalTitle,
 } from '@coreui/react-pro'
 import { Dispatch, FC, SetStateAction, useState } from 'react'
+import { IRestaurantWCity } from 'src/types/Restaurant.ts'
 
 const ConfirmNotificationPopup: FC<{
   popup: [boolean, Dispatch<SetStateAction<boolean>>]
+  restaurant?: IRestaurantWCity
   onConfirm: () => Promise<void>
-}> = ({ popup, onConfirm }) => {
+}> = ({ popup, restaurant, onConfirm }) => {
   const [visible, setVisible] = popup
   const [allNotificationIsInProgress, setAllNotificationIsInProgress] = useState(false)
 
@@ -25,12 +27,25 @@ const ConfirmNotificationPopup: FC<{
     }
   }
 
+  const checkRestaurantCity = () => {
+    if (restaurant?.title === 'Smoke BBQ' && restaurant?.city.name === 'Санкт-Петербург') {
+      return restaurant?.address
+    }
+    return restaurant?.city.name
+  }
+
   return (
     <CModal alignment="center" visible={visible} onClose={() => setVisible(false)}>
       <CModalHeader>
         <CModalTitle>Подтверждение рассылки</CModalTitle>
       </CModalHeader>
-      <CModalBody>Сообщение будет отправлено всем пользователям!</CModalBody>
+      <CModalBody>
+        Сообщение будет отправлено{' '}
+        {restaurant?.title
+          ? `клиентам ${restaurant.title}, ${checkRestaurantCity()}`
+          : 'всем клиентам'}
+        !
+      </CModalBody>
       <CModalFooter>
         <CLoadingButton
           color="primary"
