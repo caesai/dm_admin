@@ -14,8 +14,21 @@ import {
 import { ChangeEvent, Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 import classNames from 'classnames'
 import { TextEditor } from 'src/components/TextEditor/TextEditor.tsx'
-import { IText } from 'src/types/Texts.ts'
+import { IText, ITextInitial } from 'src/types/Texts.ts'
 import { getTextById, updateTextById } from 'src/dataProviders/texts.ts'
+
+export const categoryOptions = [
+  { label: 'BOOKING', value: 'BOOKING' },
+  { label: 'SUPPORT', value: 'SUPPORT' },
+  { label: 'EVENT', value: 'EVENT' },
+  { label: 'TRIGGER_MAILING', value: 'TRIGGER_MAILING' },
+]
+
+export const typeOptions = [
+  { label: 'В ресторан', value: 'В ресторан' },
+  { label: 'Пользователю', value: 'Пользователю' },
+  { label: 'В ремаркед', value: 'В ремаркед' },
+]
 
 const EditOtherPopup: FC<{
   popup: [number, Dispatch<SetStateAction<number | null>>]
@@ -23,17 +36,7 @@ const EditOtherPopup: FC<{
 }> = ({ popup, onUpdate }) => {
   const [textId, setTextId] = popup
   const [editorContent, setEditorContent] = useState<string>('')
-  const [text, setText] = useState<IText>({
-    id: 0,
-    name: '',
-    type: '',
-    description: '',
-    category: '',
-    content: '',
-    created_at: '',
-    updated_at: '',
-    is_hidden: false,
-  })
+  const [text, setText] = useState<IText>(ITextInitial)
 
   const changeText = async () => {
     if (text) {
@@ -102,24 +105,11 @@ const EditOtherPopup: FC<{
             <CFormSelect
               value={text.category}
               onChange={changeCategory}
-              options={[
-                { label: 'BOOKING', value: 'BOOKING' },
-                { label: 'SUPPORT', value: 'SUPPORT' },
-                { label: 'EVENT', value: 'EVENT' },
-                { label: 'TRIGGER_MAILING', value: 'TRIGGER_MAILING' },
-              ]}
+              options={categoryOptions}
             />
           </CCard>
           <CCard className="border-0">
-            <CFormSelect
-              value={text.type}
-              onChange={changeType}
-              options={[
-                { label: 'В ресторан', value: 'В ресторан' },
-                { label: 'Пользователю', value: 'Пользователю' },
-                { label: 'В ремаркед', value: 'В ремаркед' },
-              ]}
-            />
+            <CFormSelect value={text.type} onChange={changeType} options={typeOptions} />
           </CCard>
           <CCard className="border-0">
             <CCardBody className={classNames('border', 'rounded')}>
