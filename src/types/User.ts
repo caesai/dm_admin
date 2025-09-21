@@ -38,3 +38,10 @@ export interface IUserFull extends IUserWithDates {
   payments?: IPaymentBase[]
   events?: IEventBookingBase[]
 }
+
+export interface IUserList {
+  page: number
+  per_page: number
+  total: number
+  users: IUserWithDates[]
+}
