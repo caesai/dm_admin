@@ -6,6 +6,7 @@ import {
   CCardHeader,
   CForm,
   CFormInput,
+  CFormSelect,
   CInputGroup,
   CLoadingButton,
   CTable,
@@ -27,6 +28,8 @@ import { cilArrowBottom, cilArrowTop } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 import { uploadFile } from 'src/dataProviders/s3.ts'
 import { sendMailingContent, sendMailingGroup } from 'src/dataProviders/mailing.ts'
+import { GetRestaurantList } from 'src/dataProviders/restaurants.ts'
+import { IRestaurantWCity } from 'src/types/Restaurant.ts'
 
 interface IMedia {
   id: string
@@ -44,10 +47,12 @@ const NotificationPanel = () => {
   const [videoUploadInProgress, setVideoUploadInProgress] = useState<boolean>(false)
   const [buttonText, setButtonText] = useState<string>('')
   const [buttonUrl, setButtonUrl] = useState<string>('')
+  const [restaurantId, setRestaurantId] = useState<number | undefined>(undefined)
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false)
   const [isActiveNotificationButton, setIsActiveNotificationButton] = useState<boolean>(false)
   const [refreshHistoryKey, setRefreshHistoryKey] = useState<number>(0)
   const [documentFile, setDocumentFile] = useState<IMedia | null>(null)
+  const [restaurants, setRestaurants] = useState<IRestaurantWCity[]>([])
 
   const imageInputRef = useRef<HTMLInputElement>(null)
   const videoInputRef = useRef<HTMLInputElement>(null)
@@ -67,11 +72,13 @@ const NotificationPanel = () => {
     try {
       const btnText = button_text || undefined
       const btnUrl = button_url || undefined
+      const restaurant_id = restaurantId || undefined
       const mediaItems = mediaList.map((item) => [item.url, item.type, item.name])
 
       if (documentFile) {
         await sendMailingContent({
           users_ids: users_ids,
+          restaurant_id: restaurant_id,
           text: text,
           button_text: btnText,
           button_url: btnUrl,
@@ -82,6 +89,7 @@ const NotificationPanel = () => {
       } else if (mediaList.length === 1) {
         await sendMailingContent({
           users_ids: users_ids,
+          restaurant_id: restaurant_id,
           text: text,
           button_text: btnText,
           button_url: btnUrl,
@@ -92,6 +100,7 @@ const NotificationPanel = () => {
       } else if (mediaList.length > 1) {
         await sendMailingGroup({
           users_ids: users_ids,
+          restaurant_id: restaurant_id,
           text: text,
           button_text: btnText,
           button_url: btnUrl,
@@ -100,6 +109,7 @@ const NotificationPanel = () => {
       } else {
         await sendMailingContent({
           users_ids: users_ids,
+          restaurant_id: restaurant_id,
           text: text,
           button_text: btnText,
           button_url: btnUrl,
@@ -268,10 +278,31 @@ const NotificationPanel = () => {
     })
   }
 
+  const changeRestaurantId = (e: ChangeEvent<HTMLSelectElement>) => {
+    setRestaurantId(e.target.value ? parseInt(e.target.value) : undefined)
+  }
+
+  const loadRestaurants = async () => {
+    const response = await GetRestaurantList()
+    console.log(response.data)
+    setRestaurants(response.data)
+  }
+
+  const getCity = (restaurantId: number) => {
+    const restaurant = restaurants.find((r) => r.id === restaurantId)
+    if (restaurant?.title === 'Smoke BBQ' && restaurant?.city.name === 'Санкт-Петербург') {
+      return restaurant?.address
+    }
+    return restaurant?.city.name
+  }
+
   useEffect(() => {
     setIsActiveNotificationButton(false)
   }, [editorContent, media, documentFile, buttonText, buttonUrl])
 
+  useEffect(() => {
+    loadRestaurants()
+  }, [])
   return (
     <>
       <CTabPanel itemKey="distribution">
@@ -455,8 +486,24 @@ const NotificationPanel = () => {
               </CForm>
             </CCardBody>
           </CCard>
-          <CCardBody className="d-flex">
-            <div className="d-flex align-items-center">
+          <CCardBody className={classNames('d-flex', 'flex-column', 'gap-2')}>
+            <div className={classNames('d-flex', 'align-items-center')}>
+              <CFormSelect
+                style={{ width: 'w' }}
+                onChange={changeRestaurantId}
+                options={[
+                  { label: 'Всем', value: undefined },
+                  ...restaurants.map((restaurant) => ({
+                    label: `Клиентам ${restaurant.title}, ${getCity(restaurant.id)}`,
+                    value: `${restaurant.id}`,
+                  })),
+                ]}
+              />
+              <div className="ms-2">
+                <TooltipInfo content="текст тултипа" />
+              </div>
+            </div>
+            <div className={classNames('d-flex', 'align-items-center')}>
               <CButton
                 color="primary"
                 className="px-4"
