@@ -8,12 +8,27 @@ import {
   CCardGroup,
   CCard,
   CCardBody,
+  CFormInput,
+  CFormSelect,
 } from '@coreui/react-pro'
-import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
+import { ChangeEvent, Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 import classNames from 'classnames'
 import { TextEditor } from 'src/components/TextEditor/TextEditor.tsx'
-import { IText } from 'src/types/Texts.ts'
+import { IText, ITextInitial } from 'src/types/Texts.ts'
 import { getTextById, updateTextById } from 'src/dataProviders/texts.ts'
+
+export const categoryOptions = [
+  { label: 'BOOKING', value: 'BOOKING' },
+  { label: 'SUPPORT', value: 'SUPPORT' },
+  { label: 'EVENT', value: 'EVENT' },
+  { label: 'TRIGGER_MAILING', value: 'TRIGGER_MAILING' },
+]
+
+export const typeOptions = [
+  { label: 'В ресторан', value: 'В ресторан' },
+  { label: 'Пользователю', value: 'Пользователю' },
+  { label: 'В ремаркед', value: 'В ремаркед' },
+]
 
 const EditOtherPopup: FC<{
   popup: [number, Dispatch<SetStateAction<number | null>>]
@@ -21,10 +36,8 @@ const EditOtherPopup: FC<{
 }> = ({ popup, onUpdate }) => {
   const [textId, setTextId] = popup
   const [editorContent, setEditorContent] = useState<string>('')
-  const [text, setText] = useState<IText>()
-  useEffect(() => {
-    fetchText()
-  }, [textId])
+  const [text, setText] = useState<IText>(ITextInitial)
+
   const changeText = async () => {
     if (text) {
       await updateTextById(textId, {
@@ -37,6 +50,28 @@ const EditOtherPopup: FC<{
       }
     }
   }
+
+  const changeDescription = (e: ChangeEvent<HTMLInputElement>) => {
+    setText((prev) => ({
+      ...prev,
+      description: e.target.value,
+    }))
+  }
+
+  const changeCategory = (e: ChangeEvent<HTMLSelectElement>) => {
+    setText((prev) => ({
+      ...prev,
+      category: e.target.value,
+    }))
+  }
+
+  const changeType = (e: ChangeEvent<HTMLSelectElement>) => {
+    setText((prev) => ({
+      ...prev,
+      type: e.target.value,
+    }))
+  }
+
   const fetchText = async () => {
     try {
       const response = await getTextById(textId)
@@ -46,6 +81,11 @@ const EditOtherPopup: FC<{
       console.error('Failed to fetch text:', error)
     }
   }
+
+  useEffect(() => {
+    fetchText()
+  }, [textId])
+
   return (
     <CModal size="lg" alignment="center" visible={textId !== null} onClose={() => setTextId(null)}>
       <CModalHeader>
@@ -53,8 +93,23 @@ const EditOtherPopup: FC<{
       </CModalHeader>
       <CModalBody>
         <CCardGroup className={classNames('flex-column', 'gap-2')}>
-          <CCard>
-            <CCardBody>{text?.name}</CCardBody>
+          <CCard className="border-0">
+            <CFormInput
+              placeholder="Описание"
+              value={text.description}
+              onInput={changeDescription}
+              className="py-2"
+            />
+          </CCard>
+          <CCard className="border-0">
+            <CFormSelect
+              value={text.category}
+              onChange={changeCategory}
+              options={categoryOptions}
+            />
+          </CCard>
+          <CCard className="border-0">
+            <CFormSelect value={text.type} onChange={changeType} options={typeOptions} />
           </CCard>
           <CCard className="border-0">
             <CCardBody className={classNames('border', 'rounded')}>
