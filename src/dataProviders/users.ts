@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { BASEURL } from 'src/api.ts'
 import { IUserFull, IUserList } from 'src/types/User.ts'
+import { IBookingWithRestaurant } from 'src/types/Booking.ts'
 
 export const getUsers = async () => {
   return await axios.get<IUserList>(`${BASEURL}/users/`, {
@@ -10,6 +11,33 @@ export const getUsers = async () => {
 
 export const getUserById = async (id: number) => {
   return await axios.get<IUserFull>(`${BASEURL}/users/${id}`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+    },
+  })
+}
+
+export const getUserLogs = async (id: number) => {
+  return await axios.get(`${BASEURL}/user-logs/`, {
+    params: {
+      id: id,
+    },
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+    },
+  })
+}
+
+export const getUserBookings = async (id: number) => {
+  return await axios.get<IBookingWithRestaurant[]>(`${BASEURL}/users/${id}/bookings`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+    },
+  })
+}
+
+export const getUserEvents = async (id: number) => {
+  return await axios.get(`${BASEURL}/users/${id}/events`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },
