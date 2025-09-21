@@ -30,6 +30,7 @@ import { uploadFile } from 'src/dataProviders/s3.ts'
 import { sendMailingContent, sendMailingGroup } from 'src/dataProviders/mailing.ts'
 import { GetRestaurantList } from 'src/dataProviders/restaurants.ts'
 import { IRestaurantWCity } from 'src/types/Restaurant.ts'
+import { getRestaurantCity } from 'src/utils.tsx'
 
 interface IMedia {
   id: string
@@ -287,14 +288,6 @@ const NotificationPanel = () => {
     setRestaurants(response.data)
   }
 
-  const getCity = (restaurantId: number) => {
-    const restaurant = restaurants.find((r) => r.id === restaurantId)
-    if (restaurant?.title === 'Smoke BBQ' && restaurant?.city.name === 'Санкт-Петербург') {
-      return restaurant?.address
-    }
-    return restaurant?.city.name
-  }
-
   useEffect(() => {
     setIsActiveNotificationButton(false)
   }, [editorContent, media, documentFile, buttonText, buttonUrl])
@@ -492,7 +485,7 @@ const NotificationPanel = () => {
                 options={[
                   { label: 'Всем', value: undefined },
                   ...restaurants.map((restaurant) => ({
-                    label: `Клиентам ${restaurant.title}, ${getCity(restaurant.id)}`,
+                    label: `Клиентам ${restaurant.title}, ${getRestaurantCity(restaurants, restaurant.id)}`,
                     value: `${restaurant.id}`,
                   })),
                 ]}
@@ -519,7 +512,11 @@ const NotificationPanel = () => {
         <NotificationHistory refreshKey={refreshHistoryKey} />
       </CTabPanel>
       {isPopupOpen && (
-        <ConfirmNotificationPopup onConfirm={notifyAll} popup={[isPopupOpen, setIsPopupOpen]} />
+        <ConfirmNotificationPopup
+          onConfirm={notifyAll}
+          restaurant={restaurants.find((restaurant) => restaurant.id === restaurantId)}
+          popup={[isPopupOpen, setIsPopupOpen]}
+        />
       )}
     </>
   )

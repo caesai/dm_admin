@@ -19,6 +19,7 @@ import { createCode, deleteCode, getCodeById, updateCode } from 'src/dataProvide
 import toast from 'react-hot-toast'
 import { GetRestaurantList } from 'src/dataProviders/restaurants.ts'
 import { IRestaurantWCity } from 'src/types/Restaurant.ts'
+import { getRestaurantCity } from 'src/utils.tsx'
 
 const InviteLinkPopup: FC<{
   popupId: [number | null | undefined, Dispatch<SetStateAction<number | null | undefined>>]
@@ -93,14 +94,6 @@ const InviteLinkPopup: FC<{
     }
   }
 
-  const getCity = (restaurantId: number) => {
-    const restaurant = restaurants.find((r) => r.id === restaurantId)
-    if (restaurant?.title === 'Smoke BBQ' && restaurant?.city.name === 'Санкт-Петербург') {
-      return restaurant?.address
-    }
-    return restaurant?.city.name
-  }
-
   const changeLinkCode = (e: ChangeEvent<HTMLInputElement>) => {
     setCode((prev) => ({ ...prev, code: e.target.value }))
   }
@@ -171,7 +164,7 @@ const InviteLinkPopup: FC<{
               options={[
                 { label: 'Ресторан', value: '' },
                 ...restaurants.map((restaurant) => ({
-                  label: `${restaurant.title}, ${getCity(restaurant.id)}`,
+                  label: `${restaurant.title}, ${getRestaurantCity(restaurants, restaurant.id)}`,
                   value: `${restaurant.id}`,
                 })),
               ]}
