@@ -284,7 +284,6 @@ const NotificationPanel = () => {
 
   const loadRestaurants = async () => {
     const response = await GetRestaurantList()
-    console.log(response.data)
     setRestaurants(response.data)
   }
 
@@ -489,7 +488,6 @@ const NotificationPanel = () => {
           <CCardBody className={classNames('d-flex', 'flex-column', 'gap-2')}>
             <div className={classNames('d-flex', 'align-items-center')}>
               <CFormSelect
-                style={{ width: 'w' }}
                 onChange={changeRestaurantId}
                 options={[
                   { label: 'Всем', value: undefined },
