@@ -10,10 +10,14 @@ export const renderHTMLContent = (html: string | null) => {
   return <div dangerouslySetInnerHTML={{ __html: doc.body.innerHTML }} />
 }
 
-export const getRestaurantCity = (restaurants: IRestaurantWCity[], restaurantId: number) => {
-  const restaurant = restaurants.find((r) => r.id === restaurantId)
+export const getCityOrAddress = (restaurant: IRestaurantWCity | undefined) => {
   if (restaurant?.title === 'Smoke BBQ' && restaurant?.city.name === 'Санкт-Петербург') {
     return restaurant?.address
   }
   return restaurant?.city.name
+}
+
+export const getRestaurantCity = (restaurants: IRestaurantWCity[], restaurantId: number) => {
+  const restaurant = restaurants.find((r) => r.id === restaurantId)
+  return getCityOrAddress(restaurant)
 }

@@ -491,7 +491,7 @@ const NotificationPanel = () => {
                 ]}
               />
               <div className="ms-2">
-                <TooltipInfo content="текст тултипа" />
+                <TooltipInfo content="Выберите ресторан, чтобы отправить сообщение только его клиентам." />
               </div>
             </div>
             <div className={classNames('d-flex', 'align-items-center')}>

@@ -8,6 +8,7 @@ import {
 } from '@coreui/react-pro'
 import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { IRestaurantWCity } from 'src/types/Restaurant.ts'
+import { getCityOrAddress } from 'src/utils'
 
 const ConfirmNotificationPopup: FC<{
   popup: [boolean, Dispatch<SetStateAction<boolean>>]
@@ -27,13 +28,6 @@ const ConfirmNotificationPopup: FC<{
     }
   }
 
-  const checkRestaurantCity = () => {
-    if (restaurant?.title === 'Smoke BBQ' && restaurant?.city.name === 'Санкт-Петербург') {
-      return restaurant?.address
-    }
-    return restaurant?.city.name
-  }
-
   return (
     <CModal alignment="center" visible={visible} onClose={() => setVisible(false)}>
       <CModalHeader>
@@ -42,7 +36,7 @@ const ConfirmNotificationPopup: FC<{
       <CModalBody>
         Сообщение будет отправлено{' '}
         {restaurant?.title
-          ? `клиентам ${restaurant.title}, ${checkRestaurantCity()}`
+          ? `клиентам ${restaurant.title}, ${getCityOrAddress(restaurant)}`
           : 'всем клиентам'}
         !
       </CModalBody>
