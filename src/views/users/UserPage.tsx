@@ -19,7 +19,12 @@ import {
 import { useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { IUserFull } from 'src/types/User.ts'
-import {getUserBookings, getUserById, getUserEvents, getUserLogs} from 'src/dataProviders/users.ts'
+import {
+  getUserBookings,
+  getUserById,
+  getUserEvents,
+  getUserLogs,
+} from 'src/dataProviders/users.ts'
 import css from '../style/layout.module.css'
 import classNames from 'classnames'
 // import { UserEdit } from 'src/views/users/UserPageViews/UserEdit.tsx'
