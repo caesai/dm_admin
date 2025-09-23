@@ -1,4 +1,4 @@
-import { CSmartTable } from '@coreui/react-pro'
+import { CCard, CCardBody, CSmartTable } from '@coreui/react-pro'
 import { IBookingWithRestaurant } from 'src/types/Booking.ts'
 import { Item } from '@coreui/react-pro/src/components/smart-table/types'
 import { GetRestaurant } from 'src/dataProviders/restaurants.ts'
@@ -83,27 +83,35 @@ export const UserBookings = ({ bookings }: Props) => {
   ]
 
   return (
-    <CSmartTable
-      columns={cols}
-      items={bookings}
-      columnFilter
-      columnSorter
-      tableHeadProps={{
-        className: 'align-middle',
-      }}
-      tableProps={{
-        striped: true,
-        hover: true,
-        className: 'align-middle',
-      }}
-      scopedColumns={{
-        duration: (item: Item) => <td>{item.duration} мин</td>,
-        restaurant_id: (item: Item) => (
-          <td>
-            <RestaurantCityCell restaurantId={item.restaurant_id} />
-          </td>
-        ),
-      }}
-    />
+    <>
+      {bookings.length > 0 ? (
+        <CSmartTable
+          columns={cols}
+          items={bookings}
+          columnFilter
+          columnSorter
+          tableHeadProps={{
+            className: 'align-middle',
+          }}
+          tableProps={{
+            striped: true,
+            hover: true,
+            className: 'align-middle',
+          }}
+          scopedColumns={{
+            duration: (item: Item) => <td>{item.duration} мин</td>,
+            restaurant_id: (item: Item) => (
+              <td>
+                <RestaurantCityCell restaurantId={item.restaurant_id} />
+              </td>
+            ),
+          }}
+        />
+      ) : (
+        <CCard>
+          <CCardBody>У пользователя нет бронирований</CCardBody>
+        </CCard>
+      )}
+    </>
   )
 }
