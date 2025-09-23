@@ -30,13 +30,6 @@ const RestaurantCityCell = ({ restaurantId }: { restaurantId: number }) => {
   return <>{loading ? 'Загрузка...' : city}</>
 }
 
-const formatDateTime = (dateString: string) => {
-  if (!dateString) return '-'
-
-  const date = new Date(dateString)
-  return isNaN(date.getTime()) ? '-' : date.toLocaleString('ru-RU')
-}
-
 export const UserBookings = ({ bookings }: Props) => {
   const cols = [
     {
@@ -110,8 +103,6 @@ export const UserBookings = ({ bookings }: Props) => {
             <RestaurantCityCell restaurantId={item.restaurant_id} />
           </td>
         ),
-        created_at: (item: Item) => <td>{formatDateTime(item.created_at)}</td>,
-        updated_at: (item: Item) => <td>{formatDateTime(item.updated_at)}</td>,
       }}
     />
   )

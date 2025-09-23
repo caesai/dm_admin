@@ -28,17 +28,20 @@ import { getAdmins } from 'src/dataProviders/admins.ts'
 import { UserEdit } from 'src/views/users/UserPageViews/UserEdit.tsx'
 import { UserBookings } from 'src/views/users/UserPageViews/UserBookings.tsx'
 import { IBookingWithRestaurant } from 'src/types/Booking.ts'
+import { UserLogs } from 'src/views/users/UserPageViews/UserLogs.tsx'
+import { ILogs } from 'src/types/Logs.ts'
 
 const UserPage = () => {
   const { id } = useParams()
   const [user, setUser] = useState<IUserFull>()
   const [bookings, setBookings] = useState<IBookingWithRestaurant[]>([])
+  const [logs, setLogs] = useState<ILogs[]>([])
   const [adminList, setAdminList] = useState<IAdmin[]>([])
 
   useEffect(() => {
     getUserById(Number(id)).then((res) => setUser(res.data))
-    getUserLogs(Number(id)).then((res) => console.log('logs:', res.data))
     getUserBookings(Number(id)).then((res) => setBookings(res.data))
+    getUserLogs(Number(id)).then((res) => setLogs(res.data))
     getUserEvents(Number(id)).then((res) => console.log('events:', res.data))
     getAdmins().then((res) => setAdminList(res.data))
   }, [])
@@ -65,6 +68,7 @@ const UserPage = () => {
                         <CTab itemKey="home">Профиль</CTab>
                         <CTab itemKey="bookings">Бронирование</CTab>
                         <CTab itemKey="events">Мероприятия</CTab>
+                        <CTab itemKey="logs">Логи</CTab>
                         <CTab itemKey={'reviews'}>Отзывы</CTab>
                         <CTab itemKey={'payments'}>Платежи</CTab>
                       </CTabList>
@@ -78,6 +82,9 @@ const UserPage = () => {
                         {/*<CTabPanel className="p-3" itemKey="events">*/}
                         {/*  <UserEvents user={user} />*/}
                         {/*</CTabPanel>*/}
+                        <CTabPanel className="p-3" itemKey="logs">
+                          <UserLogs logs={logs} />
+                        </CTabPanel>
                         {/*<CTabPanel className="p-3" itemKey="reviews">*/}
                         {/*  <UserReviews user={user} />*/}
                         {/*</CTabPanel>*/}
