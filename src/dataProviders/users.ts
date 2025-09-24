@@ -20,7 +20,7 @@ export const getUserById = async (id: number) => {
 export const getUserLogs = async (id: number) => {
   return await axios.get(`${BASEURL}/user-logs/`, {
     params: {
-      id: id,
+      user_id: id,
     },
     headers: {
       Authorization: `Bearer ${localStorage.getItem('access_token')}`,

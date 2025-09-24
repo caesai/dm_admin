@@ -129,7 +129,7 @@ export const UsersListSmartTable = ({ users }: ITableProps) => {
                 <CRow className="justify-content-between">
                   <CCol>
                     <div style={{ display: 'flex', justifyContent: 'end' }}>
-                      <Link to={`/users/${item.id}`}>
+                      <Link to={`/users/${item.id}`} target="_blank" rel="noopener noreferrer">
                         <CButton size="sm" color="info">
                           Открыть
                         </CButton>
