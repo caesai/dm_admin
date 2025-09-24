@@ -1,6 +1,6 @@
 import { IEventBookingBase } from 'src/types/Event.ts'
 import { CCard, CCardBody, CSmartTable } from '@coreui/react-pro'
-import { Item } from '@coreui/react-pro/src/components/smart-table/types.ts'
+import { Item } from '@coreui/react-pro/src/components/smart-table/types'
 import { useRestaurantCity } from 'src/views/users/UserPageViews/UserBookings.tsx'
 
 interface Props {
@@ -87,7 +87,7 @@ export const UserEvents = ({ events }: Props) => {
             ),
             event_date: (item: Item) => (
               <td>
-                {item.event_date} {item.time}
+                {item.event_date} {item.time ? item.time : '-'}
               </td>
             ),
             payment_status: (item: Item) => (

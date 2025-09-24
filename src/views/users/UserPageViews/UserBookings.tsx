@@ -20,7 +20,7 @@ export const useRestaurantCity = (restaurantId: number) => {
         .catch(() => setCity('Ошибка загрузки'))
         .finally(() => setLoading(false))
     }
-  }, [restaurantId, city])
+  }, [restaurantId])
 
   return { city, loading }
 }
