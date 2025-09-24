@@ -22,8 +22,6 @@ import {
 } from 'src/dataProviders/users.ts'
 import css from '../style/layout.module.css'
 import classNames from 'classnames'
-import { IAdmin } from 'src/types/Admin.ts'
-import { getAdmins } from 'src/dataProviders/admins.ts'
 import { UserEdit } from 'src/views/users/UserPageViews/UserEdit.tsx'
 import { UserBookings } from 'src/views/users/UserPageViews/UserBookings.tsx'
 import { IBookingWithRestaurant } from 'src/types/Booking.ts'
@@ -38,14 +36,12 @@ const UserPage = () => {
   const [bookings, setBookings] = useState<IBookingWithRestaurant[]>([])
   const [events, setEvents] = useState<IEventBookingBase[]>([])
   const [logs, setLogs] = useState<ILogs[]>([])
-  const [adminList, setAdminList] = useState<IAdmin[]>([])
 
   useEffect(() => {
     getUserById(Number(id)).then((res) => setUser(res.data))
     getUserBookings(Number(id)).then((res) => setBookings(res.data))
     getUserLogs(Number(id)).then((res) => setLogs(res.data))
     getUserEvents(Number(id)).then((res) => setEvents(res.data))
-    getAdmins().then((res) => setAdminList(res.data))
   }, [])
 
   return !user ? (
@@ -76,7 +72,7 @@ const UserPage = () => {
                       </CTabList>
                       <CTabContent>
                         <CTabPanel className="p-3" itemKey="home">
-                          <UserEdit userData={[user, setUser]} admins={[adminList, setAdminList]} />
+                          <UserEdit user={user} />
                         </CTabPanel>
                         <CTabPanel className="p-3" itemKey="bookings">
                           <UserBookings bookings={bookings} />

@@ -1,39 +1,13 @@
 import { IUserFull } from 'src/types/User.ts'
-import {
-  CBadge,
-  CButton,
-  CCard,
-  CCardBody,
-  CCardImage,
-  CCardTitle,
-  CFormSelect,
-} from '@coreui/react-pro'
+import { CBadge, CCard, CCardBody, CCardImage, CCardTitle } from '@coreui/react-pro'
 import classNames from 'classnames'
 import css from 'src/views/style/layout.module.css'
-import toast from 'react-hot-toast'
-import { setUserAdmin } from 'src/dataProviders/admins.ts'
-import { Dispatch, SetStateAction } from 'react'
-import { IAdmin } from 'src/types/Admin.ts'
 
 interface Props {
-  userData: [IUserFull, Dispatch<SetStateAction<IUserFull | undefined>>]
-  admins: [IAdmin[], Dispatch<SetStateAction<IAdmin[]>>]
+  user: IUserFull
 }
 
-export const UserEdit = ({ userData, admins }: Props) => {
-  const [user, setUser] = userData
-  const [adminList] = admins
-
-  const updateAdmin = (user: IUserFull) => {
-    if (!user.administrator) {
-      return
-    }
-    toast('Обработка')
-    setUserAdmin(user.id, user.administrator.id)
-      .then(() => toast.success('Сохранено'))
-      .catch(() => toast.error('Произошла ошибка при выполнении запроса.'))
-  }
-
+export const UserEdit = ({ user }: Props) => {
   const getBadge = (status: boolean) => {
     return status ? 'success' : 'secondary'
   }
@@ -72,33 +46,6 @@ export const UserEdit = ({ userData, admins }: Props) => {
                 {user.advertisement_agreement ? 'Да' : 'Нет'}
               </CBadge>
             </span>
-            {user ? (
-              <div className={classNames(css.fc8, 'mt-4')}>
-                <span>Администратор</span>
-                <CFormSelect
-                  value={user.administrator ? String(user.administrator.id) : 'none'}
-                  onChange={(event) =>
-                    setUser((prev) => ({
-                      ...prev!,
-                      administrator: {
-                        id: Number(event.target.value),
-                        is_active: true,
-                      },
-                    }))
-                  }
-                >
-                  <option value="none">Не администратор</option>
-                  {adminList.map((admin) => (
-                    <option key={admin.login} value={`${admin.id}`}>
-                      {admin.login}
-                    </option>
-                  ))}
-                </CFormSelect>
-                <CButton color={'primary'} onClick={() => updateAdmin(user)}>
-                  Сохранить
-                </CButton>
-              </div>
-            ) : null}
           </div>
         </CCardBody>
       </CCard>
