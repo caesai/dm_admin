@@ -9,7 +9,6 @@ import {
   CTabContent,
   CTabList,
   CTabPanel,
-  // CTabPanel,
   CTabs,
 } from '@coreui/react-pro'
 import { useParams } from 'react-router-dom'
@@ -30,11 +29,14 @@ import { UserBookings } from 'src/views/users/UserPageViews/UserBookings.tsx'
 import { IBookingWithRestaurant } from 'src/types/Booking.ts'
 import { UserLogs } from 'src/views/users/UserPageViews/UserLogs.tsx'
 import { ILogs } from 'src/types/Logs.ts'
+import { UserEvents } from 'src/views/users/UserPageViews/UserEvents.tsx'
+import { IEventBookingBase } from 'src/types/Event.ts'
 
 const UserPage = () => {
   const { id } = useParams()
   const [user, setUser] = useState<IUserFull>()
   const [bookings, setBookings] = useState<IBookingWithRestaurant[]>([])
+  const [events, setEvents] = useState<IEventBookingBase[]>([])
   const [logs, setLogs] = useState<ILogs[]>([])
   const [adminList, setAdminList] = useState<IAdmin[]>([])
 
@@ -42,7 +44,7 @@ const UserPage = () => {
     getUserById(Number(id)).then((res) => setUser(res.data))
     getUserBookings(Number(id)).then((res) => setBookings(res.data))
     getUserLogs(Number(id)).then((res) => setLogs(res.data))
-    getUserEvents(Number(id)).then((res) => console.log('events:', res.data))
+    getUserEvents(Number(id)).then((res) => setEvents(res.data))
     getAdmins().then((res) => setAdminList(res.data))
   }, [])
 
@@ -79,9 +81,9 @@ const UserPage = () => {
                         <CTabPanel className="p-3" itemKey="bookings">
                           <UserBookings bookings={bookings} />
                         </CTabPanel>
-                        {/*<CTabPanel className="p-3" itemKey="events">*/}
-                        {/*  <UserEvents user={user} />*/}
-                        {/*</CTabPanel>*/}
+                        <CTabPanel className="p-3" itemKey="events">
+                          <UserEvents events={events} />
+                        </CTabPanel>
                         <CTabPanel className="p-3" itemKey="logs">
                           <UserLogs logs={logs} />
                         </CTabPanel>

@@ -8,7 +8,7 @@ interface Props {
   bookings: IBookingWithRestaurant[]
 }
 
-const useRestaurantCity = (restaurantId: number) => {
+export const useRestaurantCity = (restaurantId: number) => {
   const [city, setCity] = useState('')
   const [loading, setLoading] = useState(false)
 
