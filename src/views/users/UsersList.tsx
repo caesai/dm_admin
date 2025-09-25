@@ -10,7 +10,7 @@ const UsersList = () => {
 
   useEffect(() => {
     getUsers()
-      .then((res) => setUsers(res.data))
+      .then((res) => setUsers(res.data.users))
       .catch((err) => {
         toast.error('Произошла ошибка при загрузке данных')
         console.error(err)

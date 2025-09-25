@@ -1,16 +1,45 @@
-import { IUserFull } from 'src/types/User.ts'
-import { CButton, CTable } from '@coreui/react-pro'
-import { Link } from 'react-router-dom'
+import { CCard, CCardBody, CSmartTable } from '@coreui/react-pro'
+import { IBookingWithRestaurant } from 'src/types/Booking.ts'
+import { Item } from '@coreui/react-pro/src/components/smart-table/types'
+import { GetRestaurant } from 'src/dataProviders/restaurants.ts'
+import { useState, useEffect } from 'react'
 
 interface Props {
-  user: IUserFull
+  bookings: IBookingWithRestaurant[]
 }
 
-export const UserBookings = ({ user }: Props) => {
+export const useRestaurantCity = (restaurantId: number) => {
+  const [city, setCity] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    if (restaurantId && !city) {
+      setLoading(true)
+      GetRestaurant(restaurantId)
+        .then((res) => setCity(res.data.city.name))
+        .catch(() => setCity('Ошибка загрузки'))
+        .finally(() => setLoading(false))
+    }
+  }, [restaurantId])
+
+  return { city, loading }
+}
+
+const RestaurantCityCell = ({ restaurantId }: { restaurantId: number }) => {
+  const { city, loading } = useRestaurantCity(restaurantId)
+  return <>{loading ? 'Загрузка...' : city}</>
+}
+
+export const UserBookings = ({ bookings }: Props) => {
   const cols = [
     {
-      key: 'id',
-      label: '#',
+      key: 'restaurant_name',
+      label: 'Ресторан',
+      _props: { scope: 'col' },
+    },
+    {
+      key: 'restaurant_id',
+      label: 'Город',
       _props: { scope: 'col' },
     },
     {
@@ -24,8 +53,8 @@ export const UserBookings = ({ user }: Props) => {
       _props: { scope: 'col' },
     },
     {
-      key: 'guest_count',
-      label: 'Гостей',
+      key: 'duration',
+      label: 'Длительность',
       _props: { scope: 'col' },
     },
     {
@@ -34,29 +63,55 @@ export const UserBookings = ({ user }: Props) => {
       _props: { scope: 'col' },
     },
     {
-      key: 'restaurant',
-      label: 'Ресторан',
+      key: 'guests_count',
+      label: 'Гости',
       _props: { scope: 'col' },
     },
     {
-      key: 'button',
-      label: '',
+      key: 'children_count',
+      label: 'Дети',
       _props: { scope: 'col' },
     },
+    {
+      key: 'remarked_comment',
+      label: 'Комментарий в Ремаркед',
+      _props: {
+        scope: 'col',
+        style: { width: '30%' },
+      },
+    },
   ]
-  const items = user.bookings.map((book) => ({
-    id: book.id,
-    booking_date: book.booking_date,
-    time: book.time,
-    guest_count: book.guests_count,
-    booking_status: book.booking_status == 'canceled' ? 'Отменен' : book.booking_status,
-    button: (
-      <Link to={`/bookings/${book.id}`}>
-        <CButton color={'primary'}>Перейти</CButton>
-      </Link>
-    ),
-    restaurant: book.restaurant.title,
-    _props: { color: book.booking_status == 'canceled' ? 'danger' : 'primary' },
-  }))
-  return <CTable columns={cols} items={items}></CTable>
+
+  return (
+    <>
+      {bookings.length > 0 ? (
+        <CSmartTable
+          columns={cols}
+          items={bookings}
+          columnFilter
+          columnSorter
+          tableHeadProps={{
+            className: 'align-middle',
+          }}
+          tableProps={{
+            striped: true,
+            hover: true,
+            className: 'align-middle',
+          }}
+          scopedColumns={{
+            duration: (item: Item) => <td>{item.duration} мин</td>,
+            restaurant_id: (item: Item) => (
+              <td>
+                <RestaurantCityCell restaurantId={item.restaurant_id} />
+              </td>
+            ),
+          }}
+        />
+      ) : (
+        <CCard>
+          <CCardBody>У пользователя нет бронирований</CCardBody>
+        </CCard>
+      )}
+    </>
+  )
 }

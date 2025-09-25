@@ -1,16 +1,10 @@
 export interface IEventBookingBase {
-  id: number
-  event_title: string
-  event_img: string
-  event_description: string
-  date_start: string
-  guest_count: number
-  name: string
-  phone: string
-  email: string
-  commentary: string
-  confirmation: string
-  total: number
-  remarked_id: string
-  is_canceled: boolean
+  event_name: string
+  restaurant_name: string
+  restaurant_id: number
+  event_date: string
+  guests_count: number
+  payment_status: string | null
+  payment_sum: string
+  created_at: string
 }

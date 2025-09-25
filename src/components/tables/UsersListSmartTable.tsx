@@ -28,8 +28,8 @@ export const UsersListSmartTable = ({ users }: ITableProps) => {
       _style: { width: '5%' },
     },
     { key: 'first_name', _style: { width: '20%' }, label: 'Имя' },
-    { key: 'phone_number', _style: { width: '20%' }, label: 'Телефон' },
-    { key: 'early_access', _style: { width: '5%' }, label: 'РД.' },
+    { key: 'phone_number', _style: { width: '15%' }, label: 'Телефон' },
+    { key: 'telegram_id', _style: { width: '10%' }, label: 'Telegram ID' },
     {
       key: 'show_details',
       label: '',
@@ -129,7 +129,7 @@ export const UsersListSmartTable = ({ users }: ITableProps) => {
                 <CRow className="justify-content-between">
                   <CCol>
                     <div style={{ display: 'flex', justifyContent: 'end' }}>
-                      <Link to={`/users/${item.id}`}>
+                      <Link to={`/users/${item.id}`} target="_blank" rel="noopener noreferrer">
                         <CButton size="sm" color="info">
                           Открыть
                         </CButton>

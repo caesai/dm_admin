@@ -13,20 +13,13 @@ import {
 import { Dispatch, FC, SetStateAction } from 'react'
 import { IConfirmation } from 'src/types/Texts.ts'
 import { IRestaurantWCity } from 'src/types/Restaurant.ts'
-import { renderHTMLContent } from 'src/utils.tsx'
+import { getRestaurantCity, renderHTMLContent } from 'src/utils.tsx'
 
 const ReservationPanel: FC<{
   setConfirmationId: Dispatch<SetStateAction<number | null>>
   confirmationList: IConfirmation[]
   restaurants: IRestaurantWCity[]
 }> = ({ setConfirmationId, confirmationList, restaurants }) => {
-  const getCity = (restaurantId: number) => {
-    const restaurant = restaurants.find((r) => r.id === restaurantId)
-    if (restaurant?.title === 'Smoke BBQ' && restaurant?.city.name === 'Санкт-Петербург') {
-      return restaurant?.address
-    }
-    return restaurant?.city.name
-  }
   return (
     <CTabPanel itemKey="reservation">
       <CCard className={classNames('p-3', 'border-0')}>
@@ -48,7 +41,7 @@ const ReservationPanel: FC<{
             {confirmationList.map((confirmation) => (
               <CTableRow key={confirmation.id}>
                 <CTableDataCell className="text-start">
-                  {confirmation.title}, {getCity(confirmation.id)}
+                  {confirmation.title}, {getRestaurantCity(restaurants, confirmation.id)}
                 </CTableDataCell>
                 <CTableDataCell className="text-center">
                   {renderHTMLContent(confirmation.text)}
