@@ -47,17 +47,11 @@ export interface IUserList {
 }
 
 export interface IUserPreference {
-  id: number
   category: 'mood' | 'menu' | 'events'
-  preference_key: string
-  preference_value: string
-  icon: string
-  is_selected: boolean
+  choices: string[]
 }
 
 export interface IUserPreferences {
   user_id: number
   preferences: IUserPreference[]
-  total_count: number
-  selected_count: number
 }

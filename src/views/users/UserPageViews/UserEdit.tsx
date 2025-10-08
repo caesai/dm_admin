@@ -29,6 +29,16 @@ export const UserEdit = ({ user, preferences }: Props) => {
     return status ? 'success' : 'secondary'
   }
 
+  const moodPreferences = preferencesList.find((p) => p.category === 'mood')?.choices || []
+  const menuPreferences = preferencesList.find((p) => p.category === 'menu')?.choices || []
+  const eventsPreferences = preferencesList.find((p) => p.category === 'events')?.choices || []
+
+  const maxLength = Math.max(
+    moodPreferences.length,
+    menuPreferences.length,
+    eventsPreferences.length,
+  )
+
   return (
     <CCardGroup className={classNames('d-flex', 'gap-5')}>
       <CCard style={{ maxWidth: '18rem', width: '100%' }}>
@@ -82,17 +92,11 @@ export const UserEdit = ({ user, preferences }: Props) => {
                 </CTableRow>
               </CTableHead>
               <CTableBody>
-                {preferencesList.map((preference) => (
-                  <CTableRow key={preference.id}>
-                    <CTableDataCell>
-                      {preference.category === 'mood' ? preference.preference_value : ''}
-                    </CTableDataCell>
-                    <CTableDataCell>
-                      {preference.category === 'menu' ? preference.preference_value : ''}
-                    </CTableDataCell>
-                    <CTableDataCell>
-                      {preference.category === 'events' ? preference.preference_value : ''}
-                    </CTableDataCell>
+                {Array.from({ length: maxLength }).map((_, index) => (
+                  <CTableRow key={index}>
+                    <CTableDataCell>{moodPreferences[index] || ''}</CTableDataCell>
+                    <CTableDataCell>{menuPreferences[index] || ''}</CTableDataCell>
+                    <CTableDataCell>{eventsPreferences[index] || ''}</CTableDataCell>
                   </CTableRow>
                 ))}
               </CTableBody>
