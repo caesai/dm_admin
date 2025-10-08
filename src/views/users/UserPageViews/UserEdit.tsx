@@ -1,19 +1,37 @@
-import { IUserFull } from 'src/types/User.ts'
-import { CBadge, CCard, CCardBody, CCardImage, CCardTitle } from '@coreui/react-pro'
+import { IUserFull, IUserPreferences } from 'src/types/User.ts'
+import {
+  CBadge,
+  CCard,
+  CCardBody,
+  CCardGroup,
+  CCardHeader,
+  CCardImage,
+  CCardTitle,
+  CTable,
+  CTableBody,
+  CTableDataCell,
+  CTableHead,
+  CTableHeaderCell,
+  CTableRow,
+} from '@coreui/react-pro'
 import classNames from 'classnames'
 import css from 'src/views/style/layout.module.css'
 
 interface Props {
   user: IUserFull
+  preferences: IUserPreferences
 }
 
-export const UserEdit = ({ user }: Props) => {
+export const UserEdit = ({ user, preferences }: Props) => {
+  const preferencesList = preferences.preferences
+
   const getBadge = (status: boolean) => {
     return status ? 'success' : 'secondary'
   }
+
   return (
-    <>
-      <CCard style={{ width: '18rem', minWidth: '18rem' }}>
+    <CCardGroup className={classNames('d-flex', 'gap-5')}>
+      <CCard style={{ maxWidth: '18rem', width: '100%' }}>
         <CCardImage orientation="top" src={user?.photo_url} />
         <CCardBody>
           <CCardTitle>{user.first_name}</CCardTitle>
@@ -49,84 +67,39 @@ export const UserEdit = ({ user }: Props) => {
           </div>
         </CCardBody>
       </CCard>
-      {/*<CForm className={'row g-3 needs-validation'}>*/}
-      {/*  <CCol md={4}>*/}
-      {/*    <CFormInput*/}
-      {/*      type={'text'}*/}
-      {/*      id={'first_name'}*/}
-      {/*      defaultValue={user.first_name}*/}
-      {/*      label={'Имя'}*/}
-      {/*    ></CFormInput>*/}
-      {/*  </CCol>*/}
-      {/*  <CCol md={4}>*/}
-      {/*    <CFormInput*/}
-      {/*      type={'text'}*/}
-      {/*      id={'last_name'}*/}
-      {/*      defaultValue={user.last_name}*/}
-      {/*      label={'Фамилия'}*/}
-      {/*    ></CFormInput>*/}
-      {/*  </CCol>*/}
-      {/*  <CCol md={4}>*/}
-      {/*    <CFormInput*/}
-      {/*      type={'text'}*/}
-      {/*      id={'email'}*/}
-      {/*      defaultValue={user.email}*/}
-      {/*      label={'Email'}*/}
-      {/*    ></CFormInput>*/}
-      {/*  </CCol>*/}
-      {/*  <CCol md={4}>*/}
-      {/*    <CFormLabel htmlFor="userFirstname">Логин Telegram</CFormLabel>*/}
-      {/*    <CInputGroup>*/}
-      {/*      <CInputGroupText>@</CInputGroupText>*/}
-      {/*      <CFormInput*/}
-      {/*        type="text"*/}
-      {/*        id="validationCustomUsername"*/}
-      {/*        disabled={true}*/}
-      {/*        value={user.username}*/}
-      {/*      />*/}
-      {/*    </CInputGroup>*/}
-      {/*  </CCol>*/}
-      {/*  <CCol md={4}>*/}
-      {/*    <CFormInput*/}
-      {/*      type={'text'}*/}
-      {/*      id={'phone_number'}*/}
-      {/*      defaultValue={user.phone_number}*/}
-      {/*      label={'Телефон'}*/}
-      {/*    ></CFormInput>*/}
-      {/*  </CCol>*/}
-      {/*  <CCol md={4}>*/}
-      {/*    <CFormCheck label={'Ранний доступ'} defaultChecked={user.early_access} />*/}
-      {/*    <CFormCheck label={'Рассылки'} defaultChecked={user.advertisement_agreement} />*/}
-      {/*    <CFormCheck label={'Лицензионное соглашение'} defaultChecked={user.license_agreement} />*/}
-      {/*    <CFormCheck label={'Политика конфиденциальности'} defaultChecked={user.gdpr_agreement} />*/}
-      {/*  </CCol>*/}
-      {/*  <CCol md={4}>*/}
-      {/*    <CFormInput*/}
-      {/*      type={'text'}*/}
-      {/*      id={'phone_number'}*/}
-      {/*      defaultValue={user.phone_number}*/}
-      {/*      label={'Телефон'}*/}
-      {/*    ></CFormInput>*/}
-      {/*  </CCol>*/}
-      {/*  <CCol md={4}>*/}
-      {/*    <CDatePicker label={'Дата рождения'} id={'date_of_birth'} date={user.date_of_birth} />*/}
-      {/*  </CCol>*/}
-      {/*  <CCol md={4}>*/}
-      {/*    <CFormTextarea*/}
-      {/*      id="allergies"*/}
-      {/*      label="Аллергии"*/}
-      {/*      rows={3}*/}
-      {/*      defaultValue={user?.allergies}*/}
-      {/*    ></CFormTextarea>*/}
-      {/*  </CCol>*/}
-      {/*  <CRow>*/}
-      {/*    <CCol>*/}
-      {/*      <CButton color={'primary'} type={'submit'}>*/}
-      {/*        Обновить*/}
-      {/*      </CButton>*/}
-      {/*    </CCol>*/}
-      {/*  </CRow>*/}
-      {/*</CForm>*/}
-    </>
+      <CCard className="border">
+        <CCardHeader>
+          <CTableHeaderCell>Предпочтения</CTableHeaderCell>
+        </CCardHeader>
+        <CCardBody>
+          {preferencesList.length > 0 && (
+            <CTable striped>
+              <CTableHead>
+                <CTableRow>
+                  <CTableHeaderCell>Что вам ближе по настроению?</CTableHeaderCell>
+                  <CTableHeaderCell>Что вас особенно привлекает в меню?</CTableHeaderCell>
+                  <CTableHeaderCell>Какие форматы вам интересны?</CTableHeaderCell>
+                </CTableRow>
+              </CTableHead>
+              <CTableBody>
+                {preferencesList.map((preference) => (
+                  <CTableRow key={preference.id}>
+                    <CTableDataCell>
+                      {preference.category === 'mood' ? preference.preference_value : ''}
+                    </CTableDataCell>
+                    <CTableDataCell>
+                      {preference.category === 'menu' ? preference.preference_value : ''}
+                    </CTableDataCell>
+                    <CTableDataCell>
+                      {preference.category === 'events' ? preference.preference_value : ''}
+                    </CTableDataCell>
+                  </CTableRow>
+                ))}
+              </CTableBody>
+            </CTable>
+          )}
+        </CCardBody>
+      </CCard>
+    </CCardGroup>
   )
 }

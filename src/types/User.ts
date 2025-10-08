@@ -45,3 +45,19 @@ export interface IUserList {
   total: number
   users: IUserWithDates[]
 }
+
+export interface IUserPreference {
+  id: number
+  category: 'mood' | 'menu' | 'events'
+  preference_key: string
+  preference_value: string
+  icon: string
+  is_selected: boolean
+}
+
+export interface IUserPreferences {
+  user_id: number
+  preferences: IUserPreference[]
+  total_count: number
+  selected_count: number
+}
