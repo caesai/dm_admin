@@ -215,7 +215,7 @@ const StoryPopup: FC<StoryPopupProps> = ({
         views_count: 0,
       })
     }
-  }, [open, story, setStory])
+  }, [open, story])
 
   if (!story) return null
 
