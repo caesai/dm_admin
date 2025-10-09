@@ -79,7 +79,7 @@ export const UserEdit = ({ user, preferences }: Props) => {
       </CCard>
       <CCard className="border">
         <CCardHeader>
-          <CTableHeaderCell>Предпочтения</CTableHeaderCell>
+          <CCardTitle>Предпочтения</CCardTitle>
         </CCardHeader>
         <CCardBody>
           {preferencesList.length > 0 && (

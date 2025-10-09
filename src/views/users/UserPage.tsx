@@ -75,7 +75,9 @@ const UserPage = () => {
                       </CTabList>
                       <CTabContent>
                         <CTabPanel className="p-3" itemKey="home">
-                          {preferences && <UserEdit user={user} preferences={preferences} />}
+                          {user && preferences && (
+                            <UserEdit user={user} preferences={preferences} />
+                          )}
                         </CTabPanel>
                         <CTabPanel className="p-3" itemKey="bookings">
                           <UserBookings bookings={bookings} />
