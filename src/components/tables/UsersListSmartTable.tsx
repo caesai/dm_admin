@@ -6,7 +6,6 @@ import {
   CCol,
   CCollapse,
   CFormInput,
-  CInputGroup,
   CListGroup,
   CListGroupItem,
   CRow,
@@ -107,30 +106,30 @@ export const UsersListSmartTable = ({ users }: ITableProps) => {
     setSearchConfig((prev) => ({
       isActive: !prev.isActive,
       type: type ? type : prev.type,
-      value: prev.value,
+      value: '',
     }))
   }
 
   return (
     <>
       {searchConfig.isActive && (
-        <div className="mb-3">
-          <CInputGroup>
-            <CFormInput
-              placeholder={`Введите ${getSearchPlaceholder()}`}
-              value={searchConfig.value}
-              onChange={(e) =>
-                setSearchConfig((prev) => ({
-                  ...prev,
-                  value: e.target.value,
-                }))
-              }
-            />
-            <CButton color="primary">Найти</CButton>
-            <CButton color="secondary" onClick={() => handleSearchChange()}>
+        <div className={classNames('d-flex', 'align-items-center', 'gap-3', 'mb-3')}>
+          <CFormInput
+            placeholder={`Введите ${getSearchPlaceholder()}`}
+            value={searchConfig.value}
+            onChange={(e) =>
+              setSearchConfig((prev) => ({
+                ...prev,
+                value: e.target.value,
+              }))
+            }
+          />
+          <div className={classNames('d-flex', 'align-items-center', 'gap-2', 'w-25')}>
+            <CButton color="primary" className="w-50">Найти</CButton>
+            <CButton color="secondary" className="w-50" onClick={() => handleSearchChange()}>
               Закрыть
             </CButton>
-          </CInputGroup>
+          </div>
         </div>
       )}
       <CSmartTable
