@@ -39,6 +39,8 @@ export interface IUserFull extends IUserWithDates {
   reviews?: IReviewWithRestaurant[]
   payments?: IPaymentBase[]
   events?: IEventBookingBase[]
+  days_since_last_booking?: string
+  days_since_last_visit?: string
 }
 
 export interface IUserList {
