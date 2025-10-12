@@ -13,11 +13,13 @@ import {
 } from '@coreui/react-pro'
 
 import type { Item } from '@coreui/react-pro/src/components/smart-table/types'
-import { IUser } from 'src/types/User.ts'
+import { IUser, IUserFull } from 'src/types/User.ts'
 import { Link } from 'react-router-dom'
 import CIcon from '@coreui/icons-react'
 import { cilSearch } from '@coreui/icons'
 import classNames from 'classnames'
+import { getUserBySearch } from 'src/dataProviders/users.ts'
+import toast from 'react-hot-toast'
 
 interface ITableProps {
   users: IUser[]
@@ -27,12 +29,14 @@ interface ISearchConfig {
   isActive: boolean
   type: 'tg_id' | 'phone'
   value: string
+  user: IUserFull | null
 }
 
 const initSearchConfig: ISearchConfig = {
   isActive: false,
   type: 'tg_id',
   value: '',
+  user: null,
 }
 
 export const UsersListSmartTable = ({ users }: ITableProps) => {
@@ -102,11 +106,24 @@ export const UsersListSmartTable = ({ users }: ITableProps) => {
     setDetails(newDetails)
   }
 
+  const searchUser = async () => {
+    if (searchConfig.value.length === 0) return
+    await getUserBySearch(Number(searchConfig.value), searchConfig.type)
+      .then((response) => {
+        setSearchConfig((prev) => ({
+          ...prev,
+          user: response.data,
+        }))
+      })
+      .catch(() => toast.error('Пользователь не найден'))
+  }
+
   const handleSearchChange = (type?: 'tg_id' | 'phone') => {
     setSearchConfig((prev) => ({
       isActive: !prev.isActive,
       type: type ? type : prev.type,
       value: '',
+      user: null,
     }))
   }
 
@@ -125,7 +142,9 @@ export const UsersListSmartTable = ({ users }: ITableProps) => {
             }
           />
           <div className={classNames('d-flex', 'align-items-center', 'gap-2', 'w-25')}>
-            <CButton color="primary" className="w-50">Найти</CButton>
+            <CButton color="primary" className="w-50" onClick={searchUser}>
+              Найти
+            </CButton>
             <CButton color="secondary" className="w-50" onClick={() => handleSearchChange()}>
               Закрыть
             </CButton>
@@ -141,7 +160,7 @@ export const UsersListSmartTable = ({ users }: ITableProps) => {
         }}
         activePage={1}
         footer
-        items={users}
+        items={searchConfig.user !== null ? [searchConfig.user] : users}
         columns={columns}
         itemsPerPageSelect
         itemsPerPage={20}

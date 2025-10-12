@@ -17,6 +17,15 @@ export const getUserById = async (id: number) => {
   })
 }
 
+export const getUserBySearch = async (id: number, type: 'tg_id' | 'phone') => {
+  return await axios.get<IUserFull>(`${BASEURL}/users/search`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+    },
+    params: type === 'tg_id' ? { telegram_id: id } : { phone_number: id },
+  })
+}
+
 export const getUserPreferences = async (id: number) => {
   return await axios.get<IUserPreferences>(`${BASEURL}/user-preferences/user/${id}`, {
     headers: {
