@@ -18,11 +18,13 @@ export interface IUser {
   email?: string
   phone_number?: string
   early_access: boolean
+  total_bookings?: number
 
   license_agreement: boolean
   advertisement_agreement: boolean
   gdpr_agreement: boolean
   complete_onboarding: boolean
+  mailing_enabled?: boolean
 
   administrator?: { id: number; is_active: boolean }
 }

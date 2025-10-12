@@ -25,6 +25,7 @@ export interface IBookingBase {
   deposit_sum: number
   deposit_status: string
   user_comments?: string
+  children_count: number
   remarked_comment: string
   booking_type: string
   duration: number
