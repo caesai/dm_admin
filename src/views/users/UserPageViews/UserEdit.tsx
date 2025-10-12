@@ -294,7 +294,17 @@ export const UserEdit = ({ user, preferences }: Props) => {
             <CCol md={4}>
               <CCard className="border h-100">
                 <CCardHeader>
-                  <CCardTitle className="mb-0">Время посещений</CCardTitle>
+                  <CCardTitle className="mb-0">Рестораны/бронирования</CCardTitle>
+                </CCardHeader>
+                <CCardBody className="d-flex align-items-center justify-content-center">
+                  <div className="text-muted">Данные отсутствуют</div>
+                </CCardBody>
+              </CCard>
+            </CCol>
+            <CCol md={4}>
+              <CCard className="border h-100">
+                <CCardHeader>
+                  <CCardTitle className="mb-0">Календарь посещений</CCardTitle>
                 </CCardHeader>
                 <CCardBody
                   className={classNames(
@@ -306,33 +316,33 @@ export const UserEdit = ({ user, preferences }: Props) => {
                 >
                   {dayStats.map((day, index) => (
                     <div
-                      className={classNames('d-flex', 'justify-content-between', 'w-100', 'pb-2')}
+                      className={classNames('d-flex', 'flex-column', 'gap-2', 'w-100', 'pb-2')}
                       key={index}
                     >
-                      <span>{day.day}</span>
-                      <span>
-                        {day.visited}/{day.total}
-                      </span>
+                      <strong>По дням недели:</strong>
+                      <div className={classNames('d-flex', 'justify-content-between')}>
+                        <span>{day.day}</span>
+                        <span>
+                          {day.visited}/{day.total}
+                        </span>
+                      </div>
                     </div>
                   ))}
                   <div>
                     {timeStats.map((time, index) => (
                       <div
-                        className={classNames(
-                          'd-flex',
-                          'justify-content-between',
-                          'w-100',
-                          'pt-2',
-                          'border-top',
-                        )}
+                        className={classNames('d-flex', 'flex-column', 'gap-2', 'w-100', 'pb-2')}
                         key={index}
                       >
-                        <span className={classNames('d-flex', 'gap-2')}>
-                          {time.category} <TooltipInfo content={time.range} />
-                        </span>
-                        <span>
-                          {time.visited}/{time.total}
-                        </span>
+                        <strong>По времени суток:</strong>
+                        <div className={classNames('d-flex', 'justify-content-between')}>
+                          <span className={classNames('d-flex', 'gap-2')}>
+                            {time.category} <TooltipInfo content={time.range} />
+                          </span>
+                          <span>
+                            {time.visited}/{time.total}
+                          </span>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -341,17 +351,22 @@ export const UserEdit = ({ user, preferences }: Props) => {
             </CCol>
             <CCol md={4}>
               <CCard className="border h-100">
-                <CCardBody className="d-flex flex-column align-items-center justify-content-center">
-                  <h6 className="text-muted mb-2">С последнего бронирования прошло:</h6>
-                  <div className="fs-5 fw-bold text-primary">-</div>
-                </CCardBody>
-              </CCard>
-            </CCol>
-            <CCol md={4}>
-              <CCard className="border h-100">
-                <CCardBody className="d-flex flex-column align-items-center justify-content-center">
-                  <h6 className="text-muted mb-2">Дней с последнего визита:</h6>
-                  <div className="fs-5 fw-bold text-primary">-</div>
+                <CCardBody
+                  className={classNames(
+                    'd-flex',
+                    'flex-column',
+                    'justify-content-center',
+                    'gap-2',
+                  )}
+                >
+                  <div className={classNames('d-flex', 'flex-column', 'w-100', 'text-center')}>
+                    <h6 className="text-muted mb-2">Дней с последнего бронирования:</h6>
+                    <strong className="fs-5">{user.days_since_last_booking}</strong>
+                  </div>»
+                  <div className={classNames('d-flex', 'flex-column', 'w-100', 'text-center')}>
+                    <h6 className="text-muted mb-2">Дней с последнего визита:</h6>
+                    <strong className="fs-5">{user.days_since_last_visit}</strong>
+                  </div>
                 </CCardBody>
               </CCard>
             </CCol>
