@@ -18,6 +18,7 @@ import {
 } from '@coreui/react-pro'
 import classNames from 'classnames'
 import css from 'src/views/style/layout.module.css'
+import TooltipInfo from 'src/components/TooltipInfo.tsx'
 
 interface Props {
   user: IUserFull
@@ -46,7 +47,75 @@ export const UserEdit = ({ user, preferences }: Props) => {
     return { bookingsWithKids, canceledBookings, visitedBookings }
   }
 
+  const getDayOfWeek = (dateString: string) => {
+    const date = new Date(dateString)
+    return date.toLocaleDateString('ru-RU', { weekday: 'long' })
+  }
+
+  const getTimeOfDay = (time: string) => {
+    const [hours, minutes] = time.split(':').map(Number)
+    const totalMinutes = hours * 60 + minutes
+
+    if (totalMinutes >= 7 * 60 && totalMinutes < 12 * 60) {
+      return { category: 'Утро', range: '07:00-11:59' }
+    } else if (totalMinutes >= 12 * 60 && totalMinutes < 18 * 60) {
+      return { category: 'День', range: '12:00-17:59' }
+    } else {
+      return { category: 'Вечер', range: '19:00-06:59' }
+    }
+  }
+
+  const getBookingsTimeStats = () => {
+    if (!user.bookings || user.bookings.length === 0) {
+      return { dayStats: [], timeStats: [] }
+    }
+
+    // День недели
+    const dayStatsMap = new Map()
+    const visitStatsMap = new Map()
+
+    user.bookings?.forEach((booking) => {
+      const bookingDay = getDayOfWeek(booking.booking_date)
+      dayStatsMap.set(bookingDay, (dayStatsMap.get(bookingDay) || 0) + 1)
+      if (booking.booking_status === 'closed') {
+        visitStatsMap.set(bookingDay, (visitStatsMap.get(bookingDay) || 0) + 1)
+      }
+    })
+
+    const dayStats = Array.from(dayStatsMap.entries()).map(([day, total]) => ({
+      day,
+      total,
+      visited: visitStatsMap.get(day) || 0,
+    }))
+
+    // Время суток
+    const timeStatsMap = new Map()
+    const timeVisitMap = new Map()
+    const timeRangeMap = new Map()
+
+    user.bookings?.forEach((booking) => {
+      const timeOfDay = getTimeOfDay(booking.time)
+      const category = timeOfDay.category
+
+      timeStatsMap.set(category, (timeStatsMap.get(category) || 0) + 1)
+      timeRangeMap.set(category, timeOfDay.range)
+      if (booking.booking_status === 'closed') {
+        timeVisitMap.set(category, (timeVisitMap.get(category) || 0) + 1)
+      }
+    })
+
+    const timeStats = Array.from(timeStatsMap.entries()).map(([category, total]) => ({
+      category,
+      total,
+      range: timeRangeMap.get(category),
+      visited: timeVisitMap.get(category) || 0,
+    }))
+
+    return { dayStats, timeStats }
+  }
+
   const { bookingsWithKids, canceledBookings, visitedBookings } = getUserBookings()
+  const { dayStats, timeStats } = getBookingsTimeStats()
 
   const moodPreferences = preferencesList.find((p) => p.category === 'mood')?.choices || []
   const menuPreferences = preferencesList.find((p) => p.category === 'menu')?.choices || []
@@ -227,8 +296,46 @@ export const UserEdit = ({ user, preferences }: Props) => {
                 <CCardHeader>
                   <CCardTitle className="mb-0">Время посещений</CCardTitle>
                 </CCardHeader>
-                <CCardBody className="d-flex align-items-center justify-content-center">
-                  <div className="text-muted">Данные отсутствуют</div>
+                <CCardBody
+                  className={classNames(
+                    'd-flex',
+                    'flex-column',
+                    'justify-content-center',
+                    'text-capitalize',
+                  )}
+                >
+                  {dayStats.map((day, index) => (
+                    <div
+                      className={classNames('d-flex', 'justify-content-between', 'w-100', 'pb-2')}
+                      key={index}
+                    >
+                      <span>{day.day}</span>
+                      <span>
+                        {day.visited}/{day.total}
+                      </span>
+                    </div>
+                  ))}
+                  <div>
+                    {timeStats.map((time, index) => (
+                      <div
+                        className={classNames(
+                          'd-flex',
+                          'justify-content-between',
+                          'w-100',
+                          'pt-2',
+                          'border-top',
+                        )}
+                        key={index}
+                      >
+                        <span className={classNames('d-flex', 'gap-2')}>
+                          {time.category} <TooltipInfo content={time.range} />
+                        </span>
+                        <span>
+                          {time.visited}/{time.total}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </CCardBody>
               </CCard>
             </CCol>
