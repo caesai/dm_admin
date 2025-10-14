@@ -352,21 +352,18 @@ export const UserEdit = ({ user, preferences }: Props) => {
             <CCol md={4}>
               <CCard className="border h-100">
                 <CCardBody
-                  className={classNames(
-                    'd-flex',
-                    'flex-column',
-                    'justify-content-center',
-                    'gap-2',
-                  )}
+                  className={classNames('d-flex', 'flex-column', 'justify-content-center', 'gap-2')}
                 >
                   <div className={classNames('d-flex', 'flex-column', 'w-100', 'text-center')}>
                     <h6 className="text-muted mb-2">Дней с последнего бронирования:</h6>
                     <strong className="fs-5">{user.days_since_last_booking}</strong>
-                  </div>»
-                  <div className={classNames('d-flex', 'flex-column', 'w-100', 'text-center')}>
-                    <h6 className="text-muted mb-2">Дней с последнего визита:</h6>
-                    <strong className="fs-5">{user.days_since_last_visit}</strong>
                   </div>
+                  {user.days_since_last_visit !== 0 && (
+                    <div className={classNames('d-flex', 'flex-column', 'w-100', 'text-center')}>
+                      <h6 className="text-muted mb-2">Дней с последнего визита:</h6>
+                      <strong className="fs-5">{user.days_since_last_visit}</strong>
+                    </div>
+                  )}
                 </CCardBody>
               </CCard>
             </CCol>
