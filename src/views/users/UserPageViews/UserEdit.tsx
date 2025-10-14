@@ -65,7 +65,7 @@ export const UserEdit = ({ user, preferences }: Props) => {
     let visitedBookings = 0
     if (user.bookings && user.bookings.length > 0) {
       user.bookings.forEach((booking) => {
-        if (booking.children_count > 1) bookingsWithKids += 1
+        if (booking.children_count > 0) bookingsWithKids += 1
         if (booking.booking_status === 'canceled') canceledBookings += 1
         if (booking.booking_status === 'closed') visitedBookings += 1
       })
@@ -129,7 +129,7 @@ export const UserEdit = ({ user, preferences }: Props) => {
           ...restaurantStats.get(restaurantId),
         })
       } catch {
-        toast.error(`Ошибка загрузки ресторана`)
+        toast.error(`Ошибка загрузки ресторана ID ${restaurantId} 😔`)
       }
     }
 
@@ -175,7 +175,7 @@ export const UserEdit = ({ user, preferences }: Props) => {
     } else if (totalMinutes >= 12 * 60 && totalMinutes < 18 * 60) {
       return { category: 'День', range: '12:00-17:59' }
     } else {
-      return { category: 'Вечер', range: '19:00-06:59' }
+      return { category: 'Вечер', range: '18:00-06:59' }
     }
   }
 
@@ -507,12 +507,12 @@ export const UserEdit = ({ user, preferences }: Props) => {
                     'text-capitalize',
                   )}
                 >
+                  <strong className={classNames('mb-1')}>По дням недели:</strong>
                   {dayStats.map((day, index) => (
                     <div
-                      className={classNames('d-flex', 'flex-column', 'gap-2', 'w-100', 'pb-2')}
+                      className={classNames('d-flex', 'flex-column', 'gap-2', 'w-100')}
                       key={index}
                     >
-                      <strong>По дням недели:</strong>
                       <div className={classNames('d-flex', 'justify-content-between')}>
                         <span>{day.day}</span>
                         <span>
@@ -522,12 +522,12 @@ export const UserEdit = ({ user, preferences }: Props) => {
                     </div>
                   ))}
                   <div>
+                    <strong className={classNames('mb-1')}>По времени суток:</strong>
                     {timeStats.map((time, index) => (
                       <div
-                        className={classNames('d-flex', 'flex-column', 'gap-2', 'w-100', 'pb-2')}
+                        className={classNames('d-flex', 'flex-column', 'gap-2', 'w-100')}
                         key={index}
                       >
-                        <strong>По времени суток:</strong>
                         <div className={classNames('d-flex', 'justify-content-between')}>
                           <span className={classNames('d-flex', 'gap-2')}>
                             {time.category} <TooltipInfo content={time.range} />
