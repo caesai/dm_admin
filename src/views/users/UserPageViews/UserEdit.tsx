@@ -47,6 +47,29 @@ export const UserEdit = ({ user, preferences }: Props) => {
     return { bookingsWithKids, canceledBookings, visitedBookings }
   }
 
+  const getUserTags = () => {
+    const tagStatsMap = new Map<string, number>()
+
+    if (!user.bookings || user.bookings.length <= 0) return { tagStats: [] }
+
+    user.bookings.forEach((booking) => {
+      if (booking.tags) {
+        const tagsArray = booking.tags.split(',').map((tag) => tag.trim())
+        tagsArray.forEach((tag) => {
+          if (tag === '') return
+          tagStatsMap.set(tag, (tagStatsMap.get(tag) || 0) + 1)
+        })
+      }
+    })
+
+    const tagStats = Array.from(tagStatsMap.entries()).map(([tag, total]) => ({
+      tag,
+      total,
+    }))
+
+    return { tagStats }
+  }
+
   const getDayOfWeek = (dateString: string) => {
     const date = new Date(dateString)
     return date.toLocaleDateString('ru-RU', { weekday: 'long' })
@@ -116,6 +139,7 @@ export const UserEdit = ({ user, preferences }: Props) => {
 
   const { bookingsWithKids, canceledBookings, visitedBookings } = getUserBookings()
   const { dayStats, timeStats } = getBookingsTimeStats()
+  const { tagStats } = getUserTags()
 
   const moodPreferences = preferencesList.find((p) => p.category === 'mood')?.choices || []
   const menuPreferences = preferencesList.find((p) => p.category === 'menu')?.choices || []
@@ -236,10 +260,23 @@ export const UserEdit = ({ user, preferences }: Props) => {
         <CCol md={4}>
           <CCard className="border h-100">
             <CCardHeader>
-              <CCardTitle className="mb-0">Теги</CCardTitle>
+              <CCardTitle className="mb-0">Тэги</CCardTitle>
             </CCardHeader>
-            <CCardBody className="d-flex align-items-center justify-content-center">
-              <div className="text-muted">Клиент не использовал теги</div>
+            <CCardBody className="d-grid gap-2">
+              {!tagStats.length || tagStats.length === 0 ? (
+                <div className="text-muted">Клиент не использовал теги</div>
+              ) : (
+                <div className={classNames('d-flex', 'flex-column', 'justify-content-between')}>
+                  {tagStats.map((tag) => (
+                    <span
+                      className="d-flex align-items-center justify-content-between"
+                      key={tag.tag}
+                    >
+                      <strong>{tag.tag}:</strong> {tag.total}
+                    </span>
+                  ))}
+                </div>
+              )}
             </CCardBody>
           </CCard>
         </CCol>
