@@ -388,9 +388,7 @@ export const UserEdit = ({ user, preferences }: Props) => {
                 <CCard className="h-25">
                   <CCardBody className="d-flex align-items-center justify-content-center">
                     <div className="text-center">
-                      <CBadge color="" className="fs-6">
-                        Пользователь заблокировал бота
-                      </CBadge>
+                      <CBadge className="fs-6">Пользователь заблокировал бота</CBadge>
                     </div>
                   </CCardBody>
                 </CCard>
