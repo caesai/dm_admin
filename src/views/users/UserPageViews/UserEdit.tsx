@@ -50,8 +50,7 @@ export const UserEdit = ({ user, preferences }: Props) => {
   const [timeFromLastBooking, setTimeFromLastBooking] = useState<string | null>(null)
   const [timeFromLastVisit, setTimeFromLastVisit] = useState<string | null>(null)
 
-  // Update visitsIdx when user.bookings changes
-  useEffect(() => {
+  const updateVisitsIdx = () => {
     if (!user.bookings || user.bookings.length === 0) {
       setVisitsIdx([])
       return
@@ -60,7 +59,7 @@ export const UserEdit = ({ user, preferences }: Props) => {
       .map((booking, index) => (booking.booking_status === 'closed' ? index : -1))
       .filter((index) => index !== -1)
     setVisitsIdx(indexes)
-  }, [user.bookings])
+  }
 
   const loadRestaurants = async () => {
     if (user.bookings && user.bookings.length > 0) {
@@ -299,6 +298,7 @@ export const UserEdit = ({ user, preferences }: Props) => {
   }
 
   useEffect(() => {
+    updateVisitsIdx()
     loadRestaurants()
     updateTimeFromLastBookingAndVisits()
   }, [user.bookings])
