@@ -264,23 +264,29 @@ export const UserEdit = ({ user, preferences }: Props) => {
     return null
   }
 
-  const getTimeFromLastBooking = (bookings: IBookingWithRestaurant[] | undefined) => {
+  const getTimeFromLastBooking = (
+    bookings: IBookingWithRestaurant[] | undefined,
+    timeFieldName: 'booking_date' | 'updated_at',
+  ) => {
     if (!bookings || bookings.length === 0) return null
 
     // Find last booking date
-    const lastBooking = bookings?.reduce((latest, current) => {
-      return new Date(current.booking_date) > new Date(latest.booking_date) ? current : latest
-    }, bookings[0])
-    const lastBookingDate = new Date(lastBooking.booking_date)
+    const lastBooking = bookings?.reduce(
+      (latest: IBookingWithRestaurant, current: IBookingWithRestaurant) => {
+        return new Date(current[timeFieldName]) > new Date(latest[timeFieldName]) ? current : latest
+      },
+      bookings[0],
+    )
+    const lastBookingDate = new Date(lastBooking[timeFieldName])
 
     // Find the difference in days
     const now = new Date()
     const diffTime = Math.abs(now.getTime() - lastBookingDate.getTime())
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
 
     // If diffDays is smaller than 1, show hours
     if (diffDays < 1) {
-      const diffHours = Math.ceil(diffTime / (1000 * 60 * 60))
+      const diffHours = Math.floor(diffTime / (1000 * 60 * 60))
       return `${diffHours} ч. назад`
     } else {
       return `${diffDays} д. назад`
@@ -288,12 +294,12 @@ export const UserEdit = ({ user, preferences }: Props) => {
   }
 
   const updateTimeFromLastBookingAndVisits = () => {
-    const timeFromLastBooking = getTimeFromLastBooking(user.bookings)
+    const timeFromLastBooking = getTimeFromLastBooking(user.bookings, 'updated_at')
     setTimeFromLastBooking(timeFromLastBooking)
 
     // Create array from visitsIdx and get bookings from user.bookings by these indexes
     const visits = user.bookings ? visitsIdx.map((idx) => user.bookings![idx]) : []
-    const timeFromLastVisit = getTimeFromLastBooking(visits)
+    const timeFromLastVisit = getTimeFromLastBooking(visits, 'booking_date')
     setTimeFromLastVisit(timeFromLastVisit)
   }
 

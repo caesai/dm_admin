@@ -32,6 +32,7 @@ export interface IBookingBase {
   table_ids: string
   booking_status: string
   created_at: string
+  updated_at: string
   tags: string
   review?: IBookingReviewBase
 }
