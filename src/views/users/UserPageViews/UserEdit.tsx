@@ -19,14 +19,41 @@ import {
 import classNames from 'classnames'
 import css from 'src/views/style/layout.module.css'
 import TooltipInfo from 'src/components/TooltipInfo.tsx'
+import { GetRestaurant } from 'src/dataProviders/restaurants.ts'
+import toast from 'react-hot-toast'
+import { useEffect, useState } from 'react'
+import { IRestaurantWCity } from 'src/types/Restaurant.ts'
 
 interface Props {
   user: IUserFull
   preferences: IUserPreferences
 }
 
+interface IRestaurantData extends IRestaurantWCity {
+  total?: number
+  visited?: number
+}
+
+interface ICityStats {
+  cityName: string
+  total: number
+  visited: number
+}
+
 export const UserEdit = ({ user, preferences }: Props) => {
   const preferencesList = preferences.preferences
+  const [restaurants, setRestaurants] = useState<IRestaurantData[]>([])
+  const [cityStats, setCityStats] = useState<ICityStats[]>([])
+
+  const loadRestaurants = async () => {
+    if (user.bookings && user.bookings.length > 0) {
+      const restaurantsData = await getUserRestaurants()
+      setRestaurants(restaurantsData)
+
+      const citiesStats = getCityStats(restaurantsData)
+      setCityStats(citiesStats)
+    }
+  }
 
   const getBadge = (status: boolean) => {
     return status ? 'success' : 'secondary'
@@ -68,6 +95,70 @@ export const UserEdit = ({ user, preferences }: Props) => {
     }))
 
     return { tagStats }
+  }
+
+  const getUserRestaurants = async () => {
+    if (!user.bookings || user.bookings.length <= 0) return []
+
+    const restaurantsMap = new Map<number, IRestaurantData>()
+    const restaurantStats = new Map<number, { total: number; visited: number }>()
+
+    user.bookings.forEach((booking) => {
+      const restaurantId = booking.restaurant_id
+      const currentStats = restaurantStats.get(restaurantId) || { total: 0, visited: 0 }
+      currentStats.total += 1
+      if (booking.booking_status === 'closed') {
+        currentStats.visited += 1
+      }
+      restaurantStats.set(restaurantId, currentStats)
+    })
+
+    const restaurantsData: IRestaurantData[] = []
+
+    for (const booking of user.bookings) {
+      const restaurantId = booking.restaurant_id
+      if (restaurantsMap.has(restaurantId)) continue
+
+      try {
+        const res = await GetRestaurant(restaurantId)
+        const restaurant = res.data
+        restaurantsMap.set(restaurantId, restaurant)
+
+        restaurantsData.push({
+          ...restaurant,
+          ...restaurantStats.get(restaurantId),
+        })
+      } catch {
+        toast.error(`Ошибка загрузки ресторана`)
+      }
+    }
+
+    return restaurantsData
+  }
+
+  const getCityStats = (restaurantsData: IRestaurantData[]) => {
+    const cityStatsMap = new Map<string, { total: number; visited: number }>()
+
+    if (!user.bookings || user.bookings.length === 0) return []
+
+    user.bookings.forEach((booking) => {
+      const restaurant = restaurantsData.find((r) => r.id === booking.restaurant_id)
+      if (restaurant && restaurant.city) {
+        const cityName = restaurant.city.name
+        const currentStats = cityStatsMap.get(cityName) || { total: 0, visited: 0 }
+        currentStats.total += 1
+        if (booking.booking_status === 'closed') {
+          currentStats.visited += 1
+        }
+        cityStatsMap.set(cityName, currentStats)
+      }
+    })
+
+    return Array.from(cityStatsMap.entries()).map(([cityName, stats]) => ({
+      cityName,
+      total: stats.total,
+      visited: stats.visited,
+    }))
   }
 
   const getDayOfWeek = (dateString: string) => {
@@ -136,6 +227,30 @@ export const UserEdit = ({ user, preferences }: Props) => {
 
     return { dayStats, timeStats }
   }
+
+  const getRestaurantDisplayAddress = (restaurant: IRestaurantData) => {
+    if (restaurant.title === 'Self Edge Japanese') {
+      return (
+        <div>
+          <strong>Адрес:</strong> {restaurant.city.name}
+        </div>
+      )
+    }
+
+    if (restaurant.title === 'Smoke BBQ') {
+      return (
+        <div>
+          <strong>Адрес:</strong> {restaurant.address}
+        </div>
+      )
+    }
+
+    return null
+  }
+
+  useEffect(() => {
+    loadRestaurants()
+  }, [user.bookings])
 
   const { bookingsWithKids, canceledBookings, visitedBookings } = getUserBookings()
   const { dayStats, timeStats } = getBookingsTimeStats()
@@ -323,8 +438,26 @@ export const UserEdit = ({ user, preferences }: Props) => {
                 <CCardHeader>
                   <CCardTitle className="mb-0">Города посещения/бронирования</CCardTitle>
                 </CCardHeader>
-                <CCardBody className="d-flex align-items-center justify-content-center">
-                  <div className="text-muted">Данные отсутствуют</div>
+                <CCardBody>
+                  {cityStats.length > 0 && (
+                    <div className={classNames('d-flex', 'flex-column', 'gap-2')}>
+                      {cityStats.map((city, index) => (
+                        <div
+                          key={index}
+                          className={classNames(
+                            'd-flex',
+                            'align-items-center',
+                            'justify-content-between',
+                          )}
+                        >
+                          <strong>{city.cityName}</strong>
+                          <span className={classNames('d-flex', 'align-items-center')}>
+                            {city.visited}/{city.total}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </CCardBody>
               </CCard>
             </CCol>
@@ -333,8 +466,31 @@ export const UserEdit = ({ user, preferences }: Props) => {
                 <CCardHeader>
                   <CCardTitle className="mb-0">Рестораны/бронирования</CCardTitle>
                 </CCardHeader>
-                <CCardBody className="d-flex align-items-center justify-content-center">
-                  <div className="text-muted">Данные отсутствуют</div>
+                <CCardBody>
+                  {restaurants.length > 0 && (
+                    <div className={classNames('d-flex', 'flex-column', 'gap-3')}>
+                      {restaurants.map((restaurant) => (
+                        <div
+                          key={restaurant.id}
+                          className={classNames(
+                            'd-flex',
+                            'flex-column',
+                            'p-3',
+                            'border',
+                            'rounded',
+                          )}
+                        >
+                          <div className="d-flex justify-content-between align-items-start mb-2">
+                            <strong className="">{restaurant.title}</strong>
+                            <span className="d-flex align-items-center">
+                              {restaurant.visited}/{restaurant.total}
+                            </span>
+                          </div>
+                          <div>{getRestaurantDisplayAddress(restaurant)}</div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </CCardBody>
               </CCard>
             </CCol>

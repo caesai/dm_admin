@@ -37,5 +37,6 @@ export interface IBookingBase {
 }
 
 export interface IBookingWithRestaurant extends IBookingBase {
+  restaurant_id: number
   restaurant: IRestaurantShort
 }
