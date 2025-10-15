@@ -17,7 +17,7 @@ export const UserTags = ({ tagStats }: Props) => {
         <CCardTitle className="mb-0">Тэги</CCardTitle>
       </CCardHeader>
       <CCardBody className="d-grid gap-2">
-        {!tagStats.length || tagStats.length === 0 ? (
+        {!tagStats.length ? (
           <div className="text-muted">Клиент не использовал теги</div>
         ) : (
           <div className={classNames('d-flex', 'flex-column', 'justify-content-between')}>
