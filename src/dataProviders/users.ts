@@ -17,12 +17,12 @@ export const getUserById = async (id: number) => {
   })
 }
 
-export const getUserBySearch = async (searchValue: number, type: 'tg_id' | 'phone') => {
+export const getUserBySearch = async (id: number, type: 'tg_id' | 'phone') => {
   return await axios.get<IUserFull>(`${BASEURL}/users/search`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },
-    params: type === 'tg_id' ? { telegram_id: searchValue } : { phone_number: searchValue },
+    params: type === 'tg_id' ? { telegram_id: id } : { phone_number: id },
   })
 }
 

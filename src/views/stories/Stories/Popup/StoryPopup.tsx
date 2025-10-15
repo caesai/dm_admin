@@ -3,8 +3,6 @@ import { ChangeEvent, Dispatch, FC, SetStateAction, useEffect, useState } from '
 import classNames from 'classnames'
 import { IStory, StoryType } from 'src/types/Stories.ts'
 import { uploadFile } from 'src/dataProviders/s3.ts'
-import { getStoryById } from 'src/dataProviders/stories.ts'
-import toast from 'react-hot-toast'
 import ButtonSection from './ButtonSection'
 import DurationInput from './DurationInput'
 import MediaUrlInput from './MediaUrlInput'
@@ -15,7 +13,7 @@ import TooltipInfo from 'src/components/TooltipInfo'
 interface StoryPopupProps {
   popup: [boolean, Dispatch<SetStateAction<boolean>>]
   isEdit: [boolean, Dispatch<SetStateAction<boolean>>]
-  currentStoryId: [number | null, Dispatch<SetStateAction<number | null>>]
+  currentStory: [IStory | null, Dispatch<SetStateAction<IStory | null>>]
   setStoriesList: Dispatch<SetStateAction<IStory[]>>
   updateStories: Dispatch<SetStateAction<IStory[]>>
 }
@@ -24,107 +22,113 @@ const StoryPopup: FC<StoryPopupProps> = ({
   popup,
   isEdit,
   setStoriesList,
-  currentStoryId,
+  currentStory,
   updateStories,
 }) => {
   const [open, setOpen] = popup
   const [edit, setEdit] = isEdit
-  const [storyId, setStoryId] = currentStoryId
-  const [story, setStory] = useState<IStory>({
-    type: 'image',
-    duration: 5000,
-    url: null,
-    title: null,
-    description: null,
-    button_url: null,
-    button_text: null,
-    button_color: null,
-    component_type: null,
-    order_index: 0,
-    views_count: 0,
-  })
+  const [story, setStory] = currentStory
+
   const [isActiveButton, setIsActiveButton] = useState(false)
 
   const closePopup = () => {
     setOpen(false)
     setEdit(false)
-    setStoryId(null)
+    setStory(null)
     setIsActiveButton(false)
+  }
+
+  const changeStoryType = (e: ChangeEvent<HTMLSelectElement>) => {
+    if (!story) return
+
+    const newType = e.target.value as StoryType
     setStory({
-      type: 'image',
-      duration: 5000,
-      url: null,
-      title: null,
-      description: null,
-      button_url: null,
-      button_text: null,
-      button_color: null,
-      component_type: null,
-      order_index: 0,
-      views_count: 0,
+      ...story,
+      type: newType,
+      component_type: newType !== 'component' ? null : story.component_type,
     })
   }
-  const changeStoryType = (e: ChangeEvent<HTMLSelectElement>) => {
-    const newType = e.target.value as StoryType
-    setStory((prev) => ({
-      ...prev,
-      type: e.target.value as StoryType,
-      component_type: newType !== 'component' ? null : prev.component_type,
-    }))
-  }
+
   const changeStoryDuration = (e: ChangeEvent<HTMLInputElement>) => {
-    setStory((prev) => ({
-      ...prev,
+    if (!story) return
+
+    setStory({
+      ...story,
       duration: Number(e.target.value) * 1000,
-    }))
+    })
   }
+
   const changeStoryUrl = (e: ChangeEvent<HTMLInputElement>) => {
-    setStory((prev) => ({
-      ...prev,
+    if (!story) return
+
+    setStory({
+      ...story,
       url: e.target.value,
-    }))
+    })
   }
+
   const changeStoryTitle = (e: ChangeEvent<HTMLInputElement>) => {
-    setStory((prev) => ({
-      ...prev,
+    if (!story) return
+
+    setStory({
+      ...story,
       title: e.target.value,
-    }))
+    })
   }
+
   const changeStoryDescription = (e: ChangeEvent<HTMLInputElement>) => {
-    setStory((prev) => ({
-      ...prev,
+    if (!story) return
+
+    setStory({
+      ...story,
       description: e.target.value,
-    }))
+    })
   }
+
   const changeButtonUrl = (e: ChangeEvent<HTMLInputElement>) => {
-    setStory((prev) => ({
-      ...prev,
+    if (!story) return
+
+    setStory({
+      ...story,
       button_url: e.target.value,
-    }))
+    })
   }
+
   const changeButtonText = (e: ChangeEvent<HTMLInputElement>) => {
-    setStory((prev) => ({
-      ...prev,
+    if (!story) return
+
+    setStory({
+      ...story,
       button_text: e.target.value,
-    }))
+    })
   }
+
   const changeButtonColor = (e: ChangeEvent<HTMLInputElement>) => {
-    setStory((prev) => ({
-      ...prev,
+    if (!story) return
+
+    setStory({
+      ...story,
       button_color: e.target.value,
-    }))
+    })
   }
+
   const handleMediaChange = (files: FileList | null) => {
-    if (!files) {
+    if (!files || !story) {
       return
     }
+
     const file = files[0]
+
     if (story.type === 'video') {
       uploadFile(file).then((res) =>
-        setStory((prev) => ({
-          ...prev,
-          url: res.data.url,
-        })),
+        setStory((prev) =>
+          prev
+            ? {
+                ...prev,
+                url: res.data.url,
+              }
+            : null,
+        ),
       )
     } else {
       const img = new Image()
@@ -139,34 +143,44 @@ const StoryPopup: FC<StoryPopupProps> = ({
         }
 
         uploadFile(file).then((res) =>
-          setStory((prev) => ({
-            ...prev,
-            url: res.data.url,
-            component_type,
-          })),
+          setStory((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  url: res.data.url,
+                  component_type,
+                }
+              : null,
+          ),
         )
         URL.revokeObjectURL(objectUrl)
       }
 
       img.onerror = () => {
         uploadFile(file).then((res) =>
-          setStory((prev) => ({
-            ...prev,
-            url: res.data.url,
-            component_type: null,
-          })),
+          setStory((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  url: res.data.url,
+                  component_type: null,
+                }
+              : null,
+          ),
         )
         URL.revokeObjectURL(objectUrl)
       }
       img.src = objectUrl
     }
   }
+
   const handleChangeStory = () => {
+    if (!story) return
+
     if (edit) {
-      if (storyId === null) return
-      if (storyId) {
+      if (story.id) {
         const updatedStory = { ...story }
-        setStoriesList((prev) => prev.map((item) => (item.id === storyId ? updatedStory : item)))
+        setStoriesList((prev) => prev.map((item) => (item.id === story.id ? updatedStory : item)))
         updateStories((prev) => [...prev, updatedStory])
       } else if (story.tempId) {
         const updatedStory = { ...story }
@@ -183,23 +197,28 @@ const StoryPopup: FC<StoryPopupProps> = ({
     }
 
     closePopup()
-    setEdit(false)
   }
+
   useEffect(() => {
-    if (edit && storyId !== null) {
-      getStoryById(storyId)
-        .then((res) => {
-          setStory(res.data)
-          if (res.data.button_text !== null || res.data.button_url !== null) {
-            setIsActiveButton(true)
-          }
-        })
-        .catch((e) => {
-          toast.error(e)
-          closePopup()
-        })
+    if (open && !story) {
+      setStory({
+        type: 'image',
+        duration: 5000,
+        url: null,
+        title: null,
+        description: null,
+        button_url: null,
+        button_text: null,
+        button_color: null,
+        component_type: null,
+        order_index: 0,
+        views_count: 0,
+      })
     }
-  }, [edit, storyId])
+  }, [open, story])
+
+  if (!story) return null
+
   return (
     <CModal alignment="center" size="lg" visible={open} onClose={closePopup}>
       <CModalHeader>

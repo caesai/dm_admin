@@ -92,7 +92,7 @@ export const UsersListSmartTable = ({ users }: ITableProps) => {
   }
 
   const getSearchPlaceholder = () => {
-    return searchConfig.type === 'tg_id' ? 'Telegram ID ' : 'номер телефона'
+    return searchConfig.type === 'tg_id' ? 'Telegram ID' : 'номер телефона'
   }
 
   const toggleDetails = (index: number) => {
@@ -120,11 +120,15 @@ export const UsersListSmartTable = ({ users }: ITableProps) => {
 
   const handleSearchChange = (type?: 'tg_id' | 'phone') => {
     setSearchConfig((prev) => ({
-      isActive: !prev.isActive,
+      isActive: true,
       type: type ? type : prev.type,
       value: '',
       user: null,
     }))
+  }
+
+  const closeSearchTool = () => {
+    setSearchConfig(initSearchConfig)
   }
 
   return (
@@ -145,7 +149,7 @@ export const UsersListSmartTable = ({ users }: ITableProps) => {
             <CButton color="primary" className="w-50" onClick={searchUser}>
               Найти
             </CButton>
-            <CButton color="secondary" className="w-50" onClick={() => handleSearchChange()}>
+            <CButton color="secondary" className="w-50" onClick={closeSearchTool}>
               Закрыть
             </CButton>
           </div>
@@ -159,7 +163,6 @@ export const UsersListSmartTable = ({ users }: ITableProps) => {
           hover: true,
         }}
         activePage={1}
-        footer
         items={searchConfig.user !== null ? [searchConfig.user] : users}
         columns={columns}
         itemsPerPageSelect
