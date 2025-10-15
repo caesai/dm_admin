@@ -23,7 +23,7 @@ import {
 } from 'src/dataProviders/users.ts'
 import css from '../style/layout.module.css'
 import classNames from 'classnames'
-import { UserProfile } from 'src/views/users/UserPageViews/UserProfile.tsx'
+import { UserProfile } from 'src/views/users/UserPageViews/UserProfile/UserProfile.tsx'
 import { UserBookings } from 'src/views/users/UserPageViews/UserBookings.tsx'
 import { IBookingWithRestaurant } from 'src/types/Booking.ts'
 import { UserLogs } from 'src/views/users/UserPageViews/UserLogs.tsx'
