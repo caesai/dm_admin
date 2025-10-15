@@ -18,9 +18,13 @@ interface Props {
 
 export const UserPreferences = ({ preferences }: Props) => {
   const preferencesList = preferences.preferences
-  const moodPreferences = preferencesList.find((p) => p.category === 'mood')?.choices || []
-  const menuPreferences = preferencesList.find((p) => p.category === 'menu')?.choices || []
-  const eventsPreferences = preferencesList.find((p) => p.category === 'events')?.choices || []
+  const categoryMap = preferencesList.reduce((acc, p) => {
+    acc[p.category] = p.choices || []
+    return acc
+  }, {} as Record<string, string[]>)
+  const moodPreferences = categoryMap['mood'] || []
+  const menuPreferences = categoryMap['menu'] || []
+  const eventsPreferences = categoryMap['events'] || []
 
   const maxLength = Math.max(
     moodPreferences.length,
