@@ -21,42 +21,14 @@ export const LogsPopup: FC<{
       <CModalBody>
         {currentLogs !== null && (
           <CCard className={classNames('d-flex', 'flex-column', 'gap-1', 'border-0')}>
-            <div className={classNames('d-flex', 'gap-2')}>
-              <span>action:</span>
-              <span>{currentLogs.action}</span>
-            </div>
-            <div className={classNames('d-flex', 'gap-2')}>
-              <span>category:</span>
-              <span>{currentLogs.category}</span>
-            </div>
-            <div className={classNames('d-flex', 'gap-2')}>
-              <span>created_at:</span>
-              <span>{currentLogs.created_at}</span>
-            </div>
-            <div className={classNames('d-flex', 'gap-2')}>
-              <span>description:</span>
-              <span>{currentLogs.description}</span>
-            </div>
-            <div className={classNames('d-flex', 'gap-2')}>
-              <span>id:</span>
-              <span>{currentLogs.id}</span>
-            </div>
-            <div className={classNames('d-flex', 'gap-2')}>
-              <span>request_data:</span>
-              <span>{currentLogs.request_data}</span>
-            </div>
-            <div className={classNames('d-flex', 'gap-2')}>
-              <span>response_data:</span>
-              <span>{currentLogs.response_data}</span>
-            </div>
-            <div className={classNames('d-flex', 'gap-2')}>
-              <span>sent_message:</span>
-              <span>{currentLogs.sent_message}</span>
-            </div>
-            <div className={classNames('d-flex', 'gap-2')}>
-              <span>user_id:</span>
-              <span>{currentLogs.user_id}</span>
-            </div>
+            {Object.keys(currentLogs).map((key, index) => (
+              <div className={classNames('d-flex', 'gap-2')} key={index}>
+                <span>
+                  <strong>{key}:</strong>
+                </span>
+                <span>{currentLogs[key as keyof ILogs]}</span>
+              </div>
+            ))}
           </CCard>
         )}
       </CModalBody>
