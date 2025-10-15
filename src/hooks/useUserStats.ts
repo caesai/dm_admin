@@ -254,7 +254,7 @@ export const useUserStats = (user: IUserFull) => {
     }
 
     loadData()
-  }, [user.bookings, visitsIdx])
+  }, [user.bookings])
 
   useEffect(() => {
     if (restaurants.length > 0) {
