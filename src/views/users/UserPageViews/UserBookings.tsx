@@ -3,6 +3,7 @@ import { IBookingWithRestaurant } from 'src/types/Booking.ts'
 import { Item } from '@coreui/react-pro/src/components/smart-table/types'
 import { GetRestaurant } from 'src/dataProviders/restaurants.ts'
 import { useState, useEffect } from 'react'
+import { BookingPopup } from 'src/views/users/UserPageViews/Modals/BookingPopup.tsx'
 
 interface Props {
   bookings: IBookingWithRestaurant[]
@@ -31,6 +32,8 @@ const RestaurantCityCell = ({ restaurantId }: { restaurantId: number }) => {
 }
 
 export const UserBookings = ({ bookings }: Props) => {
+  const [currentBooking, setCurrentBooking] = useState<IBookingWithRestaurant | null>(null)
+
   const cols = [
     {
       key: 'restaurant_name',
@@ -84,12 +87,15 @@ export const UserBookings = ({ bookings }: Props) => {
 
   return (
     <>
+      <BookingPopup booking={[currentBooking, setCurrentBooking]} />
       {bookings.length > 0 ? (
         <CSmartTable
           columns={cols}
           items={bookings}
           columnFilter
           columnSorter
+          clickableRows
+          onRowClick={(item: Item) => setCurrentBooking(item as IBookingWithRestaurant)}
           tableHeadProps={{
             className: 'align-middle',
           }}

@@ -35,6 +35,13 @@ export interface IBookingBase {
   updated_at: string
   tags: string
   review?: IBookingReviewBase
+  cancel_reason?: string | null
+  event_tags?: string | null
+  remind_sent?: boolean
+  request_id?: string
+  restaurant_name?: string
+  review_request_sent?: boolean
+  review_sent?: boolean
 }
 
 export interface IBookingWithRestaurant extends IBookingBase {
