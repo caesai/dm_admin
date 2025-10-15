@@ -11,6 +11,11 @@ interface Props {
   restaurants: IRestaurantData[]
 }
 
+const RESTAURANT_ADDRESS_CONFIG: Record<string, 'city' | 'full' | 'default'> = {
+  'Self Edge Japanese': 'city',
+  'Smoke BBQ': 'full',
+}
+
 export const UserRestaurantsStats = ({ restaurants }: Props) => {
   return (
     <CCard className="border h-100">
@@ -32,21 +37,33 @@ export const UserRestaurantsStats = ({ restaurants }: Props) => {
 
 const RestaurantItem = ({ restaurant }: { restaurant: IRestaurantData }) => {
   const getRestaurantDisplayAddress = (restaurant: IRestaurantData) => {
-    if (restaurant.title === 'Self Edge Japanese') {
-      return (
-        <div>
-          <strong>Адрес:</strong> {restaurant.city.name}
-        </div>
-      )
+    const addressType = RESTAURANT_ADDRESS_CONFIG[restaurant.title] || 'default'
+
+    switch (addressType) {
+      case 'city':
+        return (
+          <div>
+            <strong>Адрес:</strong> {restaurant.city.name}
+          </div>
+        )
+      case 'full':
+        return (
+          <div>
+            <strong>Адрес:</strong> {restaurant.address}
+          </div>
+        )
+      case 'default':
+      default:
+        return restaurant.address ? (
+          <div>
+            <strong>Адрес:</strong> {restaurant.address}, {restaurant.city.name}
+          </div>
+        ) : (
+          <div>
+            <strong>Адрес:</strong> {restaurant.city.name}
+          </div>
+        )
     }
-    if (restaurant.title === 'Smoke BBQ') {
-      return (
-        <div>
-          <strong>Адрес:</strong> {restaurant.address}
-        </div>
-      )
-    }
-    return null
   }
 
   return (
