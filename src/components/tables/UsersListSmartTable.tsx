@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import {
   CBadge,
   CButton,
@@ -23,6 +23,13 @@ import toast from 'react-hot-toast'
 
 interface ITableProps {
   users: IUser[]
+  tableConfig: {
+    currentPage: number
+    itemsPerPage: number
+    setCurrentPage: Dispatch<SetStateAction<number>>
+    setItemsPerPage: Dispatch<SetStateAction<number>>
+    totalItems: number
+  }
 }
 
 interface ISearchConfig {
@@ -39,9 +46,11 @@ const initSearchConfig: ISearchConfig = {
   user: null,
 }
 
-export const UsersListSmartTable = ({ users }: ITableProps) => {
+export const UsersListSmartTable = ({ users, tableConfig }: ITableProps) => {
   const [details, setDetails] = useState<number[]>([])
   const [searchConfig, setSearchConfig] = useState<ISearchConfig>(initSearchConfig)
+
+  const { currentPage, itemsPerPage, setCurrentPage, setItemsPerPage, totalItems } = tableConfig
 
   const columns = [
     {
@@ -62,7 +71,7 @@ export const UsersListSmartTable = ({ users }: ITableProps) => {
             onClick={() => handleSearchChange('phone')}
           />
         </div>
-      ),
+      ) as never,
     },
     {
       key: 'telegram_id',
@@ -76,7 +85,7 @@ export const UsersListSmartTable = ({ users }: ITableProps) => {
             onClick={() => handleSearchChange('tg_id')}
           />
         </div>
-      ),
+      ) as never,
     },
     {
       key: 'show_details',
@@ -162,12 +171,18 @@ export const UsersListSmartTable = ({ users }: ITableProps) => {
           striped: true,
           hover: true,
         }}
-        activePage={1}
         items={searchConfig.user !== null ? [searchConfig.user] : users}
-        columns={columns}
         itemsPerPageSelect
-        itemsPerPage={20}
+        itemsPerPageOptions={[10, 20, 50, 100]}
+        itemsPerPage={itemsPerPage}
+        onItemsPerPageChange={setItemsPerPage}
         pagination
+        paginationProps={{
+          pages: Math.ceil(totalItems / itemsPerPage),
+          activePage: currentPage,
+          onActivePageChange: setCurrentPage,
+        }}
+        columns={columns}
         scopedColumns={{
           early_access: (item: Item) => (
             <td>
