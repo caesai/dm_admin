@@ -21,7 +21,7 @@ import css from 'src/views/style/layout.module.css'
 import TooltipInfo from 'src/components/TooltipInfo.tsx'
 import { GetRestaurant } from 'src/dataProviders/restaurants.ts'
 import toast from 'react-hot-toast'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { IRestaurantWCity } from 'src/types/Restaurant.ts'
 import { IBookingWithRestaurant } from 'src/types/Booking'
 
@@ -41,25 +41,23 @@ interface ICityStats {
   visited: number
 }
 
-export const UserEdit = ({ user, preferences }: Props) => {
+export const UserProfile = ({ user, preferences }: Props) => {
   const preferencesList = preferences.preferences
   const [restaurants, setRestaurants] = useState<IRestaurantData[]>([])
   const [cityStats, setCityStats] = useState<ICityStats[]>([])
   // Store visits indexes - the indexes are in user.bookings for bookings with status 'closed'
-  const [visitsIdx, setVisitsIdx] = useState<number[]>([])
+  const [, setVisitsIdx] = useState<number[]>([])
   const [timeFromLastBooking, setTimeFromLastBooking] = useState<string | null>(null)
   const [timeFromLastVisit, setTimeFromLastVisit] = useState<string | null>(null)
 
-  const updateVisitsIdx = () => {
+  const updateVisitsIdx = useMemo(() => {
     if (!user.bookings || user.bookings.length === 0) {
-      setVisitsIdx([])
-      return
+      return []
     }
-    const indexes = user.bookings
+    return user.bookings
       .map((booking, index) => (booking.booking_status === 'closed' ? index : -1))
       .filter((index) => index !== -1)
-    setVisitsIdx(indexes)
-  }
+  }, [user.bookings])
 
   const loadRestaurants = async () => {
     if (user.bookings && user.bookings.length > 0) {
@@ -75,7 +73,7 @@ export const UserEdit = ({ user, preferences }: Props) => {
     return status ? 'success' : 'secondary'
   }
 
-  const getUserBookings = () => {
+  const getUserBookings = useMemo(() => {
     let bookingsWithKids = 0
     let canceledBookings = 0
     let visitedBookings = 0
@@ -88,9 +86,9 @@ export const UserEdit = ({ user, preferences }: Props) => {
     }
 
     return { bookingsWithKids, canceledBookings, visitedBookings }
-  }
+  }, [user.bookings])
 
-  const getUserTags = () => {
+  const getUserTags = useMemo(() => {
     const tagStatsMap = new Map<string, number>()
 
     if (!user.bookings || user.bookings.length <= 0) return { tagStats: [] }
@@ -111,7 +109,7 @@ export const UserEdit = ({ user, preferences }: Props) => {
     }))
 
     return { tagStats }
-  }
+  }, [user.bookings])
 
   const getUserRestaurants = async () => {
     if (!user.bookings || user.bookings.length <= 0) return []
@@ -152,30 +150,32 @@ export const UserEdit = ({ user, preferences }: Props) => {
     return restaurantsData
   }
 
-  const getCityStats = (restaurantsData: IRestaurantData[]) => {
-    const cityStatsMap = new Map<string, { total: number; visited: number }>()
+  const getCityStats = useMemo(() => {
+    return (restaurantsData: IRestaurantData[]) => {
+      const cityStatsMap = new Map<string, { total: number; visited: number }>()
 
-    if (!user.bookings || user.bookings.length === 0) return []
+      if (!user.bookings || user.bookings.length === 0) return []
 
-    user.bookings.forEach((booking) => {
-      const restaurant = restaurantsData.find((r) => r.id === booking.restaurant_id)
-      if (restaurant && restaurant.city) {
-        const cityName = restaurant.city.name
-        const currentStats = cityStatsMap.get(cityName) || { total: 0, visited: 0 }
-        currentStats.total += 1
-        if (booking.booking_status === 'closed') {
-          currentStats.visited += 1
+      user.bookings.forEach((booking) => {
+        const restaurant = restaurantsData.find((r) => r.id === booking.restaurant_id)
+        if (restaurant && restaurant.city) {
+          const cityName = restaurant.city.name
+          const currentStats = cityStatsMap.get(cityName) || { total: 0, visited: 0 }
+          currentStats.total += 1
+          if (booking.booking_status === 'closed') {
+            currentStats.visited += 1
+          }
+          cityStatsMap.set(cityName, currentStats)
         }
-        cityStatsMap.set(cityName, currentStats)
-      }
-    })
+      })
 
-    return Array.from(cityStatsMap.entries()).map(([cityName, stats]) => ({
-      cityName,
-      total: stats.total,
-      visited: stats.visited,
-    }))
-  }
+      return Array.from(cityStatsMap.entries()).map(([cityName, stats]) => ({
+        cityName,
+        total: stats.total,
+        visited: stats.visited,
+      }))
+    }
+  }, [user.bookings])
 
   const getDayOfWeek = (dateString: string) => {
     const date = new Date(dateString)
@@ -195,7 +195,7 @@ export const UserEdit = ({ user, preferences }: Props) => {
     }
   }
 
-  const getBookingsTimeStats = () => {
+  const getBookingsTimeStats = useMemo(() => {
     if (!user.bookings || user.bookings.length === 0) {
       return { dayStats: [], timeStats: [] }
     }
@@ -242,7 +242,7 @@ export const UserEdit = ({ user, preferences }: Props) => {
     }))
 
     return { dayStats, timeStats }
-  }
+  }, [user.bookings])
 
   const getRestaurantDisplayAddress = (restaurant: IRestaurantData) => {
     if (restaurant.title === 'Self Edge Japanese') {
@@ -264,54 +264,60 @@ export const UserEdit = ({ user, preferences }: Props) => {
     return null
   }
 
-  const getTimeFromLastBooking = (
-    bookings: IBookingWithRestaurant[] | undefined,
-    timeFieldName: 'booking_date' | 'updated_at',
-  ) => {
-    if (!bookings || bookings.length === 0) return null
+  const getTimeFromLastBooking = useMemo(() => {
+    return (
+      bookings: IBookingWithRestaurant[] | undefined,
+      timeFieldName: 'booking_date' | 'updated_at',
+    ) => {
+      if (!bookings || bookings.length === 0) return null
 
-    // Find last booking date
-    const lastBooking = bookings?.reduce(
-      (latest: IBookingWithRestaurant, current: IBookingWithRestaurant) => {
-        return new Date(current[timeFieldName]) > new Date(latest[timeFieldName]) ? current : latest
-      },
-      bookings[0],
-    )
-    const lastBookingDate = new Date(lastBooking[timeFieldName])
+      // Find last booking date
+      const lastBooking = bookings?.reduce(
+        (latest: IBookingWithRestaurant, current: IBookingWithRestaurant) => {
+          return new Date(current[timeFieldName]) > new Date(latest[timeFieldName])
+            ? current
+            : latest
+        },
+        bookings[0],
+      )
+      const lastBookingDate = new Date(lastBooking[timeFieldName])
 
-    // Find the difference in days
-    const now = new Date()
-    const diffTime = Math.abs(now.getTime() - lastBookingDate.getTime())
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
+      // Find the difference in days
+      const now = new Date()
+      const diffTime = Math.abs(now.getTime() - lastBookingDate.getTime())
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
 
-    // If diffDays is smaller than 1, show hours
-    if (diffDays < 1) {
-      const diffHours = Math.floor(diffTime / (1000 * 60 * 60))
-      return `${diffHours} ч. назад`
-    } else {
-      return `${diffDays} д. назад`
+      // If diffDays is smaller than 1, show hours
+      if (diffDays < 1) {
+        const diffHours = Math.floor(diffTime / (1000 * 60 * 60))
+        return `${diffHours} ч. назад`
+      } else {
+        return `${diffDays} д. назад`
+      }
     }
-  }
+  }, [])
 
-  const updateTimeFromLastBookingAndVisits = () => {
+  const updateTimeFromLastBookingAndVisits = useMemo(() => {
     const timeFromLastBooking = getTimeFromLastBooking(user.bookings, 'updated_at')
-    setTimeFromLastBooking(timeFromLastBooking)
 
     // Create array from visitsIdx and get bookings from user.bookings by these indexes
-    const visits = user.bookings ? visitsIdx.map((idx) => user.bookings![idx]) : []
+    const visits = user.bookings ? updateVisitsIdx.map((idx) => user.bookings![idx]) : []
     const timeFromLastVisit = getTimeFromLastBooking(visits, 'booking_date')
-    setTimeFromLastVisit(timeFromLastVisit)
-  }
+
+    return { timeFromLastBooking, timeFromLastVisit }
+  }, [user.bookings, updateVisitsIdx, getTimeFromLastBooking])
 
   useEffect(() => {
-    updateVisitsIdx()
+    setVisitsIdx(updateVisitsIdx)
     loadRestaurants()
-    updateTimeFromLastBookingAndVisits()
-  }, [user.bookings])
+    const { timeFromLastBooking, timeFromLastVisit } = updateTimeFromLastBookingAndVisits
+    setTimeFromLastBooking(timeFromLastBooking)
+    setTimeFromLastVisit(timeFromLastVisit)
+  }, [user.bookings, updateVisitsIdx, updateTimeFromLastBookingAndVisits])
 
-  const { bookingsWithKids, canceledBookings, visitedBookings } = getUserBookings()
-  const { dayStats, timeStats } = getBookingsTimeStats()
-  const { tagStats } = getUserTags()
+  const { bookingsWithKids, canceledBookings, visitedBookings } = getUserBookings
+  const { dayStats, timeStats } = getBookingsTimeStats
+  const { tagStats } = getUserTags
 
   const moodPreferences = preferencesList.find((p) => p.category === 'mood')?.choices || []
   const menuPreferences = preferencesList.find((p) => p.category === 'menu')?.choices || []

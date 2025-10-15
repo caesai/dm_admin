@@ -23,7 +23,7 @@ import {
 } from 'src/dataProviders/users.ts'
 import css from '../style/layout.module.css'
 import classNames from 'classnames'
-import { UserEdit } from 'src/views/users/UserPageViews/UserEdit.tsx'
+import { UserProfile } from 'src/views/users/UserPageViews/UserProfile.tsx'
 import { UserBookings } from 'src/views/users/UserPageViews/UserBookings.tsx'
 import { IBookingWithRestaurant } from 'src/types/Booking.ts'
 import { UserLogs } from 'src/views/users/UserPageViews/UserLogs.tsx'
@@ -76,7 +76,7 @@ const UserPage = () => {
                       <CTabContent>
                         <CTabPanel className="p-3" itemKey="home">
                           {user && preferences && (
-                            <UserEdit user={user} preferences={preferences} />
+                            <UserProfile user={user} preferences={preferences} />
                           )}
                         </CTabPanel>
                         <CTabPanel className="p-3" itemKey="bookings">
