@@ -25,15 +25,26 @@ export interface IBookingBase {
   deposit_sum: number
   deposit_status: string
   user_comments?: string
+  children_count: number
   remarked_comment: string
   booking_type: string
   duration: number
   table_ids: string
   booking_status: string
   created_at: string
+  updated_at: string
+  tags: string
   review?: IBookingReviewBase
+  cancel_reason?: string | null
+  event_tags?: string | null
+  remind_sent?: boolean
+  request_id?: string
+  restaurant_name?: string
+  review_request_sent?: boolean
+  review_sent?: boolean
 }
 
 export interface IBookingWithRestaurant extends IBookingBase {
+  restaurant_id: number
   restaurant: IRestaurantShort
 }

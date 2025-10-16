@@ -13,16 +13,17 @@ import {
 } from '@coreui/react-pro'
 import { useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { IUserFull } from 'src/types/User.ts'
+import { IUserFull, IUserPreferences } from 'src/types/User.ts'
 import {
   getUserBookings,
   getUserById,
   getUserEvents,
   getUserLogs,
+  getUserPreferences,
 } from 'src/dataProviders/users.ts'
 import css from '../style/layout.module.css'
 import classNames from 'classnames'
-import { UserEdit } from 'src/views/users/UserPageViews/UserEdit.tsx'
+import { UserProfile } from 'src/views/users/UserPageViews/UserProfile/UserProfile.tsx'
 import { UserBookings } from 'src/views/users/UserPageViews/UserBookings.tsx'
 import { IBookingWithRestaurant } from 'src/types/Booking.ts'
 import { UserLogs } from 'src/views/users/UserPageViews/UserLogs.tsx'
@@ -33,12 +34,14 @@ import { IEventBookingBase } from 'src/types/Event.ts'
 const UserPage = () => {
   const { id } = useParams()
   const [user, setUser] = useState<IUserFull>()
+  const [preferences, setPreferences] = useState<IUserPreferences>()
   const [bookings, setBookings] = useState<IBookingWithRestaurant[]>([])
   const [events, setEvents] = useState<IEventBookingBase[]>([])
   const [logs, setLogs] = useState<ILogs[]>([])
 
   useEffect(() => {
     getUserById(Number(id)).then((res) => setUser(res.data))
+    getUserPreferences(Number(id)).then((res) => setPreferences(res.data))
     getUserBookings(Number(id)).then((res) => setBookings(res.data))
     getUserLogs(Number(id)).then((res) => setLogs(res.data))
     getUserEvents(Number(id)).then((res) => setEvents(res.data))
@@ -72,7 +75,9 @@ const UserPage = () => {
                       </CTabList>
                       <CTabContent>
                         <CTabPanel className="p-3" itemKey="home">
-                          <UserEdit user={user} />
+                          {user && preferences && (
+                            <UserProfile user={user} preferences={preferences} />
+                          )}
                         </CTabPanel>
                         <CTabPanel className="p-3" itemKey="bookings">
                           <UserBookings bookings={bookings} />

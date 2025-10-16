@@ -7,15 +7,21 @@ import { UsersListSmartTable } from 'src/components/tables/UsersListSmartTable.t
 
 const UsersList = () => {
   const [users, setUsers] = useState<IUserWithDates[]>([])
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const [itemsPerPage, setItemsPerPage] = useState<number>(20)
+  const [totalItems, setTotalItems] = useState<number>(0)
 
   useEffect(() => {
-    getUsers()
-      .then((res) => setUsers(res.data.users))
+    getUsers(currentPage, itemsPerPage)
+      .then((res) => {
+        setUsers(res.data.users)
+        setTotalItems(res.data.total)
+      })
       .catch((err) => {
         toast.error('Произошла ошибка при загрузке данных')
         console.error(err)
       })
-  }, [])
+  }, [itemsPerPage, currentPage])
   return (
     <CRow>
       <CCol xs={12}>
@@ -24,7 +30,16 @@ const UsersList = () => {
             <strong>Пользователи</strong>
           </CCardHeader>
           <CCardBody>
-            <UsersListSmartTable users={users} />
+            <UsersListSmartTable
+              users={users}
+              tableConfig={{
+                currentPage,
+                itemsPerPage,
+                setCurrentPage,
+                setItemsPerPage,
+                totalItems,
+              }}
+            />
           </CCardBody>
         </CCard>
       </CCol>

@@ -15,7 +15,9 @@ const MediaUrlInput: FC<MediaUrlInputProps> = ({ url, type, onUrlChange, onMedia
   let tooltipText = 'Введите ссылку на изображение или загрузите его, нажав на кнопку'
   if (type === 'component')
     tooltipText = 'Введите ссылку на изображение или загрузите его, нажав на кнопку'
-  if (type === 'video') tooltipText = 'Загрузите файл mp4, либо ссылку на видео в формате mp4'
+  if (type === 'video')
+    tooltipText =
+      'Загрузите файл mp4, либо ссылку на видео в формате mp4. В данный момент видео воспроизводится без звука.'
 
   return (
     <div className={classNames('d-flex', 'align-items-center', 'gap-2', 'p-0')}>

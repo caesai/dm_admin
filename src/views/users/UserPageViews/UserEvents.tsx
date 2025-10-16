@@ -2,6 +2,8 @@ import { IEventBookingBase } from 'src/types/Event.ts'
 import { CCard, CCardBody, CSmartTable } from '@coreui/react-pro'
 import { Item } from '@coreui/react-pro/src/components/smart-table/types'
 import { useRestaurantCity } from 'src/views/users/UserPageViews/UserBookings.tsx'
+import { useState } from 'react'
+import { EventPopup } from 'src/views/users/UserPageViews/Modals/EventPopup.tsx'
 
 interface Props {
   events: IEventBookingBase[]
@@ -20,6 +22,7 @@ const formatDateTime = (dateString: string) => {
 }
 
 export const UserEvents = ({ events }: Props) => {
+  const [currentEvent, setCurrentEvent] = useState<IEventBookingBase | null>(null)
   const cols = [
     {
       key: 'event_name',
@@ -65,12 +68,15 @@ export const UserEvents = ({ events }: Props) => {
 
   return (
     <>
+      <EventPopup event={[currentEvent, setCurrentEvent]} />
       {events.length > 0 ? (
         <CSmartTable
           columns={cols}
           items={events}
           columnFilter
           columnSorter
+          clickableRows
+          onRowClick={(item: Item) => setCurrentEvent(item as IEventBookingBase)}
           tableHeadProps={{
             className: 'align-middle',
           }}

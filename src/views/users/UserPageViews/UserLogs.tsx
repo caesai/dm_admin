@@ -1,6 +1,8 @@
 import { CCard, CCardBody, CSmartTable } from '@coreui/react-pro'
 import { Item } from '@coreui/react-pro/src/components/smart-table/types'
 import { ILogs } from 'src/types/Logs.ts'
+import { useState } from 'react'
+import { LogsPopup } from 'src/views/users/UserPageViews/Modals/LogsPopup.tsx'
 
 interface Props {
   logs: ILogs[]
@@ -14,6 +16,8 @@ const formatDateTime = (dateString: string) => {
 }
 
 export const UserLogs = ({ logs }: Props) => {
+  const [currentLogs, setCurrentLogs] = useState<ILogs | null>(null)
+
   const cols = [
     {
       key: 'id',
@@ -49,12 +53,15 @@ export const UserLogs = ({ logs }: Props) => {
 
   return (
     <>
+      <LogsPopup logs={[currentLogs, setCurrentLogs]} />
       {logs.length > 0 ? (
         <CSmartTable
           columns={cols}
           items={logs}
           columnFilter
           columnSorter
+          clickableRows
+          onRowClick={(item: Item) => setCurrentLogs(item as ILogs)}
           tableHeadProps={{
             className: 'align-middle',
           }}

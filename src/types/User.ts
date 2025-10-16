@@ -18,11 +18,13 @@ export interface IUser {
   email?: string
   phone_number?: string
   early_access: boolean
+  total_bookings?: number
 
   license_agreement: boolean
   advertisement_agreement: boolean
   gdpr_agreement: boolean
   complete_onboarding: boolean
+  mailing_enabled?: boolean
 
   administrator?: { id: number; is_active: boolean }
 }
@@ -37,6 +39,8 @@ export interface IUserFull extends IUserWithDates {
   reviews?: IReviewWithRestaurant[]
   payments?: IPaymentBase[]
   events?: IEventBookingBase[]
+  days_since_last_booking?: number
+  days_since_last_visit?: number
 }
 
 export interface IUserList {
@@ -44,4 +48,14 @@ export interface IUserList {
   per_page: number
   total: number
   users: IUserWithDates[]
+}
+
+export interface IUserPreference {
+  category: 'mood' | 'menu' | 'events'
+  choices: string[]
+}
+
+export interface IUserPreferences {
+  user_id: number
+  preferences: IUserPreference[]
 }
