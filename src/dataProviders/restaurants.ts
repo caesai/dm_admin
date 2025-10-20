@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { BASEURL } from 'src/api.ts'
-import { IRestaurant, IRestaurantWCity } from 'src/types/Restaurant.ts'
+import { IRestaurant, IRestaurantOptions, IRestaurantWCity } from 'src/types/Restaurant.ts'
 import { IPhotoCard } from 'src/types/Gallery.ts'
 import { IMenu, IMenuImg } from 'src/types/Menu.ts'
 import { IWorktime } from 'src/types/Worktime.ts'
@@ -16,6 +16,14 @@ export const GetRestaurantList = async () => {
 
 export const GetRestaurant = async (id: number) => {
   return await axios.get<IRestaurant>(`${BASEURL}/restaurants/${id}`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+    },
+  })
+}
+
+export const GetRestaurantOptions = async (id: number) => {
+  return await axios.get<IRestaurantOptions>(`${BASEURL}/banquet-options/restaurant/${id}`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },

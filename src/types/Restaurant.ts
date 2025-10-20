@@ -39,3 +39,26 @@ export interface IRestaurant extends IRestaurantWCity {
   menu_imgs: IMenuImg[]
   socials: ISocial[]
 }
+
+export interface IRestaurantBanquet {
+  id: number
+  name: string
+  deposit: number
+  deposit_message: string | null
+  guests_max: number
+  guests_min: number
+  service_fee: number
+  images: string | null
+}
+
+export interface IRestaurantAdditional {
+  id: number
+  name: string
+}
+
+export interface IRestaurantOptions {
+  additional_options: IRestaurantAdditional[]
+  banquet_options: IRestaurantBanquet[]
+  description: string | null
+  image: string | null
+}
