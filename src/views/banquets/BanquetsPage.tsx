@@ -1,4 +1,4 @@
-import { CCard, CCardBody, CCardHeader, CCardTitle, CFormSelect } from '@coreui/react-pro'
+import { CCard, CCardBody, CCardHeader, CCardTitle, CFormSelect, CSpinner } from '@coreui/react-pro'
 import { getRestaurantCity } from 'src/utils.tsx'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { IRestaurantWCity } from 'src/types/Restaurant.ts'
@@ -8,6 +8,7 @@ import toast from 'react-hot-toast'
 const BanquetsPage = () => {
   const [restaurants, setRestaurants] = useState<IRestaurantWCity[]>([])
   // const [currentRestaurant, setCurrentRestaurant] = useState<IRestaurantWCity | null>(null)
+  const [loader, setLoader] = useState<boolean>(false)
 
   const loadRestaurants = async () => {
     const response = await GetRestaurantList()
@@ -15,10 +16,14 @@ const BanquetsPage = () => {
   }
 
   const getRestaurantData = (e: ChangeEvent<HTMLSelectElement>) => {
+    setLoader(true)
     const restaurant_id = Number(e.target.value)
 
     GetRestaurantOptions(restaurant_id)
-      .then((res) => console.log(res.data))
+      .then((res) => {
+        console.log(res.data)
+        setLoader(false)
+      })
       .catch(() => toast.error('Не удалось загрузить данные о ресторане'))
   }
 
@@ -42,6 +47,7 @@ const BanquetsPage = () => {
           ]}
           onChange={getRestaurantData}
         />
+        {loader && <CSpinner color="primary" />}
       </CCardBody>
     </CCard>
   )
