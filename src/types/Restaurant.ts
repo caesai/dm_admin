@@ -56,9 +56,12 @@ export interface IRestaurantAdditional {
   name: string
 }
 
-export interface IRestaurantOptions {
-  additional_options: IRestaurantAdditional[]
-  banquet_options: IRestaurantBanquet[]
+export interface IRestaurantInfo {
   description: string | null
   image: string | null
+}
+
+export interface IRestaurantOptions extends IRestaurantInfo {
+  additional_options: IRestaurantAdditional[]
+  banquet_options: IRestaurantBanquet[]
 }

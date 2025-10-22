@@ -13,7 +13,11 @@ import {
 import { getRestaurantCity } from 'src/utils.tsx'
 import { ChangeEvent, useEffect, useMemo, useState } from 'react'
 import { IRestaurantOptions, IRestaurantWCity } from 'src/types/Restaurant.ts'
-import { GetRestaurantList, GetRestaurantOptions } from 'src/dataProviders/restaurants.ts'
+import {
+  GetRestaurantList,
+  GetRestaurantOptions,
+  SendRestaurantOptions,
+} from 'src/dataProviders/restaurants.ts'
 import toast from 'react-hot-toast'
 import classNames from 'classnames'
 import MediaInput from 'src/components/MediaInput.tsx'
@@ -21,6 +25,7 @@ import TooltipInfo from 'src/components/TooltipInfo.tsx'
 import { uploadFile } from 'src/dataProviders/s3.ts'
 
 const BanquetsPage = () => {
+  const [currentId, setCurrentId] = useState<number>(0)
   const [restaurants, setRestaurants] = useState<IRestaurantWCity[]>([])
   const [currentRestaurant, setCurrentRestaurant] = useState<IRestaurantOptions | null>(null)
   const [initRestaurant, setInitRestaurant] = useState<IRestaurantOptions | null>(null)
@@ -32,12 +37,16 @@ const BanquetsPage = () => {
     setRestaurants(response.data)
   }
 
-  const getRestaurantData = (e: ChangeEvent<HTMLSelectElement>) => {
+  const changeRestaurantId = (e: ChangeEvent<HTMLSelectElement>) => {
     if (e.target.value === '') return
-    setLoader(true)
-    const restaurant_id = Number(e.target.value)
+    setCurrentId(Number(e.target.value))
+  }
 
-    GetRestaurantOptions(restaurant_id)
+  const getRestaurantData = () => {
+    if (currentId === 0) return
+    setLoader(true)
+
+    GetRestaurantOptions(currentId)
       .then((res) => {
         setCurrentRestaurant(res.data)
         setInitRestaurant(res.data)
@@ -85,11 +94,25 @@ const BanquetsPage = () => {
 
   const sendBanquetsOptions = () => {
     if (!isBanquetsChanged) return
+
+    SendRestaurantOptions(
+      {
+        description: currentRestaurant?.description ? currentRestaurant?.description : null,
+        image: currentRestaurant?.image ? currentRestaurant?.image : null,
+      },
+      currentId,
+    )
+      .then(() => toast.success('Блок обновлён'))
+      .catch(() => toast.error('Ошибка при сохранении'))
   }
 
   useEffect(() => {
     loadRestaurants()
   }, [])
+
+  useEffect(() => {
+    getRestaurantData()
+  }, [currentId])
 
   return (
     <CCard className="border-0">
@@ -105,7 +128,7 @@ const BanquetsPage = () => {
               value: `${restaurant.id}`,
             })),
           ]}
-          onChange={getRestaurantData}
+          onChange={changeRestaurantId}
         />
         {loader ? (
           <CSpinner color="primary" className="align-self-center" />

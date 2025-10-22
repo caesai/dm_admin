@@ -1,6 +1,11 @@
 import axios from 'axios'
 import { BASEURL } from 'src/api.ts'
-import { IRestaurant, IRestaurantOptions, IRestaurantWCity } from 'src/types/Restaurant.ts'
+import {
+  IRestaurant,
+  IRestaurantInfo,
+  IRestaurantOptions,
+  IRestaurantWCity,
+} from 'src/types/Restaurant.ts'
 import { IPhotoCard } from 'src/types/Gallery.ts'
 import { IMenu, IMenuImg } from 'src/types/Menu.ts'
 import { IWorktime } from 'src/types/Worktime.ts'
@@ -179,4 +184,16 @@ export const EditWorktime = async (worktime: IWorktime) => {
       Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },
   })
+}
+
+export const SendRestaurantOptions = async (data: IRestaurantInfo, restaurant_id: number) => {
+  return await axios.post<IRestaurantInfo>(
+    `${BASEURL}/restaurant-banquet/restaurant/${restaurant_id}`,
+    { ...data, restaurant_id },
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+      },
+    },
+  )
 }
