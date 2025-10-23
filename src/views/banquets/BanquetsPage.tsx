@@ -134,7 +134,7 @@ const BanquetsPage = () => {
           <CSpinner color="primary" className="align-self-center" />
         ) : (
           currentRestaurant !== null && (
-            <CCardGroup>
+            <CCardGroup className={classNames('d-flex', 'flex-column', 'gap-4')}>
               <CCard>
                 <CCardHeader>
                   <CCardTitle>Блок Банкеты на странице ресторана</CCardTitle>
@@ -181,6 +181,90 @@ const BanquetsPage = () => {
                         Сохранить
                       </CButton>
                     </CRow>
+                  </div>
+                </CCardBody>
+              </CCard>
+              <CCard className={classNames('border', 'rounded')}>
+                <CCardHeader>
+                  <CCardTitle>Варианты рассадки</CCardTitle>
+                </CCardHeader>
+                <CCardBody>
+                  <div className={classNames('px-3', 'd-flex', 'flex-column', 'gap-3')}>
+                    <CRow>
+                      <div style={{ width: 'fit-content' }}>
+                        <CButton color={'primary'}>Добавить вариант</CButton>
+                      </div>
+                    </CRow>
+                    {currentRestaurant.banquet_options.length > 0 ? (
+                      currentRestaurant.banquet_options.map((banquet) => (
+                        <CCard className={classNames('border-0')} key={banquet.id}>
+                          <CCardBody className={classNames('d-flex', 'flex-column', 'gap-2')}>
+                            <CRow>
+                              <CFormInput
+                                type="text"
+                                floatingLabel="Название"
+                                placeholder={''}
+                                floatingClassName={'px-0'}
+                                value={banquet.name ? banquet.name : ''}
+                                onChange={handleDescriptionChange}
+                              />
+                            </CRow>
+                            <CRow>
+                              <CFormInput
+                                type="text"
+                                floatingLabel="Минимальное количество гостей"
+                                placeholder={''}
+                                floatingClassName={'px-0'}
+                                value={banquet.guests_min ? banquet.guests_min : ''}
+                                onChange={handleDescriptionChange}
+                              />
+                            </CRow>
+                            <CRow>
+                              <CFormInput
+                                type="text"
+                                floatingLabel="Максимальное количество гостей"
+                                placeholder={''}
+                                floatingClassName={'px-0'}
+                                value={banquet.guests_max ? banquet.guests_max : ''}
+                                onChange={handleDescriptionChange}
+                              />
+                            </CRow>
+                            <CRow>
+                              <CFormInput
+                                type="text"
+                                floatingLabel="Депозит"
+                                placeholder={''}
+                                floatingClassName={'px-0'}
+                                value={banquet.deposit ? banquet.deposit : ''}
+                                onChange={handleDescriptionChange}
+                              />
+                            </CRow>
+                            <CRow>
+                              <CFormInput
+                                type="text"
+                                floatingLabel="Условия"
+                                placeholder={''}
+                                floatingClassName={'px-0'}
+                                value={banquet.deposit_message ? banquet.deposit_message : ''}
+                                onChange={handleDescriptionChange}
+                              />
+                            </CRow>
+                            <CRow>
+                              <CFormInput
+                                type="text"
+                                floatingLabel="Обслуживание, %"
+                                placeholder={''}
+                                floatingClassName={'px-0'}
+                                value={banquet.service_fee ? banquet.service_fee : ''}
+                                onChange={handleDescriptionChange}
+                              />
+                            </CRow>
+                          </CCardBody>
+                        </CCard>
+                      ))
+                    ) : (
+                      <strong>Вариантов нет</strong>
+                    )}
                   </div>
                 </CCardBody>
               </CCard>
