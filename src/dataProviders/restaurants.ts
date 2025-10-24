@@ -2,6 +2,7 @@ import axios from 'axios'
 import { BASEURL } from 'src/api.ts'
 import {
   IRestaurant,
+  IRestaurantBanquet,
   IRestaurantInfo,
   IRestaurantOptions,
   IRestaurantWCity,
@@ -190,6 +191,18 @@ export const SendRestaurantOptions = async (data: IRestaurantInfo, restaurant_id
   return await axios.post<IRestaurantInfo>(
     `${BASEURL}/restaurant-banquet/restaurant/${restaurant_id}`,
     { ...data, restaurant_id },
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+      },
+    },
+  )
+}
+
+export const SendBanquetsOptions = async (data: IRestaurantBanquet, banquet_id: number) => {
+  return await axios.put<IRestaurantBanquet>(
+    `${BASEURL}/banquet-options/banquet-options/${banquet_id}`,
+    { ...data, banquet_id },
     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('access_token')}`,

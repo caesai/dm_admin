@@ -48,7 +48,7 @@ export interface IRestaurantBanquet {
   guests_max: number
   guests_min: number
   service_fee: number
-  images: string | null
+  images: string[] | null
 }
 
 export interface IRestaurantAdditional {

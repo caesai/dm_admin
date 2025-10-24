@@ -12,10 +12,11 @@ import {
 } from '@coreui/react-pro'
 import { getRestaurantCity } from 'src/utils.tsx'
 import { ChangeEvent, useEffect, useMemo, useState } from 'react'
-import { IRestaurantOptions, IRestaurantWCity } from 'src/types/Restaurant.ts'
+import { IRestaurantBanquet, IRestaurantOptions, IRestaurantWCity } from 'src/types/Restaurant.ts'
 import {
   GetRestaurantList,
   GetRestaurantOptions,
+  SendBanquetsOptions,
   SendRestaurantOptions,
 } from 'src/dataProviders/restaurants.ts'
 import toast from 'react-hot-toast'
@@ -23,6 +24,8 @@ import classNames from 'classnames'
 import MediaInput from 'src/components/MediaInput.tsx'
 import TooltipInfo from 'src/components/TooltipInfo.tsx'
 import { uploadFile } from 'src/dataProviders/s3.ts'
+import CIcon from '@coreui/icons-react'
+import { cilArrowLeft, cilArrowRight, cilTrash } from '@coreui/icons'
 
 const BanquetsPage = () => {
   const [currentId, setCurrentId] = useState<number>(0)
@@ -82,6 +85,183 @@ const BanquetsPage = () => {
     }))
   }
 
+  const handleNameChange = (e: ChangeEvent<HTMLInputElement>, banquetId: number) => {
+    setCurrentRestaurant((prev) => {
+      if (!prev) return prev
+
+      const updatedBanquetOptions = prev.banquet_options.map((banquet) => {
+        if (banquet.id === banquetId) {
+          return {
+            ...banquet,
+            name: e.target.value,
+          }
+        }
+        return banquet
+      })
+
+      return {
+        ...prev,
+        banquet_options: updatedBanquetOptions,
+      }
+    })
+  }
+
+  const handleGuestsCountChange = (
+    e: ChangeEvent<HTMLInputElement>,
+    banquetId: number,
+    isMinGuests: boolean,
+  ) => {
+    setCurrentRestaurant((prev) => {
+      if (!prev) return prev
+
+      const updatedBanquetOptions = prev.banquet_options.map((banquet) => {
+        if (banquet.id === banquetId) {
+          if (isMinGuests) {
+            return {
+              ...banquet,
+              guests_min: Number(e.target.value),
+            }
+          } else {
+            return {
+              ...banquet,
+              guests_max: Number(e.target.value),
+            }
+          }
+        }
+        return banquet
+      })
+
+      return {
+        ...prev,
+        banquet_options: updatedBanquetOptions,
+      }
+    })
+  }
+
+  const handleDepositChange = (e: ChangeEvent<HTMLInputElement>, banquetId: number) => {
+    setCurrentRestaurant((prev) => {
+      if (!prev) return prev
+
+      const updatedBanquetOptions = prev.banquet_options.map((banquet) => {
+        if (banquet.id === banquetId) {
+          return {
+            ...banquet,
+            deposit: Number(e.target.value),
+          }
+        }
+        return banquet
+      })
+
+      return {
+        ...prev,
+        banquet_options: updatedBanquetOptions,
+      }
+    })
+  }
+
+  const handleDepositMessageChange = (e: ChangeEvent<HTMLInputElement>, banquetId: number) => {
+    setCurrentRestaurant((prev) => {
+      if (!prev) return prev
+
+      const updatedBanquetOptions = prev.banquet_options.map((banquet) => {
+        if (banquet.id === banquetId) {
+          return {
+            ...banquet,
+            deposit_message: e.target.value,
+          }
+        }
+        return banquet
+      })
+
+      return {
+        ...prev,
+        banquet_options: updatedBanquetOptions,
+      }
+    })
+  }
+
+  const handleServiceChange = (e: ChangeEvent<HTMLInputElement>, banquetId: number) => {
+    setCurrentRestaurant((prev: IRestaurantOptions | null) => {
+      if (!prev) return prev
+
+      const updatedBanquetOptions = prev.banquet_options.map((banquet) => {
+        if (banquet.id === banquetId) {
+          const value = Number(e.target.value)
+          return {
+            ...banquet,
+            service_fee: isNaN(value) ? 0 : value,
+          }
+        }
+        return banquet
+      })
+
+      return {
+        ...prev,
+        banquet_options: updatedBanquetOptions,
+      }
+    })
+  }
+
+  const handleImageMove = (banquetId: number, imgIndex: number, toTop: boolean) => {
+    setCurrentRestaurant((prev) => {
+      if (!prev) return prev
+
+      const updatedBanquetOptions = prev.banquet_options.map((banquet) => {
+        if (banquet.id === banquetId && banquet.images && banquet.images.length > 1) {
+          if (imgIndex === 0 && toTop) return banquet
+          if (imgIndex === banquet.images.length - 1 && !toTop) return banquet
+
+          const updatedImages = [...banquet.images]
+          if (toTop) {
+            ;[updatedImages[imgIndex - 1], updatedImages[imgIndex]] = [
+              updatedImages[imgIndex],
+              updatedImages[imgIndex - 1],
+            ]
+          } else {
+            ;[updatedImages[imgIndex], updatedImages[imgIndex + 1]] = [
+              updatedImages[imgIndex + 1],
+              updatedImages[imgIndex],
+            ]
+          }
+
+          return {
+            ...banquet,
+            images: updatedImages,
+          }
+        }
+        return banquet
+      })
+
+      return {
+        ...prev,
+        banquet_options: updatedBanquetOptions,
+      }
+    })
+  }
+
+  const handleImageDelete = (banquetId: number, imgIndex: number) => {
+    setCurrentRestaurant((prev) => {
+      if (!prev) return prev
+
+      const updatedBanquetOptions = prev.banquet_options.map((banquet) => {
+        if (banquet.id === banquetId) {
+          const updatedImages = banquet.images?.filter((_img, index) => index !== imgIndex) || []
+
+          return {
+            ...banquet,
+            images: updatedImages,
+          }
+        }
+        return banquet
+      })
+
+      return {
+        ...prev,
+        banquet_options: updatedBanquetOptions,
+      }
+    })
+  }
+
   const isBanquetsChanged = useMemo(() => {
     if (currentRestaurant === initRestaurant) return false
     if (!currentRestaurant || !initRestaurant) return true
@@ -92,7 +272,7 @@ const BanquetsPage = () => {
     )
   }, [currentRestaurant, initRestaurant])
 
-  const sendBanquetsOptions = () => {
+  const sendBanquetDetails = () => {
     if (!isBanquetsChanged) return
 
     SendRestaurantOptions(
@@ -102,7 +282,19 @@ const BanquetsPage = () => {
       },
       currentId,
     )
-      .then(() => toast.success('Блок обновлён'))
+      .then(() => {
+        toast.success('Блок обновлён')
+        getRestaurantData()
+      })
+      .catch(() => toast.error('Ошибка при сохранении'))
+  }
+
+  const sendBanquetOptions = (options: IRestaurantBanquet, banquet_id: number) => {
+    SendBanquetsOptions(options, banquet_id)
+      .then(() => {
+        toast.success('Блок обновлён')
+        getRestaurantData()
+      })
       .catch(() => toast.error('Ошибка при сохранении'))
   }
 
@@ -174,9 +366,9 @@ const BanquetsPage = () => {
                     </CRow>
                     <CRow>
                       <CButton
-                        color={'primary'}
+                        color="primary"
                         disabled={!isBanquetsChanged}
-                        onClick={sendBanquetsOptions}
+                        onClick={sendBanquetDetails}
                       >
                         Сохранить
                       </CButton>
@@ -191,8 +383,8 @@ const BanquetsPage = () => {
                 <CCardBody>
                   <div className={classNames('px-3', 'd-flex', 'flex-column', 'gap-3')}>
                     <CRow>
-                      <div style={{ width: 'fit-content' }}>
-                        <CButton color={'primary'}>Добавить вариант</CButton>
+                      <div>
+                        <CButton color="primary">Добавить вариант</CButton>
                       </div>
                     </CRow>
                     {currentRestaurant.banquet_options.length > 0 ? (
@@ -206,7 +398,7 @@ const BanquetsPage = () => {
                                 placeholder={''}
                                 floatingClassName={'px-0'}
                                 value={banquet.name ? banquet.name : ''}
-                                onChange={handleDescriptionChange}
+                                onChange={(event) => handleNameChange(event, banquet.id)}
                               />
                             </CRow>
                             <CRow>
@@ -216,7 +408,9 @@ const BanquetsPage = () => {
                                 placeholder={''}
                                 floatingClassName={'px-0'}
                                 value={banquet.guests_min ? banquet.guests_min : ''}
-                                onChange={handleDescriptionChange}
+                                onChange={(event) =>
+                                  handleGuestsCountChange(event, banquet.id, true)
+                                }
                               />
                             </CRow>
                             <CRow>
@@ -226,7 +420,9 @@ const BanquetsPage = () => {
                                 placeholder={''}
                                 floatingClassName={'px-0'}
                                 value={banquet.guests_max ? banquet.guests_max : ''}
-                                onChange={handleDescriptionChange}
+                                onChange={(event) =>
+                                  handleGuestsCountChange(event, banquet.id, false)
+                                }
                               />
                             </CRow>
                             <CRow>
@@ -236,7 +432,7 @@ const BanquetsPage = () => {
                                 placeholder={''}
                                 floatingClassName={'px-0'}
                                 value={banquet.deposit ? banquet.deposit : ''}
-                                onChange={handleDescriptionChange}
+                                onChange={(event) => handleDepositChange(event, banquet.id)}
                               />
                             </CRow>
                             <CRow>
@@ -246,7 +442,7 @@ const BanquetsPage = () => {
                                 placeholder={''}
                                 floatingClassName={'px-0'}
                                 value={banquet.deposit_message ? banquet.deposit_message : ''}
-                                onChange={handleDescriptionChange}
+                                onChange={(event) => handleDepositMessageChange(event, banquet.id)}
                               />
                             </CRow>
                             <CRow>
@@ -256,8 +452,92 @@ const BanquetsPage = () => {
                                 placeholder={''}
                                 floatingClassName={'px-0'}
                                 value={banquet.service_fee ? banquet.service_fee : ''}
-                                onChange={handleDescriptionChange}
+                                onChange={(event) => handleServiceChange(event, banquet.id)}
                               />
+                            </CRow>
+                            <CRow
+                              className={classNames('d-flex', 'flex-nowrap', 'overflow-x-scroll')}
+                            >
+                              {banquet.images?.map((img, index) => (
+                                <div
+                                  key={index}
+                                  className={classNames(
+                                    'd-flex',
+                                    'flex-column',
+                                    'align-items-center',
+                                    'gap-2',
+                                  )}
+                                  style={{ width: '250px' }}
+                                >
+                                  <img
+                                    src={img}
+                                    alt=""
+                                    className="rounded border"
+                                    style={{
+                                      width: '100%',
+                                      height: '250px',
+                                      objectFit: 'cover',
+                                    }}
+                                  />
+                                  <div className={classNames('d-flex', 'gap-1')}>
+                                    <CButton
+                                      color="primary"
+                                      size="sm"
+                                      className={classNames(
+                                        'd-flex',
+                                        'align-items-center',
+                                        'gap-1',
+                                      )}
+                                      onClick={() => handleImageMove(banquet.id, index, true)}
+                                    >
+                                      <CIcon icon={cilArrowLeft} />
+                                    </CButton>
+                                    <CButton
+                                      color="primary"
+                                      size="sm"
+                                      className={classNames(
+                                        'd-flex',
+                                        'align-items-center',
+                                        'gap-1',
+                                      )}
+                                      onClick={() => handleImageMove(banquet.id, index, false)}
+                                    >
+                                      <CIcon icon={cilArrowRight} />
+                                    </CButton>
+                                    <CButton
+                                      color="secondary"
+                                      size="sm"
+                                      className={classNames(
+                                        'd-flex',
+                                        'align-items-center',
+                                        'gap-1',
+                                      )}
+                                      onClick={() => handleImageDelete(banquet.id, index)}
+                                    >
+                                      <CIcon icon={cilTrash} />
+                                    </CButton>
+                                  </div>
+                                </div>
+                              ))}
+                            </CRow>
+                            <CRow className={'mt-4'}>
+                              <div>
+                                <CButton color="primary">Добавить изображение</CButton>
+                              </div>
+                            </CRow>
+                            <CRow className={'mt-4'}>
+                              <div className={classNames('d-flex', 'gap-2')}>
+                                <CButton
+                                  color="primary"
+                                  className={'w-100'}
+                                  onClick={() => sendBanquetOptions(banquet, banquet.id)}
+                                >
+                                  Сохранить
+                                </CButton>
+                                <CButton color="secondary" className={'w-100'}>
+                                  Удалить
+                                </CButton>
+                              </div>
                             </CRow>
                           </CCardBody>
                         </CCard>
