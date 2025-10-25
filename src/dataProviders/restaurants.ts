@@ -210,3 +210,11 @@ export const SendBanquetsOptions = async (data: IRestaurantBanquet, banquet_id: 
     },
   )
 }
+
+export const DeleteBanquetsOptions = async (banquet_id: number) => {
+  return await axios.delete(`${BASEURL}/banquet-options/banquet-options/${banquet_id}`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+    },
+  })
+}
