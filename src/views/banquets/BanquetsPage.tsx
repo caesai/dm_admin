@@ -11,7 +11,7 @@ import {
   CSpinner,
 } from '@coreui/react-pro'
 import { getRestaurantCity } from 'src/utils.tsx'
-import { ChangeEvent, useEffect, useMemo, useState } from 'react'
+import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react'
 import { IRestaurantBanquet, IRestaurantOptions, IRestaurantWCity } from 'src/types/Restaurant.ts'
 import {
   GetRestaurantList,
@@ -34,6 +34,8 @@ const BanquetsPage = () => {
   const [initRestaurant, setInitRestaurant] = useState<IRestaurantOptions | null>(null)
   const [canShowImage, setShowImage] = useState<boolean>(true)
   const [loader, setLoader] = useState<boolean>(false)
+
+  const imageRef = useRef<{ [banquet_id: number]: HTMLInputElement | null }>({})
 
   const loadRestaurants = async () => {
     const response = await GetRestaurantList()
@@ -236,6 +238,41 @@ const BanquetsPage = () => {
         ...prev,
         banquet_options: updatedBanquetOptions,
       }
+    })
+  }
+
+  const handleAddImageClick = (banquetId: number) => {
+    imageRef.current[banquetId]?.click()
+  }
+
+  const handleFileInputChange = (e: ChangeEvent<HTMLInputElement>, banquetId: number) => {
+    addNewImage(e.target.files, banquetId)
+    e.target.value = ''
+  }
+
+  const addNewImage = (files: FileList | null, banquetId: number) => {
+    if (!files) return
+
+    uploadFile(files[0]).then((res) => {
+      setCurrentRestaurant((prev) => {
+        if (!prev) return prev
+
+        const updatedBanquetOptions = prev.banquet_options.map((banquet) => {
+          if (banquet.id === banquetId) {
+            const currentImages = banquet.images || []
+            return {
+              ...banquet,
+              images: [...currentImages, res.data.url],
+            }
+          }
+          return banquet
+        })
+
+        return {
+          ...prev,
+          banquet_options: updatedBanquetOptions,
+        }
+      })
     })
   }
 
@@ -522,7 +559,23 @@ const BanquetsPage = () => {
                             </CRow>
                             <CRow className={'mt-4'}>
                               <div>
-                                <CButton color="primary">Добавить изображение</CButton>
+                                <input
+                                  type="file"
+                                  ref={(el) => {
+                                    if (el) {
+                                      imageRef.current[banquet.id] = el
+                                    }
+                                  }}
+                                  style={{ display: 'none' }}
+                                  onChange={(e) => handleFileInputChange(e, banquet.id)}
+                                  accept="image/*"
+                                />
+                                <CButton
+                                  color="primary"
+                                  onClick={() => handleAddImageClick(banquet.id)}
+                                >
+                                  Добавить изображение
+                                </CButton>
                               </div>
                             </CRow>
                             <CRow className={'mt-4'}>
