@@ -1,0 +1,307 @@
+import {
+  CButton,
+  CFormInput,
+  CLoadingButton,
+  CModal,
+  CModalBody,
+  CModalFooter,
+  CModalHeader,
+  CModalTitle,
+  CRow,
+} from '@coreui/react-pro'
+import { ChangeEvent, Dispatch, FC, SetStateAction, useRef, useState } from 'react'
+import classNames from 'classnames'
+import { IRestaurantBanquet } from 'src/types/Restaurant.ts'
+import { CreateBanquetOptions } from 'src/dataProviders/restaurants.ts'
+import { uploadFile } from 'src/dataProviders/s3.ts'
+import CIcon from '@coreui/icons-react'
+import { cilArrowLeft, cilArrowRight, cilTrash } from '@coreui/icons'
+
+const initBanquetOptions: IRestaurantBanquet = {
+  id: 0,
+  name: '',
+  deposit: 0,
+  deposit_message: null,
+  guests_max: 0,
+  guests_min: 0,
+  service_fee: 0,
+  images: [],
+}
+
+const CreateOptionsPopup: FC<{
+  popup: [boolean, Dispatch<SetStateAction<boolean>>]
+  restaurant_id: number
+  onCreate: () => void
+}> = ({ popup, restaurant_id, onCreate }) => {
+  const [visible, setVisible] = popup
+  const [isCreating, setCreating] = useState(false)
+  const [banquetOptions, setBanquetOptions] = useState<IRestaurantBanquet>(initBanquetOptions)
+
+  const imageRef = useRef<HTMLInputElement>(null)
+
+  const handleNameChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setBanquetOptions((prev) => ({
+      ...prev,
+      name: e.target.value,
+    }))
+  }
+
+  const handleGuestsCountChange = (e: ChangeEvent<HTMLInputElement>, minGuests: boolean) => {
+    const value = Number(e.target.value)
+    setBanquetOptions((prev) => {
+      if (minGuests) {
+        return {
+          ...prev,
+          guests_min: value,
+        }
+      } else {
+        return {
+          ...prev,
+          guests_max: value,
+        }
+      }
+    })
+  }
+
+  const handleDepositChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setBanquetOptions((prev) => ({
+      ...prev,
+      deposit: Number(e.target.value),
+    }))
+  }
+
+  const handleDepositMessageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setBanquetOptions((prev) => ({
+      ...prev,
+      deposit_message: e.target.value,
+    }))
+  }
+
+  const handleServiceFeeChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = parseFloat(e.target.value) || 0
+    setBanquetOptions((prev) => ({
+      ...prev,
+      service_fee: value,
+    }))
+  }
+
+  const handleAddImageClick = () => {
+    if (!imageRef.current) return
+    imageRef.current.click()
+  }
+
+  const handleFileInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    addNewImage(e.target.files)
+    if (e.target) {
+      e.target.value = ''
+    }
+  }
+
+  const addNewImage = (files: FileList | null) => {
+    if (!files || files.length === 0) return
+
+    uploadFile(files[0]).then((res) => {
+      if (res.data?.url) {
+        setBanquetOptions((prev) => ({
+          ...prev,
+          images: [...(prev.images || []), res.data.url],
+        }))
+      }
+    })
+  }
+
+  const handleImageMove = (imgIndex: number, toTop: boolean) => {
+    setBanquetOptions((prev) => {
+      const currentImages = prev.images || []
+      if (imgIndex === 0 && toTop) return prev
+      if (imgIndex === currentImages.length - 1 && !toTop) return prev
+
+      const updatedImages = [...currentImages]
+      if (toTop) {
+        ;[updatedImages[imgIndex - 1], updatedImages[imgIndex]] = [
+          updatedImages[imgIndex],
+          updatedImages[imgIndex - 1],
+        ]
+      } else {
+        ;[updatedImages[imgIndex], updatedImages[imgIndex + 1]] = [
+          updatedImages[imgIndex + 1],
+          updatedImages[imgIndex],
+        ]
+      }
+
+      return {
+        ...prev,
+        images: updatedImages,
+      }
+    })
+  }
+
+  const handleDeleteImage = (imgIndex: number) => {
+    setBanquetOptions((prev) => {
+      const updatedImages = (prev.images || []).filter((_img, index) => index !== imgIndex)
+      return {
+        ...prev,
+        images: updatedImages,
+      }
+    })
+  }
+
+  const handleSave = async () => {
+    try {
+      setCreating(true)
+      await CreateBanquetOptions(banquetOptions, restaurant_id)
+    } finally {
+      setCreating(false)
+      setVisible(false)
+      setBanquetOptions(initBanquetOptions)
+      onCreate()
+    }
+  }
+
+  const handleCancel = () => {
+    setVisible(false)
+    setBanquetOptions(initBanquetOptions)
+  }
+
+  return (
+    <CModal size="xl" alignment="center" visible={visible} onClose={handleCancel}>
+      <CModalHeader>
+        <CModalTitle>Добавление варианта рассадки</CModalTitle>
+      </CModalHeader>
+      <CModalBody>
+        <div className={classNames('d-flex', 'flex-column', 'gap-2', 'p-2')}>
+          <CRow>
+            <CFormInput
+              type="text"
+              floatingLabel="Название"
+              placeholder={''}
+              floatingClassName={'px-0'}
+              onChange={handleNameChange}
+              value={banquetOptions.name}
+            />
+          </CRow>
+          <CRow>
+            <CFormInput
+              type="number"
+              floatingLabel="Минимальное количество гостей"
+              placeholder={''}
+              floatingClassName={'px-0'}
+              onChange={(event) => handleGuestsCountChange(event, true)}
+              value={banquetOptions.guests_min || ''}
+            />
+          </CRow>
+          <CRow>
+            <CFormInput
+              type="number"
+              floatingLabel="Максимальное количество гостей"
+              placeholder={''}
+              floatingClassName={'px-0'}
+              onChange={(event) => handleGuestsCountChange(event, false)}
+              value={banquetOptions.guests_max || ''}
+            />
+          </CRow>
+          <CRow>
+            <CFormInput
+              type="number"
+              floatingLabel="Депозит"
+              placeholder={''}
+              floatingClassName={'px-0'}
+              onChange={handleDepositChange}
+              value={banquetOptions.deposit || ''}
+            />
+          </CRow>
+          <CRow>
+            <CFormInput
+              type="text"
+              floatingLabel="Условия"
+              placeholder={''}
+              floatingClassName={'px-0'}
+              onChange={handleDepositMessageChange}
+              value={banquetOptions.deposit_message || ''}
+            />
+          </CRow>
+          <CRow>
+            <CFormInput
+              type="number"
+              floatingLabel="Обслуживание, %"
+              placeholder={''}
+              floatingClassName={'px-0'}
+              onChange={handleServiceFeeChange}
+              value={banquetOptions.service_fee || ''}
+            />
+          </CRow>
+          <CRow className={classNames('d-flex', 'flex-nowrap', 'overflow-x-scroll')}>
+            {(banquetOptions.images || []).map((img, index) => (
+              <div
+                key={index}
+                className={classNames('d-flex', 'flex-column', 'align-items-center', 'gap-2')}
+                style={{ width: '250px' }}
+              >
+                <img
+                  src={img}
+                  alt=""
+                  className="rounded border"
+                  style={{
+                    width: '100%',
+                    height: '250px',
+                    objectFit: 'cover',
+                  }}
+                />
+                <div className={classNames('d-flex', 'gap-1')}>
+                  <CButton
+                    color="primary"
+                    size="sm"
+                    className={classNames('d-flex', 'align-items-center', 'gap-1')}
+                    onClick={() => handleImageMove(index, true)}
+                  >
+                    <CIcon icon={cilArrowLeft} />
+                  </CButton>
+                  <CButton
+                    color="primary"
+                    size="sm"
+                    className={classNames('d-flex', 'align-items-center', 'gap-1')}
+                    onClick={() => handleImageMove(index, false)}
+                  >
+                    <CIcon icon={cilArrowRight} />
+                  </CButton>
+                  <CButton
+                    color="secondary"
+                    size="sm"
+                    className={classNames('d-flex', 'align-items-center', 'gap-1')}
+                    onClick={() => handleDeleteImage(index)}
+                  >
+                    <CIcon icon={cilTrash} />
+                  </CButton>
+                </div>
+              </div>
+            ))}
+          </CRow>
+          <CRow className={'mt-4'}>
+            <div style={{ marginLeft: '-12px' }}>
+              <input
+                type="file"
+                ref={imageRef}
+                style={{ display: 'none' }}
+                onChange={handleFileInputChange}
+                accept="image/*"
+              />
+              <CButton color="primary" onClick={handleAddImageClick}>
+                Добавить изображение
+              </CButton>
+            </div>
+          </CRow>
+        </div>
+      </CModalBody>
+      <CModalFooter>
+        <CButton color="secondary" onClick={handleCancel}>
+          Отменить
+        </CButton>
+        <CLoadingButton color="primary" loading={isCreating} onClick={handleSave}>
+          Сохранить
+        </CLoadingButton>
+      </CModalFooter>
+    </CModal>
+  )
+}
+
+export default CreateOptionsPopup

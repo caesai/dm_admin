@@ -9,7 +9,7 @@ import {
 import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { DeleteBanquetsOptions } from 'src/dataProviders/restaurants.ts'
 
-const ConfirmBanquetDelete: FC<{
+const ConfirmDeletePopup: FC<{
   banquet_id: [number | null, Dispatch<SetStateAction<number | null>>]
   onDelete: () => void
 }> = ({ banquet_id, onDelete }) => {
@@ -49,4 +49,4 @@ const ConfirmBanquetDelete: FC<{
   )
 }
 
-export default ConfirmBanquetDelete
+export default ConfirmDeletePopup

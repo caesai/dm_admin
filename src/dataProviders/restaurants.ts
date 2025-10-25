@@ -187,6 +187,18 @@ export const EditWorktime = async (worktime: IWorktime) => {
   })
 }
 
+export const CreateBanquetOptions = async (data: IRestaurantBanquet, restaurant_id: number) => {
+  return await axios.post<IRestaurantBanquet>(
+    `${BASEURL}/banquet-options/restaurant/${restaurant_id}/banquet-options`,
+    { ...data, restaurant_id },
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+      },
+    },
+  )
+}
+
 export const SendRestaurantOptions = async (data: IRestaurantInfo, restaurant_id: number) => {
   return await axios.post<IRestaurantInfo>(
     `${BASEURL}/restaurant-banquet/restaurant/${restaurant_id}`,

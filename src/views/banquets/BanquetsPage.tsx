@@ -26,7 +26,8 @@ import TooltipInfo from 'src/components/TooltipInfo.tsx'
 import { uploadFile } from 'src/dataProviders/s3.ts'
 import CIcon from '@coreui/icons-react'
 import { cilArrowLeft, cilArrowRight, cilTrash } from '@coreui/icons'
-import ConfirmBanquetDelete from 'src/views/banquets/ConfirmBanquetDelete.tsx'
+import ConfirmDeletePopup from 'src/views/banquets/popups/ConfirmDeletePopup.tsx'
+import CreateOptionsPopup from 'src/views/banquets/popups/CreateOptionsPopup.tsx'
 
 const BanquetsPage = () => {
   const [currentId, setCurrentId] = useState<number>(0)
@@ -35,6 +36,7 @@ const BanquetsPage = () => {
   const [initRestaurant, setInitRestaurant] = useState<IRestaurantOptions | null>(null)
   const [canShowImage, setShowImage] = useState<boolean>(true)
   const [currentBanquetId, setCurrentBanquetId] = useState<number | null>(null)
+  const [popup, setPopup] = useState<boolean>(false)
   const [loader, setLoader] = useState<boolean>(false)
 
   const imageRef = useRef<{ [banquet_id: number]: HTMLInputElement | null }>({})
@@ -347,7 +349,12 @@ const BanquetsPage = () => {
 
   return (
     <>
-      <ConfirmBanquetDelete
+      <CreateOptionsPopup
+        popup={[popup, setPopup]}
+        restaurant_id={currentId}
+        onCreate={getRestaurantData}
+      />
+      <ConfirmDeletePopup
         banquet_id={[currentBanquetId, setCurrentBanquetId]}
         onDelete={getRestaurantData}
       />
@@ -428,7 +435,9 @@ const BanquetsPage = () => {
                     <div className={classNames('px-3', 'd-flex', 'flex-column', 'gap-3')}>
                       <CRow>
                         <div>
-                          <CButton color="primary">Добавить вариант</CButton>
+                          <CButton color="primary" onClick={() => setPopup(true)}>
+                            Добавить вариант
+                          </CButton>
                         </div>
                       </CRow>
                       {currentRestaurant.banquet_options.length > 0 ? (
