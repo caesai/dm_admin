@@ -85,6 +85,14 @@ const CreateOptionsPopup: FC<{
     }))
   }
 
+  const handleDurationFeeChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = parseFloat(e.target.value) || 0
+    setBanquetOptions((prev) => ({
+      ...prev,
+      max_duration: value,
+    }))
+  }
+
   const handleAddImageClick = () => {
     if (!imageRef.current) return
     imageRef.current.click()
@@ -182,7 +190,7 @@ const CreateOptionsPopup: FC<{
           </CRow>
           <CRow>
             <CFormInput
-              type="number"
+              type="text"
               floatingLabel="Минимальное количество гостей"
               placeholder={''}
               floatingClassName={'px-0'}
@@ -192,7 +200,7 @@ const CreateOptionsPopup: FC<{
           </CRow>
           <CRow>
             <CFormInput
-              type="number"
+              type="text"
               floatingLabel="Максимальное количество гостей"
               placeholder={''}
               floatingClassName={'px-0'}
@@ -202,7 +210,7 @@ const CreateOptionsPopup: FC<{
           </CRow>
           <CRow>
             <CFormInput
-              type="number"
+              type="text"
               floatingLabel="Депозит"
               placeholder={''}
               floatingClassName={'px-0'}
@@ -222,12 +230,22 @@ const CreateOptionsPopup: FC<{
           </CRow>
           <CRow>
             <CFormInput
-              type="number"
+              type="text"
               floatingLabel="Обслуживание, %"
               placeholder={''}
               floatingClassName={'px-0'}
               onChange={handleServiceFeeChange}
               value={banquetOptions.service_fee || ''}
+            />
+          </CRow>
+          <CRow>
+            <CFormInput
+              type="text"
+              floatingLabel="Максимальная длительность, ч"
+              placeholder={''}
+              floatingClassName={'px-0'}
+              onChange={handleDurationFeeChange}
+              value={banquetOptions.max_duration || ''}
             />
           </CRow>
           <CRow className={classNames('d-flex', 'flex-nowrap', 'overflow-x-scroll')}>

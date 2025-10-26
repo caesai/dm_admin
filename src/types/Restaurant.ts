@@ -48,6 +48,7 @@ export interface IRestaurantBanquet {
   guests_max: number
   guests_min: number
   service_fee: number
+  max_duration?: number | null
   images: string[] | null
 }
 

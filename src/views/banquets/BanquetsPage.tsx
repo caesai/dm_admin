@@ -208,6 +208,28 @@ const BanquetsPage = () => {
     })
   }
 
+  const handleDurationFeeChange = (e: ChangeEvent<HTMLInputElement>, banquetId: number) => {
+    setCurrentRestaurant((prev: IRestaurantOptions | null) => {
+      if (!prev) return prev
+
+      const updatedBanquetOptions = prev.banquet_options.map((banquet) => {
+        if (banquet.id === banquetId) {
+          const value = Number(e.target.value)
+          return {
+            ...banquet,
+            max_duration: isNaN(value) ? 0 : value,
+          }
+        }
+        return banquet
+      })
+
+      return {
+        ...prev,
+        banquet_options: updatedBanquetOptions,
+      }
+    })
+  }
+
   const handleImageMove = (banquetId: number, imgIndex: number, toTop: boolean) => {
     setCurrentRestaurant((prev) => {
       if (!prev) return prev
@@ -442,7 +464,7 @@ const BanquetsPage = () => {
                       </CRow>
                       {currentRestaurant.banquet_options.length > 0 ? (
                         currentRestaurant.banquet_options.map((banquet) => (
-                          <CCard className={classNames('border-0')} key={banquet.id}>
+                          <CCard className="p-2" key={banquet.id}>
                             <CCardBody className={classNames('d-flex', 'flex-column', 'gap-2')}>
                               <CRow>
                                 <CFormInput
@@ -508,6 +530,16 @@ const BanquetsPage = () => {
                                   floatingClassName={'px-0'}
                                   value={banquet.service_fee ? banquet.service_fee : ''}
                                   onChange={(event) => handleServiceChange(event, banquet.id)}
+                                />
+                              </CRow>
+                              <CRow>
+                                <CFormInput
+                                  type="text"
+                                  floatingLabel="Максимальная длительность, ч"
+                                  placeholder={''}
+                                  floatingClassName={'px-0'}
+                                  value={banquet.max_duration ? banquet.max_duration : ''}
+                                  onChange={(event) => handleDurationFeeChange(event, banquet.id)}
                                 />
                               </CRow>
                               <CRow
