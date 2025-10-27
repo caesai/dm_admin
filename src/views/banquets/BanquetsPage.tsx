@@ -16,26 +16,19 @@ import { IRestaurantBanquet, IRestaurantOptions, IRestaurantWCity } from 'src/ty
 import { GetRestaurantList } from 'src/dataProviders/restaurants.ts'
 import toast from 'react-hot-toast'
 import classNames from 'classnames'
-import MediaInput from 'src/components/MediaInput.tsx'
-import TooltipInfo from 'src/components/TooltipInfo.tsx'
 import { uploadFile } from 'src/dataProviders/s3.ts'
 import CIcon from '@coreui/icons-react'
 import { cilArrowLeft, cilArrowRight, cilTrash } from '@coreui/icons'
 import ConfirmDeletePopup from 'src/views/banquets/popups/ConfirmDeletePopup.tsx'
 import CreateOptionsPopup from 'src/views/banquets/popups/CreateOptionsPopup.tsx'
 import AdditionalOptions from 'src/views/banquets/blocks/AdditionalOptions.tsx'
-import {
-  GetRestaurantOptions,
-  SendBanquetsOptions,
-  SendRestaurantOptions,
-} from 'src/dataProviders/banquets.ts'
+import { GetRestaurantOptions, SendBanquetsOptions } from 'src/dataProviders/banquets.ts'
+import BanquetInfo from 'src/views/banquets/blocks/BanquetInfo.tsx'
 
 const BanquetsPage = () => {
   const [currentId, setCurrentId] = useState<number>(0)
   const [restaurants, setRestaurants] = useState<IRestaurantWCity[]>([])
   const [currentRestaurant, setCurrentRestaurant] = useState<IRestaurantOptions | null>(null)
-  const [canShowImage, setShowImage] = useState<boolean>(true)
-  const [isChangedRestaurant, setIsChangedRestaurant] = useState<boolean>(false)
   const [changedBanquets, setChangedBanquets] = useState<{ [banquet_id: number]: boolean }>({})
   const [currentBanquetId, setCurrentBanquetId] = useState<number | null>(null)
   const [popup, setPopup] = useState<boolean>(false)
@@ -63,36 +56,6 @@ const BanquetsPage = () => {
         setLoader(false)
       })
       .catch(() => toast.error('Не удалось загрузить данные о ресторане'))
-  }
-
-  const handleImageChange = (files: FileList | null) => {
-    if (!files) return
-
-    uploadFile(files[0]).then((res) => {
-      setCurrentRestaurant((prev) => ({
-        ...prev!,
-        image: res.data.url,
-      }))
-      setShowImage(true)
-    })
-    setIsChangedRestaurant(true)
-  }
-
-  const handleImageUrlChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setShowImage(false)
-    setCurrentRestaurant((prev) => ({
-      ...prev!,
-      image: e.target.value,
-    }))
-    setIsChangedRestaurant(true)
-  }
-
-  const handleDescriptionChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setCurrentRestaurant((prev) => ({
-      ...prev!,
-      description: e.target.value,
-    }))
-    setIsChangedRestaurant(true)
   }
 
   const handleNameChange = (e: ChangeEvent<HTMLInputElement>, banquetId: number) => {
@@ -376,22 +339,6 @@ const BanquetsPage = () => {
     return true
   }
 
-  const sendBanquetDetails = () => {
-    SendRestaurantOptions(
-      {
-        description: currentRestaurant?.description ? currentRestaurant?.description : null,
-        image: currentRestaurant?.image ? currentRestaurant?.image : null,
-      },
-      currentId,
-    )
-      .then(() => {
-        toast.success('Блок обновлён')
-        setIsChangedRestaurant(false)
-        getRestaurantData()
-      })
-      .catch(() => toast.error('Ошибка при сохранении'))
-  }
-
   const sendBanquetOptions = (options: IRestaurantBanquet, banquet_id: number) => {
     if (!changedBanquets[banquet_id]) return
     if (!checkBanquetRequired(options)) return
@@ -443,55 +390,11 @@ const BanquetsPage = () => {
           ) : (
             currentRestaurant !== null && (
               <CCardGroup className={classNames('d-flex', 'flex-column', 'gap-4')}>
-                <CCard>
-                  <CCardHeader>
-                    <CCardTitle>Блок Банкеты на странице ресторана</CCardTitle>
-                  </CCardHeader>
-                  <CCardBody>
-                    <div className={classNames('px-3', 'd-flex', 'flex-column', 'gap-3')}>
-                      <CRow>
-                        {currentRestaurant.image !== null && canShowImage && (
-                          <img
-                            src={currentRestaurant.image}
-                            alt=""
-                            style={{ width: '250px', height: '250px' }}
-                          />
-                        )}
-                      </CRow>
-                      <CRow>
-                        <div className="d-flex align-items-center gap-2 p-0">
-                          <CFormInput
-                            type="text"
-                            placeholder="Обложка блока Банкеты"
-                            value={currentRestaurant.image === null ? '' : currentRestaurant.image}
-                            onInput={handleImageUrlChange}
-                          />
-                          <MediaInput onChange={(e) => handleImageChange(e.target.files)} />
-                          <TooltipInfo content="Текст тултипа" />
-                        </div>
-                      </CRow>
-                      <CRow>
-                        <CFormInput
-                          type="text"
-                          floatingLabel="Описание"
-                          placeholder={''}
-                          floatingClassName={'px-0'}
-                          value={currentRestaurant.description ? currentRestaurant.description : ''}
-                          onChange={handleDescriptionChange}
-                        />
-                      </CRow>
-                      <CRow>
-                        <CButton
-                          color="primary"
-                          disabled={!isChangedRestaurant}
-                          onClick={sendBanquetDetails}
-                        >
-                          Сохранить
-                        </CButton>
-                      </CRow>
-                    </div>
-                  </CCardBody>
-                </CCard>
+                <BanquetInfo
+                  restaurant={[currentRestaurant, setCurrentRestaurant]}
+                  currentId={currentId}
+                  onUpdate={getRestaurantData}
+                />
                 <CCard className={classNames('border', 'rounded')}>
                   <CCardHeader>
                     <CCardTitle>Варианты рассадки</CCardTitle>
