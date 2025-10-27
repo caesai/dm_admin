@@ -13,12 +13,7 @@ import {
 import { getRestaurantCity } from 'src/utils.tsx'
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { IRestaurantBanquet, IRestaurantOptions, IRestaurantWCity } from 'src/types/Restaurant.ts'
-import {
-  GetRestaurantList,
-  GetRestaurantOptions,
-  SendBanquetsOptions,
-  SendRestaurantOptions,
-} from 'src/dataProviders/restaurants.ts'
+import { GetRestaurantList } from 'src/dataProviders/restaurants.ts'
 import toast from 'react-hot-toast'
 import classNames from 'classnames'
 import MediaInput from 'src/components/MediaInput.tsx'
@@ -28,6 +23,12 @@ import CIcon from '@coreui/icons-react'
 import { cilArrowLeft, cilArrowRight, cilTrash } from '@coreui/icons'
 import ConfirmDeletePopup from 'src/views/banquets/popups/ConfirmDeletePopup.tsx'
 import CreateOptionsPopup from 'src/views/banquets/popups/CreateOptionsPopup.tsx'
+import AdditionalOptions from 'src/views/banquets/blocks/AdditionalOptions.tsx'
+import {
+  GetRestaurantOptions,
+  SendBanquetsOptions,
+  SendRestaurantOptions,
+} from 'src/dataProviders/banquets.ts'
 
 const BanquetsPage = () => {
   const [currentId, setCurrentId] = useState<number>(0)
@@ -698,6 +699,11 @@ const BanquetsPage = () => {
                     </div>
                   </CCardBody>
                 </CCard>
+                <AdditionalOptions
+                  restaurant_id={currentId}
+                  options={currentRestaurant.additional_options}
+                  onSave={getRestaurantData}
+                />
               </CCardGroup>
             )
           )}

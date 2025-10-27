@@ -12,11 +12,11 @@ import {
 import { ChangeEvent, Dispatch, FC, SetStateAction, useRef, useState } from 'react'
 import classNames from 'classnames'
 import { IRestaurantBanquet } from 'src/types/Restaurant.ts'
-import { CreateBanquetOptions } from 'src/dataProviders/restaurants.ts'
 import { uploadFile } from 'src/dataProviders/s3.ts'
 import CIcon from '@coreui/icons-react'
 import { cilArrowLeft, cilArrowRight, cilTrash } from '@coreui/icons'
 import toast from 'react-hot-toast'
+import { CreateBanquetOptions } from 'src/dataProviders/banquets.ts'
 
 const initBanquetOptions: IRestaurantBanquet = {
   id: 0,

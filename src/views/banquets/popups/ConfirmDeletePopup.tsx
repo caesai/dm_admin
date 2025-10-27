@@ -7,7 +7,7 @@ import {
   CModalTitle,
 } from '@coreui/react-pro'
 import { Dispatch, FC, SetStateAction, useState } from 'react'
-import { DeleteBanquetsOptions } from 'src/dataProviders/restaurants.ts'
+import { DeleteBanquetsOptions } from 'src/dataProviders/banquets.ts'
 
 const ConfirmDeletePopup: FC<{
   banquet_id: [number | null, Dispatch<SetStateAction<number | null>>]

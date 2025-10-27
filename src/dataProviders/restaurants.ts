@@ -1,12 +1,6 @@
 import axios from 'axios'
 import { BASEURL } from 'src/api.ts'
-import {
-  IRestaurant,
-  IRestaurantBanquet,
-  IRestaurantInfo,
-  IRestaurantOptions,
-  IRestaurantWCity,
-} from 'src/types/Restaurant.ts'
+import { IRestaurant, IRestaurantWCity } from 'src/types/Restaurant.ts'
 import { IPhotoCard } from 'src/types/Gallery.ts'
 import { IMenu, IMenuImg } from 'src/types/Menu.ts'
 import { IWorktime } from 'src/types/Worktime.ts'
@@ -22,14 +16,6 @@ export const GetRestaurantList = async () => {
 
 export const GetRestaurant = async (id: number) => {
   return await axios.get<IRestaurant>(`${BASEURL}/restaurants/${id}`, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-    },
-  })
-}
-
-export const GetRestaurantOptions = async (id: number) => {
-  return await axios.get<IRestaurantOptions>(`${BASEURL}/banquet-options/restaurant/${id}`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },
@@ -181,50 +167,6 @@ export const DeleteSocialLink = async (social: ISocial) => {
 
 export const EditWorktime = async (worktime: IWorktime) => {
   return await axios.patch<IWorktime>(`${BASEURL}/workhours`, worktime, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-    },
-  })
-}
-
-export const CreateBanquetOptions = async (data: IRestaurantBanquet, restaurant_id: number) => {
-  return await axios.post<IRestaurantBanquet>(
-    `${BASEURL}/banquet-options/restaurant/${restaurant_id}/banquet-options`,
-    { ...data, restaurant_id },
-    {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-      },
-    },
-  )
-}
-
-export const SendRestaurantOptions = async (data: IRestaurantInfo, restaurant_id: number) => {
-  return await axios.post<IRestaurantInfo>(
-    `${BASEURL}/restaurant-banquet/restaurant/${restaurant_id}`,
-    { ...data, restaurant_id },
-    {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-      },
-    },
-  )
-}
-
-export const SendBanquetsOptions = async (data: IRestaurantBanquet, banquet_id: number) => {
-  return await axios.put<IRestaurantBanquet>(
-    `${BASEURL}/banquet-options/banquet-options/${banquet_id}`,
-    { ...data, banquet_id },
-    {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-      },
-    },
-  )
-}
-
-export const DeleteBanquetsOptions = async (banquet_id: number) => {
-  return await axios.delete(`${BASEURL}/banquet-options/banquet-options/${banquet_id}`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },
