@@ -223,28 +223,30 @@ const PlacementVariants: FC<{
   const addNewImage = (files: FileList | null, banquetId: number) => {
     if (!files) return
 
-    uploadFile(files[0]).then((res) => {
-      setCurrentRestaurant((prev) => {
-        if (!prev) return prev
-
-        const updatedBanquetOptions = prev.banquet_options.map((banquet) => {
-          if (banquet.id === banquetId) {
-            const currentImages = banquet.images || []
-            return {
-              ...banquet,
-              images: [...currentImages, res.data.url],
+    uploadFile(files[0])
+      .then((res) => {
+        setCurrentRestaurant((prev) => {
+          if (!prev) return prev
+          const updatedBanquetOptions = prev.banquet_options.map((banquet) => {
+            if (banquet.id === banquetId) {
+              const currentImages = banquet.images || []
+              return {
+                ...banquet,
+                images: [...currentImages, res.data.url],
+              }
             }
+            return banquet
+          })
+          return {
+            ...prev,
+            banquet_options: updatedBanquetOptions,
           }
-          return banquet
         })
-
-        return {
-          ...prev,
-          banquet_options: updatedBanquetOptions,
-        }
+        updateBanquetChangedStatus(banquetId)
       })
-    })
-    updateBanquetChangedStatus(banquetId)
+      .catch(() => {
+        toast.error('Что-то пошло не так')
+      })
   }
 
   const handleImageDelete = (banquetId: number, imgIndex: number) => {

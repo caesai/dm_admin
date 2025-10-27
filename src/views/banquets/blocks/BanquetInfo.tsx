@@ -28,13 +28,17 @@ const BanquetInfo: FC<{
   const handleImageChange = (files: FileList | null) => {
     if (!files) return
 
-    uploadFile(files[0]).then((res) => {
-      setCurrentRestaurant((prev) => ({
-        ...prev!,
-        image: res.data.url,
-      }))
-      setShowImage(true)
-    })
+    uploadFile(files[0])
+      .then((res) => {
+        setCurrentRestaurant((prev) => ({
+          ...prev!,
+          image: res.data.url,
+        }))
+        setShowImage(true)
+      })
+      .catch(() => {
+        toast.error('Что-то пошло не так')
+      })
     setIsChangedRestaurant(true)
   }
 

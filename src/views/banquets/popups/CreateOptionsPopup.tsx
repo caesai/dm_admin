@@ -109,14 +109,18 @@ const CreateOptionsPopup: FC<{
   const addNewImage = (files: FileList | null) => {
     if (!files || files.length === 0) return
 
-    uploadFile(files[0]).then((res) => {
-      if (res.data?.url) {
-        setBanquetOptions((prev) => ({
-          ...prev,
-          images: [...(prev.images || []), res.data.url],
-        }))
-      }
-    })
+    uploadFile(files[0])
+      .then((res) => {
+        if (res.data?.url) {
+          setBanquetOptions((prev) => ({
+            ...prev,
+            images: [...(prev.images || []), res.data.url],
+          }))
+        }
+      })
+      .catch(() => {
+        toast.error('Что-то пошло не так')
+      })
   }
 
   const handleImageMove = (imgIndex: number, toTop: boolean) => {
