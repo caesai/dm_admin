@@ -16,6 +16,7 @@ import { CreateBanquetOptions } from 'src/dataProviders/restaurants.ts'
 import { uploadFile } from 'src/dataProviders/s3.ts'
 import CIcon from '@coreui/icons-react'
 import { cilArrowLeft, cilArrowRight, cilTrash } from '@coreui/icons'
+import toast from 'react-hot-toast'
 
 const initBanquetOptions: IRestaurantBanquet = {
   id: 0,
@@ -154,7 +155,40 @@ const CreateOptionsPopup: FC<{
     })
   }
 
+  const checkRequiredFields = () => {
+    if (banquetOptions.name === '') {
+      toast.error('Поле Название должно быть заполнено')
+      return false
+    }
+    if (banquetOptions.guests_min === 0) {
+      toast.error('Поле Минимальное количество гостей должно быть заполнено')
+      return false
+    }
+    if (banquetOptions.guests_max === 0) {
+      toast.error('Поле Максимальное количество гостей должно быть заполнено')
+      return false
+    }
+    if (
+      banquetOptions.deposit === 0 &&
+      (banquetOptions.deposit_message === '' || !banquetOptions.deposit_message)
+    ) {
+      toast.error('Одно из полей Депозит либо Условия должно быть обязательно заполнено')
+      return false
+    }
+    if (banquetOptions.service_fee === 0) {
+      toast.error('Поле Обслуживание должно быть заполнено')
+      return false
+    }
+    if (!banquetOptions.images || banquetOptions.images.length === 0) {
+      toast.error('Должно быть добавлено минимум одно изображение')
+      return false
+    }
+
+    return true
+  }
+
   const handleSave = async () => {
+    if (!checkRequiredFields()) return
     try {
       setCreating(true)
       await CreateBanquetOptions(banquetOptions, restaurant_id)
@@ -181,7 +215,7 @@ const CreateOptionsPopup: FC<{
           <CRow>
             <CFormInput
               type="text"
-              floatingLabel="Название"
+              floatingLabel="Название *"
               placeholder={''}
               floatingClassName={'px-0'}
               onChange={handleNameChange}
@@ -191,7 +225,7 @@ const CreateOptionsPopup: FC<{
           <CRow>
             <CFormInput
               type="text"
-              floatingLabel="Минимальное количество гостей"
+              floatingLabel="Минимальное количество гостей *"
               placeholder={''}
               floatingClassName={'px-0'}
               onChange={(event) => handleGuestsCountChange(event, true)}
@@ -201,7 +235,7 @@ const CreateOptionsPopup: FC<{
           <CRow>
             <CFormInput
               type="text"
-              floatingLabel="Максимальное количество гостей"
+              floatingLabel="Максимальное количество гостей *"
               placeholder={''}
               floatingClassName={'px-0'}
               onChange={(event) => handleGuestsCountChange(event, false)}
@@ -231,7 +265,7 @@ const CreateOptionsPopup: FC<{
           <CRow>
             <CFormInput
               type="text"
-              floatingLabel="Обслуживание, %"
+              floatingLabel="Обслуживание, % *"
               placeholder={''}
               floatingClassName={'px-0'}
               onChange={handleServiceFeeChange}

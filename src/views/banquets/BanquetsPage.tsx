@@ -11,7 +11,7 @@ import {
   CSpinner,
 } from '@coreui/react-pro'
 import { getRestaurantCity } from 'src/utils.tsx'
-import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react'
+import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { IRestaurantBanquet, IRestaurantOptions, IRestaurantWCity } from 'src/types/Restaurant.ts'
 import {
   GetRestaurantList,
@@ -33,8 +33,9 @@ const BanquetsPage = () => {
   const [currentId, setCurrentId] = useState<number>(0)
   const [restaurants, setRestaurants] = useState<IRestaurantWCity[]>([])
   const [currentRestaurant, setCurrentRestaurant] = useState<IRestaurantOptions | null>(null)
-  const [initRestaurant, setInitRestaurant] = useState<IRestaurantOptions | null>(null)
   const [canShowImage, setShowImage] = useState<boolean>(true)
+  const [isChangedRestaurant, setIsChangedRestaurant] = useState<boolean>(false)
+  const [changedBanquets, setChangedBanquets] = useState<{ [banquet_id: number]: boolean }>({})
   const [currentBanquetId, setCurrentBanquetId] = useState<number | null>(null)
   const [popup, setPopup] = useState<boolean>(false)
   const [loader, setLoader] = useState<boolean>(false)
@@ -58,7 +59,6 @@ const BanquetsPage = () => {
     GetRestaurantOptions(currentId)
       .then((res) => {
         setCurrentRestaurant(res.data)
-        setInitRestaurant(res.data)
         setLoader(false)
       })
       .catch(() => toast.error('Не удалось загрузить данные о ресторане'))
@@ -74,6 +74,7 @@ const BanquetsPage = () => {
       }))
       setShowImage(true)
     })
+    setIsChangedRestaurant(true)
   }
 
   const handleImageUrlChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -82,6 +83,7 @@ const BanquetsPage = () => {
       ...prev!,
       image: e.target.value,
     }))
+    setIsChangedRestaurant(true)
   }
 
   const handleDescriptionChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -89,6 +91,7 @@ const BanquetsPage = () => {
       ...prev!,
       description: e.target.value,
     }))
+    setIsChangedRestaurant(true)
   }
 
   const handleNameChange = (e: ChangeEvent<HTMLInputElement>, banquetId: number) => {
@@ -110,6 +113,7 @@ const BanquetsPage = () => {
         banquet_options: updatedBanquetOptions,
       }
     })
+    updateBanquetChangedStatus(banquetId)
   }
 
   const handleGuestsCountChange = (
@@ -142,6 +146,7 @@ const BanquetsPage = () => {
         banquet_options: updatedBanquetOptions,
       }
     })
+    updateBanquetChangedStatus(banquetId)
   }
 
   const handleDepositChange = (e: ChangeEvent<HTMLInputElement>, banquetId: number) => {
@@ -163,6 +168,7 @@ const BanquetsPage = () => {
         banquet_options: updatedBanquetOptions,
       }
     })
+    updateBanquetChangedStatus(banquetId)
   }
 
   const handleDepositMessageChange = (e: ChangeEvent<HTMLInputElement>, banquetId: number) => {
@@ -184,6 +190,7 @@ const BanquetsPage = () => {
         banquet_options: updatedBanquetOptions,
       }
     })
+    updateBanquetChangedStatus(banquetId)
   }
 
   const handleServiceChange = (e: ChangeEvent<HTMLInputElement>, banquetId: number) => {
@@ -206,6 +213,7 @@ const BanquetsPage = () => {
         banquet_options: updatedBanquetOptions,
       }
     })
+    updateBanquetChangedStatus(banquetId)
   }
 
   const handleDurationFeeChange = (e: ChangeEvent<HTMLInputElement>, banquetId: number) => {
@@ -228,6 +236,7 @@ const BanquetsPage = () => {
         banquet_options: updatedBanquetOptions,
       }
     })
+    updateBanquetChangedStatus(banquetId)
   }
 
   const handleImageMove = (banquetId: number, imgIndex: number, toTop: boolean) => {
@@ -251,6 +260,8 @@ const BanquetsPage = () => {
               updatedImages[imgIndex],
             ]
           }
+
+          updateBanquetChangedStatus(banquetId)
 
           return {
             ...banquet,
@@ -300,6 +311,7 @@ const BanquetsPage = () => {
         }
       })
     })
+    updateBanquetChangedStatus(banquetId)
   }
 
   const handleImageDelete = (banquetId: number, imgIndex: number) => {
@@ -323,21 +335,47 @@ const BanquetsPage = () => {
         banquet_options: updatedBanquetOptions,
       }
     })
+    updateBanquetChangedStatus(banquetId)
   }
 
-  const isBanquetsChanged = useMemo(() => {
-    if (currentRestaurant === initRestaurant) return false
-    if (!currentRestaurant || !initRestaurant) return true
+  const updateBanquetChangedStatus = (banquetId: number) => {
+    if (!currentRestaurant) return
+    setChangedBanquets((prev) => ({
+      ...prev,
+      [banquetId]: true,
+    }))
+  }
 
-    return (
-      currentRestaurant.image !== initRestaurant.image ||
-      currentRestaurant.description !== initRestaurant.description
-    )
-  }, [currentRestaurant, initRestaurant])
+  const checkBanquetRequired = (options: IRestaurantBanquet) => {
+    if (options.name === '') {
+      toast.error('Поле Название должно быть заполнено')
+      return false
+    }
+    if (options.guests_min === 0) {
+      toast.error('Поле Минимальное количество гостей должно быть заполнено')
+      return false
+    }
+    if (options.guests_max === 0) {
+      toast.error('Поле Максимальное количество гостей должно быть заполнено')
+      return false
+    }
+    if (options.deposit === 0 && (options.deposit_message === '' || !options.deposit_message)) {
+      toast.error('Одно из полей Депозит либо Условия должно быть обязательно заполнено')
+      return false
+    }
+    if (options.service_fee === 0) {
+      toast.error('Поле Обслуживание должно быть заполнено')
+      return false
+    }
+    if (!options.images || options.images.length === 0) {
+      toast.error('Должно быть добавлено минимум одно изображение')
+      return false
+    }
+
+    return true
+  }
 
   const sendBanquetDetails = () => {
-    if (!isBanquetsChanged) return
-
     SendRestaurantOptions(
       {
         description: currentRestaurant?.description ? currentRestaurant?.description : null,
@@ -347,12 +385,16 @@ const BanquetsPage = () => {
     )
       .then(() => {
         toast.success('Блок обновлён')
+        setIsChangedRestaurant(false)
         getRestaurantData()
       })
       .catch(() => toast.error('Ошибка при сохранении'))
   }
 
   const sendBanquetOptions = (options: IRestaurantBanquet, banquet_id: number) => {
+    if (!changedBanquets[banquet_id]) return
+    if (!checkBanquetRequired(options)) return
+
     SendBanquetsOptions(options, banquet_id)
       .then(() => {
         toast.success('Блок обновлён')
@@ -440,7 +482,7 @@ const BanquetsPage = () => {
                       <CRow>
                         <CButton
                           color="primary"
-                          disabled={!isBanquetsChanged}
+                          disabled={!isChangedRestaurant}
                           onClick={sendBanquetDetails}
                         >
                           Сохранить
@@ -469,7 +511,7 @@ const BanquetsPage = () => {
                               <CRow>
                                 <CFormInput
                                   type="text"
-                                  floatingLabel="Название"
+                                  floatingLabel="Название *"
                                   placeholder={''}
                                   floatingClassName={'px-0'}
                                   value={banquet.name ? banquet.name : ''}
@@ -479,7 +521,7 @@ const BanquetsPage = () => {
                               <CRow>
                                 <CFormInput
                                   type="text"
-                                  floatingLabel="Минимальное количество гостей"
+                                  floatingLabel="Минимальное количество гостей *"
                                   placeholder={''}
                                   floatingClassName={'px-0'}
                                   value={banquet.guests_min ? banquet.guests_min : ''}
@@ -491,7 +533,7 @@ const BanquetsPage = () => {
                               <CRow>
                                 <CFormInput
                                   type="text"
-                                  floatingLabel="Максимальное количество гостей"
+                                  floatingLabel="Максимальное количество гостей *"
                                   placeholder={''}
                                   floatingClassName={'px-0'}
                                   value={banquet.guests_max ? banquet.guests_max : ''}
@@ -525,7 +567,7 @@ const BanquetsPage = () => {
                               <CRow>
                                 <CFormInput
                                   type="text"
-                                  floatingLabel="Обслуживание, %"
+                                  floatingLabel="Обслуживание, % *"
                                   placeholder={''}
                                   floatingClassName={'px-0'}
                                   value={banquet.service_fee ? banquet.service_fee : ''}
@@ -634,6 +676,7 @@ const BanquetsPage = () => {
                                     color="primary"
                                     className={'w-100'}
                                     onClick={() => sendBanquetOptions(banquet, banquet.id)}
+                                    disabled={!changedBanquets[banquet.id]}
                                   >
                                     Сохранить
                                   </CButton>
