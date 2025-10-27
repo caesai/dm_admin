@@ -15,6 +15,7 @@ const CitiesPage = React.lazy(() => import('./views/dicts/cities/CItyListPage.ts
 const RestaurantsPage = React.lazy(() => import('./views/restaurants/RestaurantsListPage.tsx'))
 const RestaurantPage = React.lazy(() => import('./views/restaurants/RestaurantPage'))
 const ChefsPage = React.lazy(() => import('./views/chefs/ChefsPage.tsx'))
+const BanquetsPage = React.lazy(() => import('./views/banquets/BanquetsPage.tsx'))
 const StoriesPage = React.lazy(() => import('./views/stories/StoriesPage.tsx'))
 const InviteLinksPage = React.lazy(() => import('./views/inviteLinks/InviteLinksPage.tsx'))
 const NotificationsPage = React.lazy(() => import('./views/notifications/NotificationsPage.tsx'))
@@ -38,6 +39,11 @@ const routes: Route[] = [
     path: '/chefs',
     name: 'Шефы',
     element: ChefsPage,
+  },
+  {
+    path: '/banquets',
+    name: 'Банкеты',
+    element: BanquetsPage,
   },
   {
     path: '/dicts/cities',
