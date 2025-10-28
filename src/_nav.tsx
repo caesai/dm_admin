@@ -5,6 +5,7 @@ import {
   cilBuilding,
   cilCash,
   cilCircle,
+  cilDinner,
   cilHistory,
   cilHome,
   cilLink,
@@ -70,6 +71,12 @@ const _nav: NavItem[] = [
     name: 'Шефы',
     to: '/chefs',
     icon: <LuChefHat className={'nav-icon'} style={{ fill: 'none' }} />,
+  },
+  {
+    component: CNavItem,
+    name: 'Банкеты',
+    to: '/banquets',
+    icon: <CIcon icon={cilDinner} customClassName={'nav-icon'} />,
   },
   {
     component: CNavItem,
