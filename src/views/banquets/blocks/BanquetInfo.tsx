@@ -87,7 +87,7 @@ const BanquetInfo: FC<{
               <img
                 src={currentRestaurant.image}
                 alt=""
-                style={{ width: '250px', height: '250px' }}
+                style={{ width: 'fit-content', height: '250px' }}
               />
             )}
           </CRow>
@@ -100,7 +100,7 @@ const BanquetInfo: FC<{
                 onInput={handleImageUrlChange}
               />
               <MediaInput onChange={(e) => handleImageChange(e.target.files)} />
-              <TooltipInfo content="Текст тултипа" />
+              <TooltipInfo content="Загрузите изображение либо вставьте ссылку" />
             </div>
           </CRow>
           <CRow>
