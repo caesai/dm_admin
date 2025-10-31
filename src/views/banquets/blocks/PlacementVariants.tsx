@@ -322,7 +322,7 @@ const PlacementVariants: FC<{
   }
 
   return (
-    <CCard className={classNames('border', 'rounded')}>
+    <CCard className={classNames('border', 'rounded')} style={{ maxWidth: '100%' }}>
       <CCardHeader>
         <CCardTitle>Варианты рассадки</CCardTitle>
       </CCardHeader>
@@ -411,7 +411,10 @@ const PlacementVariants: FC<{
                       onChange={(event) => handleDurationFeeChange(event, banquet.id)}
                     />
                   </CRow>
-                  <CRow className={classNames('d-flex', 'flex-nowrap', 'overflow-x-scroll')}>
+                  <CRow
+                    className={classNames('d-flex', 'flex-nowrap', 'overflow-x-auto')}
+                    style={{ width: '100%' }}
+                  >
                     {banquet.images?.map((img, index) => (
                       <div
                         key={index}
@@ -433,7 +436,7 @@ const PlacementVariants: FC<{
                             objectFit: 'cover',
                           }}
                         />
-                        <div className={classNames('d-flex', 'gap-1')}>
+                        <div className={classNames('d-flex', 'gap-1', 'pb-3')}>
                           <CButton
                             color="primary"
                             size="sm"
@@ -462,7 +465,7 @@ const PlacementVariants: FC<{
                       </div>
                     ))}
                   </CRow>
-                  <CRow className={'mt-4'}>
+                  <CRow className={'mt-1'}>
                     <div>
                       <input
                         type="file"
@@ -503,7 +506,7 @@ const PlacementVariants: FC<{
               </CCard>
             ))
           ) : (
-            <strong>Вариантов нет</strong>
+            <span>Вариантов нет</span>
           )}
         </div>
       </CCardBody>
