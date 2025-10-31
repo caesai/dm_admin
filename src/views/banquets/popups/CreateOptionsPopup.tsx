@@ -79,10 +79,9 @@ const CreateOptionsPopup: FC<{
   }
 
   const handleServiceFeeChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = parseFloat(e.target.value) || 0
     setBanquetOptions((prev) => ({
       ...prev,
-      service_fee: value,
+      service_fee: isNaN(Number(e.target.value)) ? '' : e.target.value,
     }))
   }
 
@@ -179,7 +178,7 @@ const CreateOptionsPopup: FC<{
       toast.error('Одно из полей Депозит либо Условия должно быть обязательно заполнено')
       return false
     }
-    if (banquetOptions.service_fee === 0) {
+    if (banquetOptions.service_fee === '') {
       toast.error('Поле Обслуживание должно быть заполнено')
       return false
     }
@@ -273,7 +272,11 @@ const CreateOptionsPopup: FC<{
               placeholder={''}
               floatingClassName={'px-0'}
               onChange={handleServiceFeeChange}
-              value={banquetOptions.service_fee || ''}
+              value={
+                banquetOptions.service_fee || banquetOptions.service_fee === 0
+                  ? banquetOptions.service_fee
+                  : ''
+              }
             />
           </CRow>
           <CRow>

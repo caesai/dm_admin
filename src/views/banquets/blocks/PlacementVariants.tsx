@@ -132,10 +132,9 @@ const PlacementVariants: FC<{
 
       const updatedBanquetOptions = prev.banquet_options.map((banquet) => {
         if (banquet.id === banquetId) {
-          const value = Number(e.target.value)
           return {
             ...banquet,
-            service_fee: isNaN(value) ? 0 : value,
+            service_fee: isNaN(Number(e.target.value)) ? '' : e.target.value,
           }
         }
         return banquet
@@ -298,7 +297,7 @@ const PlacementVariants: FC<{
       toast.error('Одно из полей Депозит либо Условия должно быть обязательно заполнено')
       return false
     }
-    if (options.service_fee === 0) {
+    if (options.service_fee === '') {
       toast.error('Поле Обслуживание должно быть заполнено')
       return false
     }
@@ -396,7 +395,9 @@ const PlacementVariants: FC<{
                       floatingLabel="Обслуживание, % *"
                       placeholder={''}
                       floatingClassName={'px-0'}
-                      value={banquet.service_fee ? banquet.service_fee : ''}
+                      value={
+                        banquet.service_fee || banquet.service_fee === 0 ? banquet.service_fee : ''
+                      }
                       onChange={(event) => handleServiceChange(event, banquet.id)}
                     />
                   </CRow>

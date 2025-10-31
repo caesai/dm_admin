@@ -47,7 +47,7 @@ export interface IRestaurantBanquet {
   deposit_message: string | null
   guests_max: number
   guests_min: number
-  service_fee: number
+  service_fee: number | string
   max_duration?: number | null
   images: string[] | null
 }
