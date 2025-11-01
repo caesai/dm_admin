@@ -25,7 +25,7 @@ const initBanquetOptions: IRestaurantBanquet = {
   deposit_message: null,
   guests_max: 0,
   guests_min: 0,
-  service_fee: 0,
+  service_fee: '',
   images: [],
 }
 

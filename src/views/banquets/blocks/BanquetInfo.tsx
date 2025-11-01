@@ -18,7 +18,7 @@ import toast from 'react-hot-toast'
 
 const BanquetInfo: FC<{
   restaurant: [IRestaurantOptions, Dispatch<SetStateAction<IRestaurantOptions | null>>]
-  currentId: number
+  currentId: number | null
   onUpdate: () => void
 }> = ({ restaurant, currentId, onUpdate }) => {
   const [currentRestaurant, setCurrentRestaurant] = restaurant
@@ -60,6 +60,8 @@ const BanquetInfo: FC<{
   }
 
   const sendBanquetDetails = () => {
+    if (!currentId) return
+
     SendRestaurantOptions(
       {
         description: currentRestaurant?.description ? currentRestaurant?.description : null,

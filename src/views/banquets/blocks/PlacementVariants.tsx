@@ -18,10 +18,10 @@ import { SendBanquetsOptions } from 'src/dataProviders/banquets.ts'
 
 const PlacementVariants: FC<{
   restaurant: [IRestaurantOptions, Dispatch<SetStateAction<IRestaurantOptions | null>>]
-  setCurrentId: Dispatch<SetStateAction<number>>
+  setBanquetToDeleteId: Dispatch<SetStateAction<number | null>>
   setPopup: Dispatch<SetStateAction<boolean>>
   onUpdate: () => void
-}> = ({ restaurant, setCurrentId, setPopup, onUpdate }) => {
+}> = ({ restaurant, setBanquetToDeleteId, setPopup, onUpdate }) => {
   const [changedBanquets, setChangedBanquets] = useState<{ [banquet_id: number]: boolean }>({})
 
   const [currentRestaurant, setCurrentRestaurant] = restaurant
@@ -496,7 +496,7 @@ const PlacementVariants: FC<{
                       <CButton
                         color="secondary"
                         className={'w-100'}
-                        onClick={() => setCurrentId(banquet.id)}
+                        onClick={() => setBanquetToDeleteId(banquet.id)}
                       >
                         Удалить
                       </CButton>
