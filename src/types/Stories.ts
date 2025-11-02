@@ -5,7 +5,7 @@ export interface IStory {
   tempId?: string
   type: StoryType
   component_type: number | null
-  duration: number
+  duration: number | null
   url: string | null
   title: string | null
   description: string | null

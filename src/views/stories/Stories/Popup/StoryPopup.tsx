@@ -4,7 +4,6 @@ import classNames from 'classnames'
 import { IStory, StoryType } from 'src/types/Stories.ts'
 import { uploadFile } from 'src/dataProviders/s3.ts'
 import ButtonSection from './ButtonSection'
-import DurationInput from './DurationInput'
 import MediaUrlInput from './MediaUrlInput'
 import ComponentFields from './ComponentFields'
 import ButtonFields from './ButtonFields'
@@ -46,15 +45,6 @@ const StoryPopup: FC<StoryPopupProps> = ({
       ...story,
       type: newType,
       component_type: newType !== 'component' ? null : story.component_type,
-    })
-  }
-
-  const changeStoryDuration = (e: ChangeEvent<HTMLInputElement>) => {
-    if (!story) return
-
-    setStory({
-      ...story,
-      duration: Number(e.target.value) * 1000,
     })
   }
 
@@ -203,9 +193,9 @@ const StoryPopup: FC<StoryPopupProps> = ({
     if (open && !story) {
       setStory({
         type: 'image',
-        duration: 5000,
         url: null,
         title: null,
+        duration: 5,
         description: null,
         button_url: null,
         button_text: null,
@@ -238,7 +228,6 @@ const StoryPopup: FC<StoryPopupProps> = ({
             />
             <TooltipInfo content="Выберите тип контента для истории" />
           </div>
-          <DurationInput duration={story.duration} onChange={changeStoryDuration} />
           <MediaUrlInput
             url={story.url}
             type={story.type}
@@ -265,11 +254,7 @@ const StoryPopup: FC<StoryPopupProps> = ({
               onColorChange={changeButtonColor}
             />
           )}
-          <ButtonSection
-            onCancel={closePopup}
-            onSave={handleChangeStory}
-            isActive={story.duration !== 0 && !Number.isNaN(story.duration) && !!story.url}
-          />
+          <ButtonSection onCancel={closePopup} onSave={handleChangeStory} isActive={!!story.url} />
         </div>
         <div className={classNames('w-25', 'h-100', 'ms-4')}>
           <strong>Превью</strong>
