@@ -34,8 +34,8 @@ const BanquetsPage = () => {
   }
 
   const changeRestaurantId = (e: ChangeEvent<HTMLSelectElement>) => {
-    if (e.target.value === '') return
-    setCurrentId(Number(e.target.value))
+    if (e.target.value === '') setCurrentId(0)
+    else setCurrentId(Number(e.target.value))
   }
 
   const getRestaurantData = () => {
@@ -87,6 +87,7 @@ const BanquetsPage = () => {
           {loader ? (
             <CSpinner color="primary" className="align-self-center" />
           ) : (
+            currentId !== 0 &&
             currentRestaurant !== null && (
               <CCardGroup className={classNames('d-flex', 'flex-column', 'gap-4')}>
                 <BanquetInfo

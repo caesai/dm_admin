@@ -91,9 +91,9 @@ const AdditionalOptions: FC<{
         <CCardTitle>Дополнительные опции</CCardTitle>
       </CCardHeader>
       <CCardBody>
-        <div className={classNames('px-3', 'd-flex', 'flex-column', 'gap-3')}>
+        <div className={classNames('px-3', 'd-flex', 'flex-column')}>
           <CRow>
-            <div className={classNames('d-flex', 'align-items-center', 'gap-4')}>
+            <div className={classNames('d-flex', 'align-items-center')}>
               <div className="w-100">
                 <CFormInput
                   type="text"
@@ -118,7 +118,7 @@ const AdditionalOptions: FC<{
             </div>
           </CRow>
           {options.length > 0 && (
-            <div className="mt-4">
+            <div>
               {options.map((option) => (
                 <CRow key={option.id} className={classNames('mt-3')}>
                   <div className={classNames('d-flex', 'align-items-center', 'gap-4')}>
