@@ -24,7 +24,7 @@ const PlacementVariants: FC<{
   onUpdate: () => void
 }> = ({ restaurant, setBanquetToDeleteId, setPopup, onUpdate }) => {
   const [changedBanquets, setChangedBanquets] = useState<{ [banquet_id: number]: boolean }>({})
-  const [loadingImage, setLoadingImage] = useState<boolean>(false)
+  const [loadingImagesCount, setLoadingImagesCount] = useState<Map<number, number>>(new Map())
 
   const [currentRestaurant, setCurrentRestaurant] = restaurant
   const imageRef = useRef<{ [banquet_id: number]: HTMLInputElement | null }>({})
@@ -223,7 +223,7 @@ const PlacementVariants: FC<{
 
   const addNewImage = (files: FileList | null, banquetId: number) => {
     if (!files) return
-    setLoadingImage(true)
+    setLoadingImagesCount((prev) => new Map(prev).set(banquetId, (prev.get(banquetId) || 0) + 1))
 
     uploadFile(files[0])
       .then((res) => {
@@ -249,7 +249,11 @@ const PlacementVariants: FC<{
       .catch(() => {
         toast.error('Что-то пошло не так')
       })
-      .finally(() => setLoadingImage(false))
+      .finally(() =>
+        setLoadingImagesCount((prev) =>
+          new Map(prev).set(banquetId, (prev.get(banquetId) || 1) - 1),
+        ),
+      )
   }
 
   const handleImageDelete = (banquetId: number, imgIndex: number) => {
@@ -399,9 +403,7 @@ const PlacementVariants: FC<{
                       floatingLabel="Обслуживание, % *"
                       placeholder={''}
                       floatingClassName={'px-0'}
-                      value={
-                        banquet.service_fee || banquet.service_fee === 0 ? banquet.service_fee : ''
-                      }
+                      value={banquet.service_fee ?? ''}
                       onChange={(event) => handleServiceChange(event, banquet.id)}
                     />
                   </CRow>
@@ -468,20 +470,23 @@ const PlacementVariants: FC<{
                         </div>
                       </div>
                     ))}
-                    {loadingImage && (
-                      <div
-                        style={{
-                          width: '225px',
-                          height: '250px',
-                        }}
-                        className={classNames(
-                          'd-flex',
-                          'justify-content-center',
-                          'align-items-center',
-                        )}
-                      >
-                        <CSpinner color="primary" />
-                      </div>
+                    {Array.from({ length: loadingImagesCount.get(banquet.id) || 0 }).map(
+                      (_, index) => (
+                        <div
+                          key={index}
+                          style={{
+                            width: '225px',
+                            height: '250px',
+                          }}
+                          className={classNames(
+                            'd-flex',
+                            'justify-content-center',
+                            'align-items-center',
+                          )}
+                        >
+                          <CSpinner color="primary" />
+                        </div>
+                      ),
                     )}
                   </CRow>
                   <CRow className={'mt-1'}>
