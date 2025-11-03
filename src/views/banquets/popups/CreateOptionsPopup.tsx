@@ -37,7 +37,7 @@ const CreateOptionsPopup: FC<{
 }> = ({ popup, restaurant_id, onCreate }) => {
   const [visible, setVisible] = popup
   const [isCreating, setCreating] = useState(false)
-  const [loadingImage, setLoadingImage] = useState<boolean>(false)
+  const [loadingImagesCount, setLoadingImagesCount] = useState<number>(0)
   const [banquetOptions, setBanquetOptions] = useState<IRestaurantBanquet>(initBanquetOptions)
 
   const imageRef = useRef<HTMLInputElement>(null)
@@ -109,7 +109,7 @@ const CreateOptionsPopup: FC<{
 
   const addNewImage = (files: FileList | null) => {
     if (!files || files.length === 0) return
-    setLoadingImage(true)
+    setLoadingImagesCount((prev) => prev + 1)
 
     uploadFile(files[0])
       .then((res) => {
@@ -123,7 +123,7 @@ const CreateOptionsPopup: FC<{
       .catch(() => {
         toast.error('Что-то пошло не так')
       })
-      .finally(() => setLoadingImage(false))
+      .finally(() => setLoadingImagesCount((prev) => prev - 1))
   }
 
   const handleImageMove = (imgIndex: number, toTop: boolean) => {
@@ -334,8 +334,9 @@ const CreateOptionsPopup: FC<{
                 </div>
               </div>
             ))}
-            {loadingImage && (
+            {Array.from({ length: loadingImagesCount }).map((_, index) => (
               <div
+                key={index}
                 style={{
                   width: '250px',
                   height: '250px',
@@ -344,7 +345,7 @@ const CreateOptionsPopup: FC<{
               >
                 <CSpinner color="primary" />
               </div>
-            )}
+            ))}
           </CRow>
           <CRow className={'mt-4'}>
             <div style={{ marginLeft: '-12px' }}>
