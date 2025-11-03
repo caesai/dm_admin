@@ -4,6 +4,7 @@ import classNames from 'classnames'
 import { IStory, StoryType } from 'src/types/Stories.ts'
 import { uploadFile } from 'src/dataProviders/s3.ts'
 import ButtonSection from './ButtonSection'
+import DurationInput from './DurationInput'
 import MediaUrlInput from './MediaUrlInput'
 import ComponentFields from './ComponentFields'
 import ButtonFields from './ButtonFields'
@@ -16,6 +17,8 @@ interface StoryPopupProps {
   setStoriesList: Dispatch<SetStateAction<IStory[]>>
   updateStories: Dispatch<SetStateAction<IStory[]>>
 }
+
+const DEFAULT_STORY_DURATION = 5000
 
 const StoryPopup: FC<StoryPopupProps> = ({
   popup,
@@ -45,6 +48,16 @@ const StoryPopup: FC<StoryPopupProps> = ({
       ...story,
       type: newType,
       component_type: newType !== 'component' ? null : story.component_type,
+      duration: newType !== 'video' ? story.duration : DEFAULT_STORY_DURATION,
+    })
+  }
+
+  const changeStoryDuration = (e: ChangeEvent<HTMLInputElement>) => {
+    if (!story) return
+
+    setStory({
+      ...story,
+      duration: Number(e.target.value) * 1000,
     })
   }
 
@@ -195,7 +208,7 @@ const StoryPopup: FC<StoryPopupProps> = ({
         type: 'image',
         url: null,
         title: null,
-        duration: 5,
+        duration: DEFAULT_STORY_DURATION,
         description: null,
         button_url: null,
         button_text: null,
@@ -228,6 +241,9 @@ const StoryPopup: FC<StoryPopupProps> = ({
             />
             <TooltipInfo content="Выберите тип контента для истории" />
           </div>
+          {story.type !== 'video' && (
+            <DurationInput duration={story.duration!} onChange={changeStoryDuration} />
+          )}
           <MediaUrlInput
             url={story.url}
             type={story.type}
