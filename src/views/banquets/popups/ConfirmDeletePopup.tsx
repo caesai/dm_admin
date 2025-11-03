@@ -34,7 +34,7 @@ const ConfirmDeletePopup: FC<{
       <CModalHeader>
         <CModalTitle>Удаление варианта рассадки</CModalTitle>
       </CModalHeader>
-      <CModalBody>Вариант будет удален из базы данных!</CModalBody>
+      <CModalBody>Вариант будет удален!</CModalBody>
       <CModalFooter>
         <CLoadingButton
           color="primary"
