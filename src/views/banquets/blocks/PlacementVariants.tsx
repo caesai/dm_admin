@@ -399,9 +399,7 @@ const PlacementVariants: FC<{
                       floatingLabel="Обслуживание, % *"
                       placeholder={''}
                       floatingClassName={'px-0'}
-                      value={
-                        banquet.service_fee || banquet.service_fee === 0 ? banquet.service_fee : ''
-                      }
+                      value={banquet.service_fee ?? ''}
                       onChange={(event) => handleServiceChange(event, banquet.id)}
                     />
                   </CRow>

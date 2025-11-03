@@ -276,11 +276,7 @@ const CreateOptionsPopup: FC<{
               placeholder={''}
               floatingClassName={'px-0'}
               onChange={handleServiceFeeChange}
-              value={
-                banquetOptions.service_fee || banquetOptions.service_fee === 0
-                  ? banquetOptions.service_fee
-                  : ''
-              }
+              value={banquetOptions.service_fee}
             />
           </CRow>
           <CRow>
