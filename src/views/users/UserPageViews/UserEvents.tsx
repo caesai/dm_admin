@@ -3,7 +3,7 @@ import { CCard, CCardBody, CSmartTable } from '@coreui/react-pro'
 import { Item } from '@coreui/react-pro/src/components/smart-table/types'
 import { useEffect, useState } from 'react'
 import { EventPopup } from 'src/views/users/UserPageViews/Modals/EventPopup.tsx'
-import { useAtom } from 'jotai/index'
+import { useAtom } from 'jotai'
 import { restaurantByIdAtom } from 'src/atoms/restaurantAtom.ts'
 
 interface Props {
