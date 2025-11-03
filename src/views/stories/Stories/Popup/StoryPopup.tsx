@@ -18,6 +18,8 @@ interface StoryPopupProps {
   updateStories: Dispatch<SetStateAction<IStory[]>>
 }
 
+const DEFAULT_STORY_DURATION = 5000
+
 const StoryPopup: FC<StoryPopupProps> = ({
   popup,
   isEdit,
@@ -46,6 +48,7 @@ const StoryPopup: FC<StoryPopupProps> = ({
       ...story,
       type: newType,
       component_type: newType !== 'component' ? null : story.component_type,
+      duration: newType !== 'video' ? story.duration : DEFAULT_STORY_DURATION,
     })
   }
 
@@ -203,9 +206,9 @@ const StoryPopup: FC<StoryPopupProps> = ({
     if (open && !story) {
       setStory({
         type: 'image',
-        duration: 5000,
         url: null,
         title: null,
+        duration: DEFAULT_STORY_DURATION,
         description: null,
         button_url: null,
         button_text: null,
@@ -238,7 +241,9 @@ const StoryPopup: FC<StoryPopupProps> = ({
             />
             <TooltipInfo content="Выберите тип контента для истории" />
           </div>
-          <DurationInput duration={story.duration} onChange={changeStoryDuration} />
+          {story.type !== 'video' && (
+            <DurationInput duration={story.duration!} onChange={changeStoryDuration} />
+          )}
           <MediaUrlInput
             url={story.url}
             type={story.type}
@@ -265,11 +270,7 @@ const StoryPopup: FC<StoryPopupProps> = ({
               onColorChange={changeButtonColor}
             />
           )}
-          <ButtonSection
-            onCancel={closePopup}
-            onSave={handleChangeStory}
-            isActive={story.duration !== 0 && !Number.isNaN(story.duration) && !!story.url}
-          />
+          <ButtonSection onCancel={closePopup} onSave={handleChangeStory} isActive={!!story.url} />
         </div>
         <div className={classNames('w-25', 'h-100', 'ms-4')}>
           <strong>Превью</strong>
