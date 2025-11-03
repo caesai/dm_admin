@@ -62,7 +62,7 @@ const AdditionalOptions: FC<{
 
     SendAdditionalOptions({ name: updatedOptions[optionId], id: optionId }, optionId)
       .then(() => {
-        toast.success('Опция обновлена')
+        toast.success('Опция сохранена')
         setUpdatedOptions((prev) => {
           const newState = { ...prev }
           delete newState[optionId]
@@ -109,6 +109,7 @@ const AdditionalOptions: FC<{
                   color="primary"
                   onClick={saveNewOption}
                   loading={isSaving}
+                  disabled={!newOption}
                   className="w-100"
                 >
                   Добавить
@@ -116,45 +117,43 @@ const AdditionalOptions: FC<{
               </div>
             </div>
           </CRow>
-          <div className="mt-4">
-            {options.map((option) => (
-              <CRow key={option.id} className={classNames('mt-3')}>
-                <div className={classNames('d-flex', 'align-items-center', 'gap-4')}>
-                  <div className="w-100">
-                    <CFormInput
-                      type="text"
-                      value={
-                        updatedOptions[option.id] !== undefined
-                          ? updatedOptions[option.id]
-                          : option.name
-                      }
-                      onChange={(event) => handleChangeOption(event, option.id)}
-                    />
-                  </div>
-                  <div className={classNames('d-flex', 'gap-2')}>
-                    <div style={{ height: 'fit-content' }}>
-                      <CLoadingButton
-                        color="primary"
-                        className="w-100"
-                        disabled={!updatedOptions[option.id]}
-                        loading={updatingOptions[option.id]}
-                        onClick={() => updateOption(option.id)}
-                      >
-                        Сохранить
-                      </CLoadingButton>
+          {options.length > 0 && (
+            <div className="mt-4">
+              {options.map((option) => (
+                <CRow key={option.id} className={classNames('mt-3')}>
+                  <div className={classNames('d-flex', 'align-items-center', 'gap-4')}>
+                    <div className="w-100">
+                      <CFormInput
+                        type="text"
+                        value={
+                          updatedOptions[option.id] !== undefined
+                            ? updatedOptions[option.id]
+                            : option.name
+                        }
+                        onChange={(event) => handleChangeOption(event, option.id)}
+                      />
                     </div>
-                    <CButton
-                      color="secondary"
-                      className="w-100"
-                      onClick={() => deleteOption(option.id)}
-                    >
-                      Удалить
-                    </CButton>
+                    <div className={classNames('d-flex', 'gap-2', 'w-25')}>
+                      <div className="w-100" style={{ height: 'fit-content' }}>
+                        <CLoadingButton
+                          color="primary"
+                          className="w-100"
+                          disabled={!updatedOptions[option.id]}
+                          loading={updatingOptions[option.id]}
+                          onClick={() => updateOption(option.id)}
+                        >
+                          Сохранить
+                        </CLoadingButton>
+                      </div>
+                      <CButton color="secondary" onClick={() => deleteOption(option.id)}>
+                        Удалить
+                      </CButton>
+                    </div>
                   </div>
-                </div>
-              </CRow>
-            ))}
-          </div>
+                </CRow>
+              ))}
+            </div>
+          )}
         </div>
       </CCardBody>
     </CCard>

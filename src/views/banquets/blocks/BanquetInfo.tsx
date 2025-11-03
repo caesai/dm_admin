@@ -18,7 +18,7 @@ import toast from 'react-hot-toast'
 
 const BanquetInfo: FC<{
   restaurant: [IRestaurantOptions, Dispatch<SetStateAction<IRestaurantOptions | null>>]
-  currentId: number
+  currentId: number | null
   onUpdate: () => void
 }> = ({ restaurant, currentId, onUpdate }) => {
   const [currentRestaurant, setCurrentRestaurant] = restaurant
@@ -60,6 +60,8 @@ const BanquetInfo: FC<{
   }
 
   const sendBanquetDetails = () => {
+    if (!currentId) return
+
     SendRestaurantOptions(
       {
         description: currentRestaurant?.description ? currentRestaurant?.description : null,
@@ -87,7 +89,7 @@ const BanquetInfo: FC<{
               <img
                 src={currentRestaurant.image}
                 alt=""
-                style={{ width: '250px', height: '250px' }}
+                style={{ width: 'fit-content', height: '250px' }}
               />
             )}
           </CRow>
@@ -100,7 +102,7 @@ const BanquetInfo: FC<{
                 onInput={handleImageUrlChange}
               />
               <MediaInput onChange={(e) => handleImageChange(e.target.files)} />
-              <TooltipInfo content="Текст тултипа" />
+              <TooltipInfo content="Загрузите изображение либо вставьте ссылку" />
             </div>
           </CRow>
           <CRow>
