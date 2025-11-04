@@ -1,32 +1,37 @@
-import { CCard, CCardBody, CSmartTable } from '@coreui/react-pro'
+import { FC, useEffect, useState } from 'react'
 import { IBookingWithRestaurant } from 'src/types/Booking.ts'
-import { Item } from '@coreui/react-pro/src/components/smart-table/types'
-import { useState, useEffect } from 'react'
 import { BookingPopup } from 'src/views/users/UserPageViews/Modals/BookingPopup.tsx'
-import { useAtom } from 'jotai'
-import { restaurantByIdAtom } from 'src/atoms/restaurantAtom.ts'
+import { CCard, CCardBody, CSmartTable } from '@coreui/react-pro'
+import { Item } from '@coreui/react-pro/src/components/smart-table/types.ts'
+import { RestaurantCityCell } from 'src/views/users/UserPageViews/UserBookings.tsx'
+import { getBookings } from 'src/dataProviders/bookings.ts'
+import toast from 'react-hot-toast'
 
-interface Props {
-  bookings: IBookingWithRestaurant[]
-}
-
-export const RestaurantCityCell = ({ restaurantId }: { restaurantId: number }) => {
-  const [restaurantState, loadRestaurant] = useAtom(restaurantByIdAtom(restaurantId))
+const BookingsPage: FC = () => {
+  const [bookings, setBookings] = useState<IBookingWithRestaurant[]>([])
+  const [currentBooking, setCurrentBooking] = useState<IBookingWithRestaurant | null>(null)
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const [itemsPerPage, setItemsPerPage] = useState<number>(20)
+  const [totalItems, setTotalItems] = useState<number>(0)
 
   useEffect(() => {
-    loadRestaurant()
-  }, [loadRestaurant])
-
-  if (restaurantState.loading) return <td>Загрузка...</td>
-  if (!restaurantState.restaurant) return <td>Ошибка</td>
-
-  return <td>{restaurantState.restaurant?.city?.name || '—'}</td>
-}
-
-export const UserBookings = ({ bookings }: Props) => {
-  const [currentBooking, setCurrentBooking] = useState<IBookingWithRestaurant | null>(null)
+    getBookings({
+      page: currentPage,
+      per_page: itemsPerPage,
+    })
+      .then((res) => {
+        setBookings(res.data.bookings)
+        setTotalItems(res.data.total)
+      })
+      .catch(() => toast.error('Что-то пошло не так'))
+  }, [currentPage, itemsPerPage])
 
   const cols = [
+    {
+      key: 'name',
+      label: 'Клиент',
+      _props: { scope: 'col' },
+    },
     {
       key: 'restaurant_name',
       label: 'Ресторан',
@@ -87,6 +92,16 @@ export const UserBookings = ({ bookings }: Props) => {
           columnFilter
           columnSorter
           clickableRows
+          itemsPerPageSelect
+          itemsPerPage={itemsPerPage}
+          onItemsPerPageChange={setItemsPerPage}
+          itemsPerPageOptions={[10, 20, 50, 100]}
+          pagination
+          paginationProps={{
+            pages: Math.ceil(totalItems / itemsPerPage),
+            activePage: currentPage,
+            onActivePageChange: setCurrentPage,
+          }}
           onRowClick={(item: Item) => setCurrentBooking(item as IBookingWithRestaurant)}
           tableHeadProps={{
             className: 'align-middle',
@@ -109,3 +124,5 @@ export const UserBookings = ({ bookings }: Props) => {
     </>
   )
 }
+
+export default BookingsPage
