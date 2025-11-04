@@ -27,7 +27,7 @@ export const UserPreferences = ({ preferences }: Props) => {
   )
   const moodPreferences = categoryMap['MOOD'] || []
   const menuPreferences = categoryMap['MENU'] || []
-  const eventsPreferences = categoryMap['EVENTS'] || []
+  const eventsPreferences = categoryMap['EVENT_FORMATS'] || []
 
   const maxLength = Math.max(
     moodPreferences.length,
@@ -53,9 +53,9 @@ export const UserPreferences = ({ preferences }: Props) => {
             <CTableBody>
               {Array.from({ length: maxLength }).map((_, index) => (
                 <CTableRow key={index}>
-                  <CTableDataCell>{moodPreferences[index] || '-'}</CTableDataCell>
-                  <CTableDataCell>{menuPreferences[index] || '-'}</CTableDataCell>
-                  <CTableDataCell>{eventsPreferences[index] || '-'}</CTableDataCell>
+                  <CTableDataCell>{moodPreferences[index] || null}</CTableDataCell>
+                  <CTableDataCell>{menuPreferences[index] || null}</CTableDataCell>
+                  <CTableDataCell>{eventsPreferences[index] || null}</CTableDataCell>
                 </CTableRow>
               ))}
             </CTableBody>
