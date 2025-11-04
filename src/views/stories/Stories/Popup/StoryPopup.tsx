@@ -273,7 +273,7 @@ const StoryPopup: FC<StoryPopupProps> = ({
           <ButtonSection
             onCancel={closePopup}
             onSave={handleChangeStory}
-            isActive={!!story.url && !!story.duration}
+            isActive={(story.type === 'component' || !!story.url) && !!story.duration}
           />
         </div>
         <div className={classNames('w-25', 'h-100', 'ms-4')}>
