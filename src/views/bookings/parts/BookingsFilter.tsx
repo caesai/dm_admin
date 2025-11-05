@@ -48,8 +48,11 @@ const BookingsFilter: FC<IBookingsFilterProps> = ({ restaurants, setBookings }) 
   }
 
   const changeRestaurantId = (e: ChangeEvent<HTMLSelectElement>) => {
-    if (e.target.value === '') setRestaurantId(0)
-    setRestaurantId(Number(e.target.value))
+    if (e.target.value === '') {
+      setRestaurantId(0);
+      return;
+    }
+    setRestaurantId(Number(e.target.value));
   }
 
   const checkValidFilter = () => {
