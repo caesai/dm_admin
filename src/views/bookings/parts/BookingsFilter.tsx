@@ -7,7 +7,7 @@ import {
   CLoadingButton,
   CRow,
 } from '@coreui/react-pro'
-import { ChangeEvent, Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
+import { ChangeEvent, Dispatch, FC, SetStateAction, useState } from 'react'
 import classNames from 'classnames'
 import { getRestaurantCity } from 'src/utils.tsx'
 import { IRestaurantWCity } from 'src/types/Restaurant.ts'
@@ -16,7 +16,7 @@ import { getBookings } from 'src/dataProviders/bookings.ts'
 import toast from 'react-hot-toast'
 
 const searchOptions = [
-  { label: 'Выберите вариант', value: '' },
+  { label: 'Данные клиента', value: '' },
   { label: 'Имя', value: 'Имя' },
   { label: 'Телефон', value: 'Телефон' },
   { label: 'Email', value: 'Email' },
@@ -49,18 +49,10 @@ const BookingsFilter: FC<IBookingsFilterProps> = ({ restaurants, setBookings }) 
 
   const changeRestaurantId = (e: ChangeEvent<HTMLSelectElement>) => {
     if (e.target.value === '') {
-      setRestaurantId(0);
-      return;
+      setRestaurantId(0)
+      return
     }
-    setRestaurantId(Number(e.target.value));
-  }
-
-  const checkValidFilter = () => {
-    const hasValidSearch = searchValue === ''
-    const hasNoRestaurantFilter = restaurantId === 0
-    const hasNoStatusFilter = currentBookingStatus === ''
-
-    return hasValidSearch && hasNoRestaurantFilter && hasNoStatusFilter
+    setRestaurantId(Number(e.target.value))
   }
 
   const sendFilters = () => {
@@ -125,7 +117,6 @@ const BookingsFilter: FC<IBookingsFilterProps> = ({ restaurants, setBookings }) 
             <CLoadingButton
               color="primary"
               className="w-100"
-              disabled={checkValidFilter()}
               loading={loading}
               onClick={sendFilters}
             >
