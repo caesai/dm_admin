@@ -75,10 +75,6 @@ const BookingsFilter: FC<IBookingsFilterProps> = ({ restaurants, setBookings }) 
       .finally(() => setLoading(false))
   }
 
-  useEffect(() => {
-    checkValidFilter()
-  }, [searchValue, restaurantId, currentBookingStatus])
-
   return (
     <CCard>
       <CCardHeader>
