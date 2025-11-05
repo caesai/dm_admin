@@ -1,18 +1,28 @@
 import { FC, useEffect, useState } from 'react'
 import { IBookingWithRestaurant } from 'src/types/Booking.ts'
 import { BookingPopup } from 'src/views/users/UserPageViews/Modals/BookingPopup.tsx'
-import { CCard, CCardBody, CCardHeader, CSmartTable } from '@coreui/react-pro'
+import { CCard, CCardBody, CCardGroup, CCardHeader, CSmartTable } from '@coreui/react-pro'
 import { Item } from '@coreui/react-pro/src/components/smart-table/types.ts'
 import { RestaurantCityCell } from 'src/views/users/UserPageViews/UserBookings.tsx'
 import { getBookings } from 'src/dataProviders/bookings.ts'
 import toast from 'react-hot-toast'
+import classNames from 'classnames'
+import BookingsFilter from 'src/views/bookings/parts/BookingsFilter.tsx'
+import { GetRestaurantList } from 'src/dataProviders/restaurants.ts'
+import { IRestaurantWCity } from 'src/types/Restaurant.ts'
 
 const BookingsPage: FC = () => {
   const [bookings, setBookings] = useState<IBookingWithRestaurant[]>([])
+  const [restaurants, setRestaurants] = useState<IRestaurantWCity[]>([])
   const [currentBooking, setCurrentBooking] = useState<IBookingWithRestaurant | null>(null)
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [itemsPerPage, setItemsPerPage] = useState<number>(20)
   const [totalItems, setTotalItems] = useState<number>(0)
+
+  const loadRestaurants = async () => {
+    const response = await GetRestaurantList()
+    setRestaurants(response.data)
+  }
 
   useEffect(() => {
     getBookings({
@@ -25,6 +35,10 @@ const BookingsPage: FC = () => {
       })
       .catch(() => toast.error('Что-то пошло не так'))
   }, [currentPage, itemsPerPage])
+
+  useEffect(() => {
+    loadRestaurants()
+  }, [])
 
   const cols = [
     {
@@ -85,51 +99,54 @@ const BookingsPage: FC = () => {
   return (
     <>
       <BookingPopup booking={[currentBooking, setCurrentBooking]} />
-      <CCard>
-        <CCardHeader>
-          <strong>Брони</strong>
-        </CCardHeader>
-        <CCardBody>
-          {bookings.length > 0 ? (
-            <CSmartTable
-              columns={cols}
-              items={bookings}
-              columnFilter
-              columnSorter
-              clickableRows
-              itemsPerPageSelect
-              itemsPerPage={itemsPerPage}
-              onItemsPerPageChange={setItemsPerPage}
-              itemsPerPageOptions={[10, 20, 50, 100]}
-              pagination
-              paginationProps={{
-                pages: Math.ceil(totalItems / itemsPerPage),
-                activePage: currentPage,
-                onActivePageChange: setCurrentPage,
-              }}
-              onRowClick={(item: Item) => setCurrentBooking(item as IBookingWithRestaurant)}
-              tableHeadProps={{
-                className: 'align-middle',
-              }}
-              tableProps={{
-                striped: true,
-                hover: true,
-                className: 'align-middle',
-              }}
-              scopedColumns={{
-                duration: (item: Item) => <td>{item.duration} мин</td>,
-                restaurant_id: (item: Item) => (
-                  <RestaurantCityCell restaurantId={item.restaurant_id} />
-                ),
-              }}
-            />
-          ) : (
-            <CCard>
-              <CCardBody>У пользователя нет бронирований</CCardBody>
-            </CCard>
-          )}
-        </CCardBody>
-      </CCard>
+      <CCardGroup className={classNames('d-flex', 'flex-column', 'gap-4')}>
+        <BookingsFilter restaurants={restaurants} setBookings={setBookings} />
+        <CCard className={classNames('rounded', 'border')}>
+          <CCardHeader>
+            <strong>Брони</strong>
+          </CCardHeader>
+          <CCardBody>
+            {bookings.length > 0 ? (
+              <CSmartTable
+                columns={cols}
+                items={bookings}
+                columnFilter
+                columnSorter
+                clickableRows
+                itemsPerPageSelect
+                itemsPerPage={itemsPerPage}
+                onItemsPerPageChange={setItemsPerPage}
+                itemsPerPageOptions={[10, 20, 50, 100]}
+                pagination
+                paginationProps={{
+                  pages: Math.ceil(totalItems / itemsPerPage),
+                  activePage: currentPage,
+                  onActivePageChange: setCurrentPage,
+                }}
+                onRowClick={(item: Item) => setCurrentBooking(item as IBookingWithRestaurant)}
+                tableHeadProps={{
+                  className: 'align-middle',
+                }}
+                tableProps={{
+                  striped: true,
+                  hover: true,
+                  className: 'align-middle',
+                }}
+                scopedColumns={{
+                  duration: (item: Item) => <td>{item.duration} мин</td>,
+                  restaurant_id: (item: Item) => (
+                    <RestaurantCityCell restaurantId={item.restaurant_id} />
+                  ),
+                }}
+              />
+            ) : (
+              <CCard>
+                <CCardBody>Бронирования не найдены, измените параметры поиска</CCardBody>
+              </CCard>
+            )}
+          </CCardBody>
+        </CCard>
+      </CCardGroup>
     </>
   )
 }
