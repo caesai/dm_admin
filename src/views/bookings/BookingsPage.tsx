@@ -47,7 +47,7 @@ const BookingsPage: FC = () => {
         <BookingsTable
           bookings={bookings}
           perPage={[itemsPerPage, setItemsPerPage]}
-          pageProps={[itemsPerPage, setCurrentPage]}
+          pageProps={[currentPage, setCurrentPage]}
           totalItems={totalItems}
           setCurrentBooking={setCurrentBooking}
         />
