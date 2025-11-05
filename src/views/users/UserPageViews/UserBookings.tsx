@@ -10,7 +10,7 @@ interface Props {
   bookings: IBookingWithRestaurant[]
 }
 
-const RestaurantCityCell = ({ restaurantId }: { restaurantId: number }) => {
+export const RestaurantCityCell = ({ restaurantId }: { restaurantId: number }) => {
   const [restaurantState, loadRestaurant] = useAtom(restaurantByIdAtom(restaurantId))
 
   useEffect(() => {
