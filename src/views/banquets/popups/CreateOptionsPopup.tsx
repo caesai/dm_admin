@@ -8,6 +8,7 @@ import {
   CModalHeader,
   CModalTitle,
   CRow,
+  CSpinner,
 } from '@coreui/react-pro'
 import { ChangeEvent, Dispatch, FC, SetStateAction, useRef, useState } from 'react'
 import classNames from 'classnames'
@@ -25,7 +26,7 @@ const initBanquetOptions: IRestaurantBanquet = {
   deposit_message: null,
   guests_max: 0,
   guests_min: 0,
-  service_fee: 0,
+  service_fee: '',
   images: [],
 }
 
@@ -36,6 +37,7 @@ const CreateOptionsPopup: FC<{
 }> = ({ popup, restaurant_id, onCreate }) => {
   const [visible, setVisible] = popup
   const [isCreating, setCreating] = useState(false)
+  const [loadingImagesCount, setLoadingImagesCount] = useState<number>(0)
   const [banquetOptions, setBanquetOptions] = useState<IRestaurantBanquet>(initBanquetOptions)
 
   const imageRef = useRef<HTMLInputElement>(null)
@@ -79,10 +81,9 @@ const CreateOptionsPopup: FC<{
   }
 
   const handleServiceFeeChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = parseFloat(e.target.value) || 0
     setBanquetOptions((prev) => ({
       ...prev,
-      service_fee: value,
+      service_fee: isNaN(Number(e.target.value)) ? '' : e.target.value,
     }))
   }
 
@@ -108,6 +109,7 @@ const CreateOptionsPopup: FC<{
 
   const addNewImage = (files: FileList | null) => {
     if (!files || files.length === 0) return
+    setLoadingImagesCount((prev) => prev + 1)
 
     uploadFile(files[0])
       .then((res) => {
@@ -121,6 +123,7 @@ const CreateOptionsPopup: FC<{
       .catch(() => {
         toast.error('Что-то пошло не так')
       })
+      .finally(() => setLoadingImagesCount((prev) => prev - 1))
   }
 
   const handleImageMove = (imgIndex: number, toTop: boolean) => {
@@ -179,7 +182,7 @@ const CreateOptionsPopup: FC<{
       toast.error('Одно из полей Депозит либо Условия должно быть обязательно заполнено')
       return false
     }
-    if (banquetOptions.service_fee === 0) {
+    if (banquetOptions.service_fee === '') {
       toast.error('Поле Обслуживание должно быть заполнено')
       return false
     }
@@ -273,7 +276,7 @@ const CreateOptionsPopup: FC<{
               placeholder={''}
               floatingClassName={'px-0'}
               onChange={handleServiceFeeChange}
-              value={banquetOptions.service_fee || ''}
+              value={banquetOptions.service_fee}
             />
           </CRow>
           <CRow>
@@ -329,6 +332,18 @@ const CreateOptionsPopup: FC<{
                     <CIcon icon={cilTrash} />
                   </CButton>
                 </div>
+              </div>
+            ))}
+            {Array.from({ length: loadingImagesCount }).map((_, index) => (
+              <div
+                key={index}
+                style={{
+                  width: '250px',
+                  height: '250px',
+                }}
+                className={classNames('d-flex', 'justify-content-center', 'align-items-center')}
+              >
+                <CSpinner color="primary" />
               </div>
             ))}
           </CRow>

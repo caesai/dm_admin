@@ -2,6 +2,7 @@ import { ElementType, JSX } from 'react'
 import CIcon from '@coreui/icons-react'
 import {
   cilBell,
+  cilBook,
   cilBuilding,
   cilCash,
   cilCircle,
@@ -82,7 +83,7 @@ const _nav: NavItem[] = [
     component: CNavItem,
     name: 'Брони',
     to: '/booking',
-    icon: <CIcon icon={cilCash} customClassName="nav-icon" />,
+    icon: <CIcon icon={cilBook} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,

@@ -1,34 +1,26 @@
 import { CCard, CCardBody, CSmartTable } from '@coreui/react-pro'
 import { IBookingWithRestaurant } from 'src/types/Booking.ts'
 import { Item } from '@coreui/react-pro/src/components/smart-table/types'
-import { GetRestaurant } from 'src/dataProviders/restaurants.ts'
 import { useState, useEffect } from 'react'
 import { BookingPopup } from 'src/views/users/UserPageViews/Modals/BookingPopup.tsx'
+import { useAtom } from 'jotai'
+import { restaurantByIdAtom } from 'src/atoms/restaurantAtom.ts'
 
 interface Props {
   bookings: IBookingWithRestaurant[]
 }
 
-export const useRestaurantCity = (restaurantId: number) => {
-  const [city, setCity] = useState('')
-  const [loading, setLoading] = useState(false)
+export const RestaurantCityCell = ({ restaurantId }: { restaurantId: number }) => {
+  const [restaurantState, loadRestaurant] = useAtom(restaurantByIdAtom(restaurantId))
 
   useEffect(() => {
-    if (restaurantId && !city) {
-      setLoading(true)
-      GetRestaurant(restaurantId)
-        .then((res) => setCity(res.data.city.name))
-        .catch(() => setCity('Ошибка загрузки'))
-        .finally(() => setLoading(false))
-    }
-  }, [restaurantId])
+    loadRestaurant()
+  }, [loadRestaurant])
 
-  return { city, loading }
-}
+  if (restaurantState.loading) return <td>Загрузка...</td>
+  if (!restaurantState.restaurant) return <td>Ошибка</td>
 
-const RestaurantCityCell = ({ restaurantId }: { restaurantId: number }) => {
-  const { city, loading } = useRestaurantCity(restaurantId)
-  return <>{loading ? 'Загрузка...' : city}</>
+  return <td>{restaurantState.restaurant?.city?.name || '—'}</td>
 }
 
 export const UserBookings = ({ bookings }: Props) => {
@@ -106,11 +98,7 @@ export const UserBookings = ({ bookings }: Props) => {
           }}
           scopedColumns={{
             duration: (item: Item) => <td>{item.duration} мин</td>,
-            restaurant_id: (item: Item) => (
-              <td>
-                <RestaurantCityCell restaurantId={item.restaurant_id} />
-              </td>
-            ),
+            restaurant_id: (item: Item) => <RestaurantCityCell restaurantId={item.restaurant_id} />,
           }}
         />
       ) : (

@@ -30,14 +30,6 @@ const MediaUrlInput: FC<MediaUrlInputProps> = ({ url, type, onUrlChange, onMedia
           value={url === null ? '' : url}
           onInput={onUrlChange}
         />
-        {!url && (
-          <strong
-            className="fs-5"
-            style={{ position: 'absolute', top: '20%', left: type === 'video' ? '14ex' : '20ex' }}
-          >
-            *
-          </strong>
-        )}
       </div>
       <MediaInput onChange={(e) => onMediaChange(e.target.files)} isVideo={type === 'video'} />
       <TooltipInfo content={tooltipText} />

@@ -48,3 +48,10 @@ export interface IBookingWithRestaurant extends IBookingBase {
   restaurant_id: number
   restaurant: IRestaurantShort
 }
+
+export interface IBookingList {
+  page: number
+  per_page: number
+  total: number
+  bookings: IBookingWithRestaurant[]
+}

@@ -42,7 +42,6 @@ const BlocksTable: FC<{
         className: 'align-middle',
       }}
       activePage={1}
-      footer
       columns={columns}
       columnFilter
       itemsPerPageSelect

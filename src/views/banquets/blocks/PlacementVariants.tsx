@@ -7,6 +7,7 @@ import {
   CCardTitle,
   CFormInput,
   CRow,
+  CSpinner,
 } from '@coreui/react-pro'
 import CIcon from '@coreui/icons-react'
 import { cilArrowLeft, cilArrowRight, cilTrash } from '@coreui/icons'
@@ -18,11 +19,12 @@ import { SendBanquetsOptions } from 'src/dataProviders/banquets.ts'
 
 const PlacementVariants: FC<{
   restaurant: [IRestaurantOptions, Dispatch<SetStateAction<IRestaurantOptions | null>>]
-  setCurrentId: Dispatch<SetStateAction<number>>
+  setBanquetToDeleteId: Dispatch<SetStateAction<number | null>>
   setPopup: Dispatch<SetStateAction<boolean>>
   onUpdate: () => void
-}> = ({ restaurant, setCurrentId, setPopup, onUpdate }) => {
+}> = ({ restaurant, setBanquetToDeleteId, setPopup, onUpdate }) => {
   const [changedBanquets, setChangedBanquets] = useState<{ [banquet_id: number]: boolean }>({})
+  const [loadingImagesCount, setLoadingImagesCount] = useState<Map<number, number>>(new Map())
 
   const [currentRestaurant, setCurrentRestaurant] = restaurant
   const imageRef = useRef<{ [banquet_id: number]: HTMLInputElement | null }>({})
@@ -132,10 +134,9 @@ const PlacementVariants: FC<{
 
       const updatedBanquetOptions = prev.banquet_options.map((banquet) => {
         if (banquet.id === banquetId) {
-          const value = Number(e.target.value)
           return {
             ...banquet,
-            service_fee: isNaN(value) ? 0 : value,
+            service_fee: isNaN(Number(e.target.value)) ? '' : e.target.value,
           }
         }
         return banquet
@@ -222,6 +223,7 @@ const PlacementVariants: FC<{
 
   const addNewImage = (files: FileList | null, banquetId: number) => {
     if (!files) return
+    setLoadingImagesCount((prev) => new Map(prev).set(banquetId, (prev.get(banquetId) || 0) + 1))
 
     uploadFile(files[0])
       .then((res) => {
@@ -247,6 +249,11 @@ const PlacementVariants: FC<{
       .catch(() => {
         toast.error('Что-то пошло не так')
       })
+      .finally(() =>
+        setLoadingImagesCount((prev) =>
+          new Map(prev).set(banquetId, (prev.get(banquetId) || 1) - 1),
+        ),
+      )
   }
 
   const handleImageDelete = (banquetId: number, imgIndex: number) => {
@@ -298,7 +305,7 @@ const PlacementVariants: FC<{
       toast.error('Одно из полей Депозит либо Условия должно быть обязательно заполнено')
       return false
     }
-    if (options.service_fee === 0) {
+    if (options.service_fee === '') {
       toast.error('Поле Обслуживание должно быть заполнено')
       return false
     }
@@ -323,7 +330,7 @@ const PlacementVariants: FC<{
   }
 
   return (
-    <CCard className={classNames('border', 'rounded')}>
+    <CCard className={classNames('border', 'rounded')} style={{ maxWidth: '100%' }}>
       <CCardHeader>
         <CCardTitle>Варианты рассадки</CCardTitle>
       </CCardHeader>
@@ -396,7 +403,7 @@ const PlacementVariants: FC<{
                       floatingLabel="Обслуживание, % *"
                       placeholder={''}
                       floatingClassName={'px-0'}
-                      value={banquet.service_fee ? banquet.service_fee : ''}
+                      value={banquet.service_fee ?? ''}
                       onChange={(event) => handleServiceChange(event, banquet.id)}
                     />
                   </CRow>
@@ -410,7 +417,10 @@ const PlacementVariants: FC<{
                       onChange={(event) => handleDurationFeeChange(event, banquet.id)}
                     />
                   </CRow>
-                  <CRow className={classNames('d-flex', 'flex-nowrap', 'overflow-x-scroll')}>
+                  <CRow
+                    className={classNames('d-flex', 'flex-nowrap', 'overflow-x-auto')}
+                    style={{ width: '100%' }}
+                  >
                     {banquet.images?.map((img, index) => (
                       <div
                         key={index}
@@ -432,7 +442,7 @@ const PlacementVariants: FC<{
                             objectFit: 'cover',
                           }}
                         />
-                        <div className={classNames('d-flex', 'gap-1')}>
+                        <div className={classNames('d-flex', 'gap-1', 'pb-3')}>
                           <CButton
                             color="primary"
                             size="sm"
@@ -460,8 +470,26 @@ const PlacementVariants: FC<{
                         </div>
                       </div>
                     ))}
+                    {Array.from({ length: loadingImagesCount.get(banquet.id) || 0 }).map(
+                      (_, index) => (
+                        <div
+                          key={index}
+                          style={{
+                            width: '225px',
+                            height: '250px',
+                          }}
+                          className={classNames(
+                            'd-flex',
+                            'justify-content-center',
+                            'align-items-center',
+                          )}
+                        >
+                          <CSpinner color="primary" />
+                        </div>
+                      ),
+                    )}
                   </CRow>
-                  <CRow className={'mt-4'}>
+                  <CRow className={'mt-1'}>
                     <div>
                       <input
                         type="file"
@@ -492,7 +520,7 @@ const PlacementVariants: FC<{
                       <CButton
                         color="secondary"
                         className={'w-100'}
-                        onClick={() => setCurrentId(banquet.id)}
+                        onClick={() => setBanquetToDeleteId(banquet.id)}
                       >
                         Удалить
                       </CButton>
@@ -502,7 +530,7 @@ const PlacementVariants: FC<{
               </CCard>
             ))
           ) : (
-            <strong>Вариантов нет</strong>
+            <span>Вариантов нет</span>
           )}
         </div>
       </CCardBody>

@@ -1,17 +1,23 @@
 import { IEventBookingBase } from 'src/types/Event.ts'
 import { CCard, CCardBody, CSmartTable } from '@coreui/react-pro'
 import { Item } from '@coreui/react-pro/src/components/smart-table/types'
-import { useRestaurantCity } from 'src/views/users/UserPageViews/UserBookings.tsx'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { EventPopup } from 'src/views/users/UserPageViews/Modals/EventPopup.tsx'
+import { useAtom } from 'jotai'
+import { restaurantByIdAtom } from 'src/atoms/restaurantAtom.ts'
 
 interface Props {
   events: IEventBookingBase[]
 }
 
 const RestaurantCityCell = ({ restaurantId }: { restaurantId: number }) => {
-  const { city, loading } = useRestaurantCity(restaurantId)
-  return <>{loading ? 'Загрузка...' : city}</>
+  const [restaurantState, loadRestaurant] = useAtom(restaurantByIdAtom(restaurantId))
+
+  useEffect(() => {
+    loadRestaurant()
+  }, [loadRestaurant])
+
+  return <>{restaurantState.loading ? 'Загрузка...' : restaurantState.restaurant?.city.name}</>
 }
 
 const formatDateTime = (dateString: string) => {

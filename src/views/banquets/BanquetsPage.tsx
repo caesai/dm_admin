@@ -24,7 +24,7 @@ const BanquetsPage = () => {
   const [currentId, setCurrentId] = useState<number>(0)
   const [restaurants, setRestaurants] = useState<IRestaurantWCity[]>([])
   const [currentRestaurant, setCurrentRestaurant] = useState<IRestaurantOptions | null>(null)
-  const [currentBanquetId, setCurrentBanquetId] = useState<number | null>(null)
+  const [banquetToDeleteId, setBanquetToDeleteId] = useState<number | null>(null)
   const [popup, setPopup] = useState<boolean>(false)
   const [loader, setLoader] = useState<boolean>(false)
 
@@ -34,8 +34,8 @@ const BanquetsPage = () => {
   }
 
   const changeRestaurantId = (e: ChangeEvent<HTMLSelectElement>) => {
-    if (e.target.value === '') return
-    setCurrentId(Number(e.target.value))
+    if (e.target.value === '') setCurrentId(0)
+    else setCurrentId(Number(e.target.value))
   }
 
   const getRestaurantData = () => {
@@ -66,7 +66,7 @@ const BanquetsPage = () => {
         onCreate={getRestaurantData}
       />
       <ConfirmDeletePopup
-        banquet_id={[currentBanquetId, setCurrentBanquetId]}
+        banquet_id={[banquetToDeleteId, setBanquetToDeleteId]}
         onDelete={getRestaurantData}
       />
       <CCard className="border-0">
@@ -87,6 +87,7 @@ const BanquetsPage = () => {
           {loader ? (
             <CSpinner color="primary" className="align-self-center" />
           ) : (
+            currentId !== 0 &&
             currentRestaurant !== null && (
               <CCardGroup className={classNames('d-flex', 'flex-column', 'gap-4')}>
                 <BanquetInfo
@@ -96,7 +97,7 @@ const BanquetsPage = () => {
                 />
                 <PlacementVariants
                   restaurant={[currentRestaurant, setCurrentRestaurant]}
-                  setCurrentId={setCurrentId}
+                  setBanquetToDeleteId={setBanquetToDeleteId}
                   setPopup={setPopup}
                   onUpdate={getRestaurantData}
                 />
