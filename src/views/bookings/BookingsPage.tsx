@@ -20,10 +20,11 @@ const BookingsPage: FC = () => {
   const [bookings, setBookings] = useState<IBookingWithRestaurant[]>([])
   const [restaurants, setRestaurants] = useState<IRestaurantWCity[]>([])
   const [currentBooking, setCurrentBooking] = useState<IBookingWithRestaurant | null>(null)
+  const [currentFilters, setFilters] = useState<IBookingFilterProps>(initFilters)
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [itemsPerPage, setItemsPerPage] = useState<number>(20)
   const [totalItems, setTotalItems] = useState<number>(0)
-  const [currentFilters, setFilters] = useState<IBookingFilterProps>(initFilters)
+  const [loading, setLoading] = useState<boolean>(false)
 
   const loadRestaurants = async () => {
     const response = await GetRestaurantList()
@@ -31,6 +32,7 @@ const BookingsPage: FC = () => {
   }
 
   const loadBookings = async () => {
+    setLoading(true)
     getBookings({
       page: currentPage,
       per_page: itemsPerPage,
@@ -44,6 +46,7 @@ const BookingsPage: FC = () => {
         setTotalItems(res.data.total)
       })
       .catch(() => toast.error('Что-то пошло не так'))
+      .finally(() => setLoading(false))
   }
 
   useEffect(() => {
@@ -61,7 +64,8 @@ const BookingsPage: FC = () => {
         <BookingsFilter
           restaurants={restaurants}
           filters={[currentFilters, setFilters]}
-          sendData={loadBookings}
+          sendFilters={loadBookings}
+          loading={loading}
         />
         <BookingsTable
           bookings={bookings}

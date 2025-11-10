@@ -31,12 +31,17 @@ const bookingStatusOptions = [
 interface IBookingsFilterProps {
   restaurants: IRestaurantWCity[]
   filters: [IBookingFilterProps, Dispatch<SetStateAction<IBookingFilterProps>>]
-  sendData: () => void
+  loading: boolean
+  sendFilters: () => void
 }
 
-const BookingsFilter: FC<IBookingsFilterProps> = ({ restaurants, filters, sendData }) => {
+const BookingsFilter: FC<IBookingsFilterProps> = ({
+  restaurants,
+  filters,
+  loading,
+  sendFilters,
+}) => {
   const [currentSearchOption, setSearchOption] = useState<string>('')
-  const [loading, setLoading] = useState<boolean>(false)
   const [currentFilters, setFilters] = filters
 
   const changeSearchValue = (e: ChangeEvent<HTMLInputElement>) => {
@@ -66,12 +71,6 @@ const BookingsFilter: FC<IBookingsFilterProps> = ({ restaurants, filters, sendDa
       ...prev,
       booking_status: e.target.value,
     }))
-  }
-
-  const sendFilters = () => {
-    setLoading(true)
-    sendData()
-    setLoading(false)
   }
 
   return (
