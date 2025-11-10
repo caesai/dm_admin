@@ -2,9 +2,12 @@ import axios from 'axios'
 import { BASEURL } from 'src/api.ts'
 import { IBookingList } from 'src/types/Booking.ts'
 
-type getBookingProps = {
+interface getBookingProps extends IBookingFilterProps {
   page?: number
   per_page?: number
+}
+
+export type IBookingFilterProps = {
   search?: string
   restaurant_id?: number
   booking_status?: string

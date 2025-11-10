@@ -11,9 +11,7 @@ import { ChangeEvent, Dispatch, FC, SetStateAction, useState } from 'react'
 import classNames from 'classnames'
 import { getRestaurantCity } from 'src/utils.tsx'
 import { IRestaurantWCity } from 'src/types/Restaurant.ts'
-import { IBookingWithRestaurant } from 'src/types/Booking.ts'
-import { getBookings } from 'src/dataProviders/bookings.ts'
-import toast from 'react-hot-toast'
+import { IBookingFilterProps } from 'src/dataProviders/bookings.ts'
 
 const searchOptions = [
   { label: 'Данные клиента', value: '' },
@@ -32,39 +30,47 @@ const bookingStatusOptions = [
 
 interface IBookingsFilterProps {
   restaurants: IRestaurantWCity[]
-  setBookings: Dispatch<SetStateAction<IBookingWithRestaurant[]>>
+  filters: [IBookingFilterProps, Dispatch<SetStateAction<IBookingFilterProps>>]
+  loading: boolean
+  sendFilters: () => void
 }
 
-const BookingsFilter: FC<IBookingsFilterProps> = ({ restaurants, setBookings }) => {
+const BookingsFilter: FC<IBookingsFilterProps> = ({
+  restaurants,
+  filters,
+  loading,
+  sendFilters,
+}) => {
   const [currentSearchOption, setSearchOption] = useState<string>('')
-  const [searchValue, setSearchValue] = useState<string>('')
-  const [restaurantId, setRestaurantId] = useState<number>(0)
-  const [currentBookingStatus, setBookingStatus] = useState<string>('')
-  const [loading, setLoading] = useState<boolean>(false)
+  const [currentFilters, setFilters] = filters
 
   const changeSearchValue = (e: ChangeEvent<HTMLInputElement>) => {
     if (currentSearchOption === '') return
-    setSearchValue(e.target.value)
+    setFilters((prev) => ({
+      ...prev,
+      search: e.target.value,
+    }))
   }
 
   const changeRestaurantId = (e: ChangeEvent<HTMLSelectElement>) => {
     if (e.target.value === '') {
-      setRestaurantId(0)
+      setFilters((prev) => ({
+        ...prev,
+        restaurant_id: 0,
+      }))
       return
     }
-    setRestaurantId(Number(e.target.value))
+    setFilters((prev) => ({
+      ...prev,
+      restaurant_id: Number(e.target.value),
+    }))
   }
 
-  const sendFilters = () => {
-    setLoading(true)
-    getBookings({
-      search: searchValue !== '' ? searchValue : undefined,
-      restaurant_id: restaurantId !== 0 ? restaurantId : undefined,
-      booking_status: currentBookingStatus !== '' ? currentBookingStatus : undefined,
-    })
-      .then((res) => setBookings(res.data.bookings))
-      .catch(() => toast.error('Что-то пошло не так'))
-      .finally(() => setLoading(false))
+  const changeBookingStatus = (e: ChangeEvent<HTMLSelectElement>) => {
+    setFilters((prev) => ({
+      ...prev,
+      booking_status: e.target.value,
+    }))
   }
 
   return (
@@ -84,7 +90,7 @@ const BookingsFilter: FC<IBookingsFilterProps> = ({ restaurants, setBookings }) 
             <CFormInput
               placeholder={currentSearchOption}
               className="w-25"
-              value={searchValue}
+              value={currentFilters.search}
               onChange={changeSearchValue}
             />
           </div>
@@ -107,8 +113,8 @@ const BookingsFilter: FC<IBookingsFilterProps> = ({ restaurants, setBookings }) 
           <div>
             <CFormSelect
               options={bookingStatusOptions}
-              value={currentBookingStatus}
-              onChange={(e) => setBookingStatus(e.target.value)}
+              value={currentFilters.booking_status}
+              onChange={changeBookingStatus}
             />
           </div>
         </CRow>
