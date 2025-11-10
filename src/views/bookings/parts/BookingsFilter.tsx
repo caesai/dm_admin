@@ -84,7 +84,7 @@ const BookingsFilter: FC<IBookingsFilterProps> = ({ restaurants, filters, sendDa
           <div className={classNames('d-flex', 'gap-4')}>
             <CFormSelect
               options={searchOptions}
-              value={currentFilters.search}
+              value={currentSearchOption}
               onChange={(e) => setSearchOption(e.target.value)}
               className="w-75"
             />
