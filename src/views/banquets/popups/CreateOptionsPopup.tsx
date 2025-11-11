@@ -23,6 +23,7 @@ const initBanquetOptions: IRestaurantBanquet = {
   id: 0,
   name: '',
   deposit: 0,
+  description: null,
   deposit_message: null,
   guests_max: 0,
   guests_min: 0,
@@ -46,6 +47,13 @@ const CreateOptionsPopup: FC<{
     setBanquetOptions((prev) => ({
       ...prev,
       name: e.target.value,
+    }))
+  }
+
+  const handleDescriptionChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setBanquetOptions((prev) => ({
+      ...prev,
+      description: e.target.value,
     }))
   }
 
@@ -227,6 +235,16 @@ const CreateOptionsPopup: FC<{
               floatingClassName={'px-0'}
               onChange={handleNameChange}
               value={banquetOptions.name}
+            />
+          </CRow>
+          <CRow>
+            <CFormInput
+              type="text"
+              floatingLabel="Описание"
+              placeholder={''}
+              floatingClassName={'px-0'}
+              onChange={handleDescriptionChange}
+              value={banquetOptions.description || ''}
             />
           </CRow>
           <CRow>
