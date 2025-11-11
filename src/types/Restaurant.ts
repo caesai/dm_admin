@@ -44,6 +44,7 @@ export interface IRestaurantBanquet {
   id: number
   name: string
   deposit: number
+  description: string | null
   deposit_message: string | null
   guests_max: number
   guests_min: number

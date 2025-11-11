@@ -51,6 +51,28 @@ const PlacementVariants: FC<{
     updateBanquetChangedStatus(banquetId)
   }
 
+  const handleDescriptionChange = (e: ChangeEvent<HTMLInputElement>, banquetId: number) => {
+    setCurrentRestaurant((prev) => {
+      if (!prev) return prev
+
+      const updatedBanquetOptions = prev.banquet_options.map((banquet) => {
+        if (banquet.id === banquetId) {
+          return {
+            ...banquet,
+            description: e.target.value,
+          }
+        }
+        return banquet
+      })
+
+      return {
+        ...prev,
+        banquet_options: updatedBanquetOptions,
+      }
+    })
+    updateBanquetChangedStatus(banquetId)
+  }
+
   const handleGuestsCountChange = (
     e: ChangeEvent<HTMLInputElement>,
     banquetId: number,
@@ -355,6 +377,16 @@ const PlacementVariants: FC<{
                       floatingClassName={'px-0'}
                       value={banquet.name ? banquet.name : ''}
                       onChange={(event) => handleNameChange(event, banquet.id)}
+                    />
+                  </CRow>
+                  <CRow>
+                    <CFormInput
+                      type="text"
+                      floatingLabel="Описание"
+                      placeholder={''}
+                      floatingClassName={'px-0'}
+                      value={banquet.description ? banquet.description : ''}
+                      onChange={(event) => handleDescriptionChange(event, banquet.id)}
                     />
                   </CRow>
                   <CRow>
