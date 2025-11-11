@@ -18,7 +18,7 @@ const AppHeaderDropdown = () => {
         <CAvatar src={avatar8} size="md" />
       </CDropdownToggle>
       <CDropdownMenu className="pt-0">
-        <CDropdownItem href="/login" onClick={logout}>
+        <CDropdownItem href="/dm_admin/login" onClick={logout}>
           <CIcon icon={cilAccountLogout} className="me-2" />
           Выйти
         </CDropdownItem>
