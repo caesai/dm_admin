@@ -53,7 +53,7 @@ const CreateOptionsPopup: FC<{
   const handleDescriptionChange = (e: ChangeEvent<HTMLInputElement>) => {
     setBanquetOptions((prev) => ({
       ...prev,
-      description: e.target.value,
+      description: e.target.value === '' ? null : e.target.value,
     }))
   }
 

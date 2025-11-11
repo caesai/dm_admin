@@ -59,7 +59,7 @@ const PlacementVariants: FC<{
         if (banquet.id === banquetId) {
           return {
             ...banquet,
-            description: e.target.value,
+            description: e.target.value === '' ? null : e.target.value,
           }
         }
         return banquet
