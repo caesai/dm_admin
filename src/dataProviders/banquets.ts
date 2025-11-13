@@ -7,11 +7,26 @@ import {
 import axios from 'axios'
 import { BASEURL } from 'src/api.ts'
 
+interface IBanquetBookings {
+  page: number
+  per_page: number
+}
+
 export const GetRestaurantOptions = async (id: number) => {
   return await axios.get<IRestaurantOptions>(`${BASEURL}/banquet-options/restaurant/${id}`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },
+  })
+}
+
+export const GetBanquetBookings = async (props: IBanquetBookings) => {
+  return await axios.get(`${BASEURL}/banquet-requests/`, {
+    params: {
+      page: props.page,
+      per_page: props.per_page,
+    },
+    headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
   })
 }
 
