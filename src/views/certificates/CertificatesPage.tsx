@@ -25,8 +25,8 @@ const CertificatesPage: FC = () => {
   }
 
   useEffect(() => {
-    loadCertificates()
-  }, [currentPage, itemsPerPage])
+    loadCertificates().then();
+  }, [currentPage, itemsPerPage, loadCertificates])
 
   const cols = [
     {

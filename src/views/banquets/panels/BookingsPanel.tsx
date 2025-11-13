@@ -26,8 +26,8 @@ const BookingsPanel: FC = () => {
   }
 
   useEffect(() => {
-    loadBookings()
-  }, [currentPage, itemsPerPage])
+    loadBookings().then();
+  }, [currentPage, itemsPerPage, loadBookings])
 
   const cols = [
     {

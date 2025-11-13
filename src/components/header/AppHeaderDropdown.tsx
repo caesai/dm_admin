@@ -10,6 +10,7 @@ import CIcon from '@coreui/icons-react'
 
 import avatar8 from './../../assets/images/avatars/8.jpg'
 import { logout } from 'src/models/auth.model.ts'
+import {DEV_MODE} from "src/api.ts";
 
 const AppHeaderDropdown = () => {
   return (
@@ -18,7 +19,7 @@ const AppHeaderDropdown = () => {
         <CAvatar src={avatar8} size="md" />
       </CDropdownToggle>
       <CDropdownMenu className="pt-0">
-        <CDropdownItem href="/dm_admin/login" onClick={logout}>
+        <CDropdownItem href={`${DEV_MODE ? '/dm_admin/' : '/'} login`} onClick={logout}>
           <CIcon icon={cilAccountLogout} className="me-2" />
           Выйти
         </CDropdownItem>
