@@ -4,10 +4,12 @@ import classNames from 'classnames'
 import { Item } from '@coreui/react-pro/src/components/smart-table/types.ts'
 import { getCertificates } from 'src/dataProviders/certificates.ts'
 import toast from 'react-hot-toast'
-import { CertificateData } from 'src/types/Certificates.ts'
+import { CertificateData, ICertificate } from 'src/types/Certificates.ts'
+import { TablePopup } from 'src/components/TablePopup.tsx'
 
 const CertificatesPage: FC = () => {
   const [certificates, setCertificates] = useState<CertificateData[]>([])
+  const [currentCertificate, setCertificate] = useState<ICertificate | null>(null)
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [itemsPerPage, setItemsPerPage] = useState<number>(20)
   const [totalItems, setTotalItems] = useState<number>(0)
@@ -72,41 +74,45 @@ const CertificatesPage: FC = () => {
   ]
 
   return (
-    <CCard className={classNames('rounded', 'border')}>
-      <CCardHeader>
-        <strong>Сертификаты</strong>
-      </CCardHeader>
-      <CCardBody>
-        <CSmartTable
-          columns={cols}
-          items={certificates}
-          columnFilter
-          columnSorter
-          clickableRows
-          itemsPerPageSelect
-          itemsPerPage={itemsPerPage}
-          onItemsPerPageChange={setItemsPerPage}
-          itemsPerPageOptions={[10, 20, 50, 100]}
-          pagination
-          paginationProps={{
-            pages: Math.ceil(totalItems / itemsPerPage),
-            activePage: currentPage,
-            onActivePageChange: setCurrentPage,
-          }}
-          tableHeadProps={{
-            className: 'align-middle',
-          }}
-          tableProps={{
-            striped: true,
-            hover: true,
-            className: classNames('align-middle', 'text-center'),
-          }}
-          scopedColumns={{
-            expired_at: (item: Item) => <td>{new Date(item.expired_at).toLocaleDateString()}</td>,
-          }}
-        />
-      </CCardBody>
-    </CCard>
+    <>
+      <TablePopup data={[currentCertificate, setCertificate]} title={'Сертификат'} />
+      <CCard className={classNames('rounded', 'border')}>
+        <CCardHeader>
+          <strong>Сертификаты</strong>
+        </CCardHeader>
+        <CCardBody>
+          <CSmartTable
+            columns={cols}
+            items={certificates}
+            columnFilter
+            columnSorter
+            clickableRows
+            itemsPerPageSelect
+            itemsPerPage={itemsPerPage}
+            onItemsPerPageChange={setItemsPerPage}
+            itemsPerPageOptions={[10, 20, 50, 100]}
+            pagination
+            paginationProps={{
+              pages: Math.ceil(totalItems / itemsPerPage),
+              activePage: currentPage,
+              onActivePageChange: setCurrentPage,
+            }}
+            tableHeadProps={{
+              className: 'align-middle',
+            }}
+            tableProps={{
+              striped: true,
+              hover: true,
+              className: classNames('align-middle', 'text-center'),
+            }}
+            onRowClick={(item: Item) => setCertificate(item as ICertificate)}
+            scopedColumns={{
+              expired_at: (item: Item) => <td>{new Date(item.expired_at).toLocaleDateString()}</td>,
+            }}
+          />
+        </CCardBody>
+      </CCard>
+    </>
   )
 }
 

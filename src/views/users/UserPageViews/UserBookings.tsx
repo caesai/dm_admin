@@ -2,7 +2,7 @@ import { CCard, CCardBody, CSmartTable } from '@coreui/react-pro'
 import { IBookingWithRestaurant } from 'src/types/Booking.ts'
 import { Item } from '@coreui/react-pro/src/components/smart-table/types'
 import { useState, useEffect } from 'react'
-import { BookingPopup } from 'src/views/users/UserPageViews/Modals/BookingPopup.tsx'
+import { TablePopup } from 'src/components/TablePopup.tsx'
 import { useAtom } from 'jotai'
 import { restaurantByIdAtom } from 'src/atoms/restaurantAtom.ts'
 
@@ -79,7 +79,7 @@ export const UserBookings = ({ bookings }: Props) => {
 
   return (
     <>
-      <BookingPopup booking={[currentBooking, setCurrentBooking]} />
+      <TablePopup data={[currentBooking, setCurrentBooking]} title={'Бронирование'} />
       {bookings.length > 0 ? (
         <CSmartTable
           columns={cols}
