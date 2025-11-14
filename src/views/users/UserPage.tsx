@@ -30,6 +30,7 @@ import { UserLogs } from 'src/views/users/UserPageViews/UserLogs.tsx'
 import { ILogs } from 'src/types/Logs.ts'
 import { UserEvents } from 'src/views/users/UserPageViews/UserEvents.tsx'
 import { IEventBookingBase } from 'src/types/Event.ts'
+import { UserBanquets } from 'src/views/users/UserPageViews/UserBanquets.tsx'
 
 const UserPage = () => {
   const { id } = useParams()
@@ -69,9 +70,10 @@ const UserPage = () => {
                         <CTab itemKey="home">Профиль</CTab>
                         <CTab itemKey="bookings">Бронирование</CTab>
                         <CTab itemKey="events">Мероприятия</CTab>
+                        <CTab itemKey="banquets">Банкеты</CTab>
                         <CTab itemKey="logs">Логи</CTab>
-                        <CTab itemKey={'reviews'}>Отзывы</CTab>
-                        <CTab itemKey={'payments'}>Платежи</CTab>
+                        <CTab itemKey="reviews">Отзывы</CTab>
+                        <CTab itemKey="payments">Платежи</CTab>
                       </CTabList>
                       <CTabContent>
                         <CTabPanel className="p-3" itemKey="home">
@@ -85,15 +87,12 @@ const UserPage = () => {
                         <CTabPanel className="p-3" itemKey="events">
                           <UserEvents events={events} />
                         </CTabPanel>
+                        <CTabPanel itemKey="banquets">
+                          <UserBanquets user_id={Number(id)} />
+                        </CTabPanel>
                         <CTabPanel className="p-3" itemKey="logs">
                           <UserLogs logs={logs} />
                         </CTabPanel>
-                        {/*<CTabPanel className="p-3" itemKey="reviews">*/}
-                        {/*  <UserReviews user={user} />*/}
-                        {/*</CTabPanel>*/}
-                        {/*<CTabPanel className="p-3" itemKey="payments">*/}
-                        {/*  <UserPayments user={user} />*/}
-                        {/*</CTabPanel>*/}
                       </CTabContent>
                     </CTabs>
                   </CCardBody>
