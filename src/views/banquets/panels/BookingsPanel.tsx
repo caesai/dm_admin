@@ -6,9 +6,11 @@ import { RestaurantCityCell } from 'src/views/users/UserPageViews/UserBookings.t
 import { GetBanquetBookings } from 'src/dataProviders/banquets.ts'
 import toast from 'react-hot-toast'
 import classNames from 'classnames'
+import { TablePopup } from 'src/components/TablePopup.tsx'
 
 const BookingsPanel: FC = () => {
   const [bookings, setBookings] = useState<IBookingWithRestaurant[]>([])
+  const [currentBooking, setBooking] = useState<IBookingWithRestaurant | null>(null)
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [itemsPerPage, setItemsPerPage] = useState<number>(20)
   const [totalItems, setTotalItems] = useState<number>(0)
@@ -73,42 +75,46 @@ const BookingsPanel: FC = () => {
   ]
 
   return (
-    <CTabPanel itemKey={'bookings'}>
-      <CSmartTable
-        columns={cols}
-        items={bookings}
-        columnFilter
-        columnSorter
-        clickableRows
-        itemsPerPageSelect
-        itemsPerPage={itemsPerPage}
-        onItemsPerPageChange={setItemsPerPage}
-        itemsPerPageOptions={[10, 20, 50, 100]}
-        pagination
-        paginationProps={{
-          pages: Math.ceil(totalItems / itemsPerPage),
-          activePage: currentPage,
-          onActivePageChange: setCurrentPage,
-        }}
-        tableHeadProps={{
-          className: 'align-middle',
-        }}
-        tableProps={{
-          striped: true,
-          hover: true,
-          className: classNames('text-center', 'align-middle'),
-        }}
-        scopedColumns={{
-          restaurant_id: (item: Item) => <RestaurantCityCell restaurantId={item.restaurant_id} />,
-          time: (item: Item) => (
-            <td>
-              {item.start_time}-{item.end_time}
-            </td>
-          ),
-          created_at: (item: Item) => <td>{new Date(item.created_at).toLocaleDateString()}</td>,
-        }}
-      />
-    </CTabPanel>
+    <>
+      <TablePopup data={[currentBooking, setBooking]} title={'Бронирование'} />
+      <CTabPanel itemKey={'bookings'}>
+        <CSmartTable
+          columns={cols}
+          items={bookings}
+          columnFilter
+          columnSorter
+          clickableRows
+          itemsPerPageSelect
+          itemsPerPage={itemsPerPage}
+          onItemsPerPageChange={setItemsPerPage}
+          itemsPerPageOptions={[10, 20, 50, 100]}
+          pagination
+          paginationProps={{
+            pages: Math.ceil(totalItems / itemsPerPage),
+            activePage: currentPage,
+            onActivePageChange: setCurrentPage,
+          }}
+          tableHeadProps={{
+            className: 'align-middle',
+          }}
+          tableProps={{
+            striped: true,
+            hover: true,
+            className: classNames('text-center', 'align-middle'),
+          }}
+          onRowClick={(item: Item) => setBooking(item as IBookingWithRestaurant)}
+          scopedColumns={{
+            restaurant_id: (item: Item) => <RestaurantCityCell restaurantId={item.restaurant_id} />,
+            time: (item: Item) => (
+              <td>
+                {item.start_time}-{item.end_time}
+              </td>
+            ),
+            created_at: (item: Item) => <td>{new Date(item.created_at).toLocaleDateString()}</td>,
+          }}
+        />
+      </CTabPanel>
+    </>
   )
 }
 
