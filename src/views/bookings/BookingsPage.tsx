@@ -50,11 +50,11 @@ const BookingsPage: FC = () => {
   }
 
   useEffect(() => {
-    loadBookings().then();
-  }, [currentPage, itemsPerPage, loadBookings])
+    void loadBookings()
+  }, [currentPage, itemsPerPage])
 
   useEffect(() => {
-    loadRestaurants().then();
+    void loadRestaurants()
   }, [])
 
   return (

@@ -43,12 +43,12 @@ const BanquetsPanel: FC = () => {
   }
 
   useEffect(() => {
-    loadRestaurants().then();
+    void loadRestaurants()
   }, [])
 
   useEffect(() => {
     getRestaurantData()
-  }, [currentId, getRestaurantData])
+  }, [currentId])
 
   return (
     <>

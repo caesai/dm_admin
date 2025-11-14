@@ -10,7 +10,7 @@ import CIcon from '@coreui/icons-react'
 
 import avatar8 from './../../assets/images/avatars/8.jpg'
 import { logout } from 'src/models/auth.model.ts'
-import {DEV_MODE} from "src/api.ts";
+import { DEV_MODE } from 'src/api.ts'
 
 const AppHeaderDropdown = () => {
   return (
