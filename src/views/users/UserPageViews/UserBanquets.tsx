@@ -1,4 +1,4 @@
-import { CSmartTable, CTabPanel } from '@coreui/react-pro'
+import { CCard, CCardBody, CSmartTable, CTabPanel } from '@coreui/react-pro'
 import { Item } from '@coreui/react-pro/src/components/smart-table/types'
 import { useState, useEffect, FC } from 'react'
 import { TablePopup } from 'src/components/TablePopup.tsx'
@@ -87,43 +87,51 @@ export const UserBanquets: FC<{
   return (
     <>
       <TablePopup data={[currentBanquet, setBanquet]} title={'Банкет'} />
-      <CTabPanel itemKey={'banquets'}>
-        <CSmartTable
-          columns={cols}
-          items={banquets}
-          columnFilter
-          columnSorter
-          clickableRows
-          itemsPerPageSelect
-          itemsPerPage={itemsPerPage}
-          onItemsPerPageChange={setItemsPerPage}
-          itemsPerPageOptions={[10, 20, 50, 100]}
-          pagination
-          paginationProps={{
-            pages: Math.ceil(totalItems / itemsPerPage),
-            activePage: currentPage,
-            onActivePageChange: setCurrentPage,
-          }}
-          tableHeadProps={{
-            className: 'align-middle',
-          }}
-          tableProps={{
-            striped: true,
-            hover: true,
-            className: classNames('text-center', 'align-middle'),
-          }}
-          onRowClick={(item: Item) => setBanquet(item as IRestaurantBanquet)}
-          scopedColumns={{
-            restaurant_id: (item: Item) => <RestaurantCityCell restaurantId={item.restaurant_id} />,
-            time: (item: Item) => (
-              <td>
-                {item.start_time}-{item.end_time}
-              </td>
-            ),
-            created_at: (item: Item) => <td>{new Date(item.created_at).toLocaleDateString()}</td>,
-          }}
-        />
-      </CTabPanel>
+      {banquets.length === 0 ? (
+        <CCard>
+          <CCardBody>У пользователя нет бронирований по банкетам</CCardBody>
+        </CCard>
+      ) : (
+        <CTabPanel itemKey={'banquets'}>
+          <CSmartTable
+            columns={cols}
+            items={banquets}
+            columnFilter
+            columnSorter
+            clickableRows
+            itemsPerPageSelect
+            itemsPerPage={itemsPerPage}
+            onItemsPerPageChange={setItemsPerPage}
+            itemsPerPageOptions={[10, 20, 50, 100]}
+            pagination
+            paginationProps={{
+              pages: Math.ceil(totalItems / itemsPerPage),
+              activePage: currentPage,
+              onActivePageChange: setCurrentPage,
+            }}
+            tableHeadProps={{
+              className: 'align-middle',
+            }}
+            tableProps={{
+              striped: true,
+              hover: true,
+              className: classNames('text-center', 'align-middle'),
+            }}
+            onRowClick={(item: Item) => setBanquet(item as IRestaurantBanquet)}
+            scopedColumns={{
+              restaurant_id: (item: Item) => (
+                <RestaurantCityCell restaurantId={item.restaurant_id} />
+              ),
+              time: (item: Item) => (
+                <td>
+                  {item.start_time}-{item.end_time}
+                </td>
+              ),
+              created_at: (item: Item) => <td>{new Date(item.created_at).toLocaleDateString()}</td>,
+            }}
+          />
+        </CTabPanel>
+      )}
     </>
   )
 }
