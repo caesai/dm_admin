@@ -31,21 +31,20 @@ export const UserBanquets: FC<{
   const [itemsPerPage, setItemsPerPage] = useState<number>(20)
   const [totalItems, setTotalItems] = useState<number>(0)
 
-  const loadBanquets = () => {
-    GetUserBanquets(user_id, {
-      page: currentPage,
-      per_page: itemsPerPage,
-    })
-      .then((res) => {
-        setBanquets(res.data.requests)
-        setTotalItems(res.data.total)
-      })
-      .catch(() => toast.error('Что-то пошло не так'))
-  }
-
   useEffect(() => {
+    const loadBanquets = () => {
+      GetUserBanquets(user_id, {
+        page: currentPage,
+        per_page: itemsPerPage,
+      })
+        .then((res) => {
+          setBanquets(res.data.requests)
+          setTotalItems(res.data.total)
+        })
+        .catch(() => toast.error('Что-то пошло не так'))
+    }
     void loadBanquets()
-  }, [currentPage, itemsPerPage])
+  }, [user_id, currentPage, itemsPerPage])
 
   const cols = [
     {
