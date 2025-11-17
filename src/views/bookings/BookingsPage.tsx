@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from 'react'
 import { IBookingWithRestaurant } from 'src/types/Booking.ts'
-import { BookingPopup } from 'src/views/users/UserPageViews/Modals/BookingPopup.tsx'
+import { TablePopup } from 'src/components/TablePopup.tsx'
 import { CCardGroup } from '@coreui/react-pro'
 import { getBookings, IBookingFilterProps } from 'src/dataProviders/bookings.ts'
 import toast from 'react-hot-toast'
@@ -59,7 +59,7 @@ const BookingsPage: FC = () => {
 
   return (
     <>
-      <BookingPopup booking={[currentBooking, setCurrentBooking]} />
+      <TablePopup data={[currentBooking, setCurrentBooking]} title={'Бронирование'} />
       <CCardGroup className={classNames('d-flex', 'flex-column', 'gap-4')}>
         <BookingsFilter
           restaurants={restaurants}

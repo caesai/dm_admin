@@ -7,7 +7,7 @@ import {
 import axios from 'axios'
 import { BASEURL } from 'src/api.ts'
 
-interface IBanquetBookings {
+export interface IBanquetBookings {
   page: number
   per_page: number
 }
