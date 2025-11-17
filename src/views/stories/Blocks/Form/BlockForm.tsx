@@ -36,7 +36,12 @@ const BlockForm: FC<{
   const [storiesToDelete, setStoriesToDelete] = useState<IStory[]>([])
 
   const changeBlockName = (e: ChangeEvent<HTMLInputElement>) => {
-    setBlock((prev) => ({ ...prev, name: e.target.value }))
+    setBlock((prev) => {
+      const value = e.target.value
+
+      if (value.length > 27) return prev
+      return { ...prev, name: value }
+    })
   }
   const changeBlockActive = () => {
     setBlock((prev) => ({ ...prev, active: !prev.active }))
