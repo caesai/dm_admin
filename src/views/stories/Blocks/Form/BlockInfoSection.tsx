@@ -35,7 +35,7 @@ export const BlockInfoSection: FC<BlockInfoSectionProps> = ({
             )}
           </div>
           <div className="ms-2">
-            <TooltipInfo content="Название блока историй" />
+            <TooltipInfo content="Название блока историй. Максимальная длина - 27 символов" />
           </div>
         </div>
       </CRow>
