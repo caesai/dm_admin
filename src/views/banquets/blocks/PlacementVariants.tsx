@@ -16,6 +16,7 @@ import { IRestaurantBanquet, IRestaurantOptions } from 'src/types/Restaurant.ts'
 import { uploadFile } from 'src/dataProviders/s3.ts'
 import toast from 'react-hot-toast'
 import { SendBanquetsOptions } from 'src/dataProviders/banquets.ts'
+import { TextEditor } from 'src/components/TextEditor/TextEditor.tsx'
 
 const PlacementVariants: FC<{
   restaurant: [IRestaurantOptions, Dispatch<SetStateAction<IRestaurantOptions | null>>]
@@ -29,7 +30,7 @@ const PlacementVariants: FC<{
   const [currentRestaurant, setCurrentRestaurant] = restaurant
   const imageRef = useRef<{ [banquet_id: number]: HTMLInputElement | null }>({})
 
-  const handleNameChange = (e: ChangeEvent<HTMLInputElement>, banquetId: number) => {
+  const handleNameChange = (name: string, banquetId: number) => {
     setCurrentRestaurant((prev) => {
       if (!prev) return prev
 
@@ -37,7 +38,7 @@ const PlacementVariants: FC<{
         if (banquet.id === banquetId) {
           return {
             ...banquet,
-            name: e.target.value,
+            name: name,
           }
         }
         return banquet
@@ -370,14 +371,14 @@ const PlacementVariants: FC<{
               <CCard className="p-2" key={banquet.id}>
                 <CCardBody className={classNames('d-flex', 'flex-column', 'gap-2')}>
                   <CRow>
-                    <CFormInput
-                      type="text"
-                      floatingLabel="Название *"
-                      placeholder={''}
-                      floatingClassName={'px-0'}
-                      value={banquet.name ? banquet.name : ''}
-                      onChange={(event) => handleNameChange(event, banquet.id)}
-                    />
+                    <CCard className="p-2">
+                      <TextEditor
+                        onUpdate={(event) => handleNameChange(event, banquet.id)}
+                        initialContent={banquet.name}
+                        placeholder={'Название *'}
+                        style={{ marginBottom: 0 }}
+                      />
+                    </CCard>
                   </CRow>
                   <CRow>
                     <CFormInput
