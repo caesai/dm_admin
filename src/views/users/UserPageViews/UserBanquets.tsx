@@ -2,25 +2,11 @@ import { CCard, CCardBody, CSmartTable, CTabPanel } from '@coreui/react-pro'
 import { Item } from '@coreui/react-pro/src/components/smart-table/types'
 import { useState, useEffect, FC } from 'react'
 import { TablePopup } from 'src/components/TablePopup.tsx'
-import { useAtom } from 'jotai'
-import { restaurantByIdAtom } from 'src/atoms/restaurantAtom.ts'
 import { IRestaurantBanquet } from 'src/types/Restaurant.ts'
 import classNames from 'classnames'
 import toast from 'react-hot-toast'
 import { GetUserBanquets } from 'src/dataProviders/users.ts'
-
-export const RestaurantCityCell = ({ restaurantId }: { restaurantId: number }) => {
-  const [restaurantState, loadRestaurant] = useAtom(restaurantByIdAtom(restaurantId))
-
-  useEffect(() => {
-    loadRestaurant()
-  }, [loadRestaurant])
-
-  if (restaurantState.loading) return <td>Загрузка...</td>
-  if (!restaurantState.restaurant) return <td>Ошибка</td>
-
-  return <td>{restaurantState.restaurant?.city?.name || '—'}</td>
-}
+import {RestaurantInfoCell} from "src/components/RestaurantInfoCell.tsx";
 
 export const UserBanquets: FC<{
   user_id: number
@@ -120,7 +106,7 @@ export const UserBanquets: FC<{
             onRowClick={(item: Item) => setBanquet(item as IRestaurantBanquet)}
             scopedColumns={{
               restaurant_id: (item: Item) => (
-                <RestaurantCityCell restaurantId={item.restaurant_id} />
+                <RestaurantInfoCell restaurantId={item.restaurant_id} type={'city'} />
               ),
               time: (item: Item) => (
                 <td>

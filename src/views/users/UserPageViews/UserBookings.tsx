@@ -1,26 +1,12 @@
 import { CCard, CCardBody, CSmartTable } from '@coreui/react-pro'
 import { IBookingWithRestaurant } from 'src/types/Booking.ts'
 import { Item } from '@coreui/react-pro/src/components/smart-table/types'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { TablePopup } from 'src/components/TablePopup.tsx'
-import { useAtom } from 'jotai'
-import { restaurantByIdAtom } from 'src/atoms/restaurantAtom.ts'
+import { RestaurantInfoCell } from 'src/components/RestaurantInfoCell.tsx'
 
 interface Props {
   bookings: IBookingWithRestaurant[]
-}
-
-export const RestaurantCityCell = ({ restaurantId }: { restaurantId: number }) => {
-  const [restaurantState, loadRestaurant] = useAtom(restaurantByIdAtom(restaurantId))
-
-  useEffect(() => {
-    loadRestaurant()
-  }, [loadRestaurant])
-
-  if (restaurantState.loading) return <td>Загрузка...</td>
-  if (!restaurantState.restaurant) return <td>Ошибка</td>
-
-  return <td>{restaurantState.restaurant?.city?.name || '—'}</td>
 }
 
 export const UserBookings = ({ bookings }: Props) => {
@@ -98,7 +84,9 @@ export const UserBookings = ({ bookings }: Props) => {
           }}
           scopedColumns={{
             duration: (item: Item) => <td>{item.duration} мин</td>,
-            restaurant_id: (item: Item) => <RestaurantCityCell restaurantId={item.restaurant_id} />,
+            restaurant_id: (item: Item) => (
+              <RestaurantInfoCell restaurantId={item.restaurant_id} type={'city'} />
+            ),
           }}
         />
       ) : (
