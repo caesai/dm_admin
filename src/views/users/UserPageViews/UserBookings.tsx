@@ -70,8 +70,6 @@ export const UserBookings = ({ bookings }: Props) => {
         <CSmartTable
           columns={cols}
           items={bookings}
-
-
           clickableRows
           onRowClick={(item: Item) => setCurrentBooking(item as IBookingWithRestaurant)}
           tableHeadProps={{

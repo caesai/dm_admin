@@ -6,7 +6,7 @@ import {
 } from 'src/types/Restaurant.ts'
 import axios from 'axios'
 import { BASEURL } from 'src/api.ts'
-import {IPagination} from "src/types/Common.ts";
+import { IPagination } from 'src/types/Common.ts'
 
 export const GetRestaurantOptions = async (id: number) => {
   return await axios.get<IRestaurantOptions>(`${BASEURL}/banquet-options/restaurant/${id}`, {

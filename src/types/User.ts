@@ -1,4 +1,4 @@
-import {ICommon, IPagination} from 'src/types/Common.ts'
+import { ICommon, IPagination } from 'src/types/Common.ts'
 import { IBookingWithRestaurant, IReviewWithRestaurant } from 'src/types/Booking.ts'
 import { IPaymentBase } from 'src/types/Payment.ts'
 import { IEventBookingBase } from 'src/types/Event.ts'

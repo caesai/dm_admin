@@ -1,5 +1,5 @@
 import { IRestaurantShort } from 'src/types/Restaurant.ts'
-import {IPagination} from "src/types/Common.ts";
+import { IPagination } from 'src/types/Common.ts'
 
 export interface IBookingReviewBase {
   id: number
@@ -50,6 +50,6 @@ export interface IBookingWithRestaurant extends IBookingBase {
   restaurant: IRestaurantShort
 }
 
-export interface IBookingList extends IPagination{
+export interface IBookingList extends IPagination {
   bookings: IBookingWithRestaurant[]
 }

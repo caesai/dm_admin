@@ -1,4 +1,4 @@
-import {IPagination} from "src/types/Common.ts";
+import { IPagination } from 'src/types/Common.ts'
 
 type OrderItem = {
   id: number
