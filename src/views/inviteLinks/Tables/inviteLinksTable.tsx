@@ -43,7 +43,6 @@ const InviteLinksTable = ({ links, setPopupId }: IInviteLinksTable) => {
       activePage={1}
       footer
       columns={columns}
-      columnFilter
       itemsPerPageSelect
       itemsPerPage={20}
       pagination

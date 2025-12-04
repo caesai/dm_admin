@@ -7,6 +7,7 @@ import {
   cilCash,
   cilCircle,
   cilDinner,
+  cilFastfood,
   cilGift,
   cilHistory,
   cilHome,
@@ -97,6 +98,12 @@ const _nav: NavItem[] = [
     name: 'Сертификаты',
     to: '/certificates',
     icon: <CIcon icon={cilGift} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'НГ Кулинария',
+    to: '/gastronomy',
+    icon: <CIcon icon={cilFastfood} customClassName="nav-icon" />,
   },
   {
     component: CNavGroup,

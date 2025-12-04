@@ -2,8 +2,8 @@ import classNames from 'classnames'
 import { CCard, CCardBody, CCardHeader, CSmartTable } from '@coreui/react-pro'
 import { Item } from '@coreui/react-pro/src/components/smart-table/types.ts'
 import { IBookingWithRestaurant } from 'src/types/Booking.ts'
-import { RestaurantCityCell } from 'src/views/users/UserPageViews/UserBookings.tsx'
 import { Dispatch, FC, SetStateAction } from 'react'
+import { RestaurantInfoCell } from 'src/components/RestaurantInfoCell.tsx'
 
 interface IBookingsTableProps {
   bookings: IBookingWithRestaurant[]
@@ -84,13 +84,11 @@ const BookingsTable: FC<IBookingsTableProps> = ({
       <CCardHeader>
         <strong>Брони</strong>
       </CCardHeader>
-      <CCardBody>
+      <CCardBody className={'py-0'}>
         {bookings.length > 0 ? (
           <CSmartTable
             columns={cols}
             items={bookings}
-            columnFilter
-            columnSorter
             clickableRows
             itemsPerPageSelect
             itemsPerPage={itemsPerPage}
@@ -114,7 +112,7 @@ const BookingsTable: FC<IBookingsTableProps> = ({
             scopedColumns={{
               duration: (item: Item) => <td>{item.duration} мин</td>,
               restaurant_id: (item: Item) => (
-                <RestaurantCityCell restaurantId={item.restaurant_id} />
+                <RestaurantInfoCell restaurantId={item.restaurant_id} type={'city'} />
               ),
             }}
           />

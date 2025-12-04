@@ -58,8 +58,6 @@ export const UserLogs = ({ logs }: Props) => {
         <CSmartTable
           columns={cols}
           items={logs}
-          columnFilter
-          columnSorter
           clickableRows
           onRowClick={(item: Item) => setCurrentLogs(item as ILogs)}
           tableHeadProps={{

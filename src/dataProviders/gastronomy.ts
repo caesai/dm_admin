@@ -1,10 +1,10 @@
 import axios from 'axios'
 import { BASEURL } from 'src/api.ts'
-import { ICertificate } from 'src/types/Certificates.ts'
+import { IOrder } from 'src/types/Gastronomy.ts'
 import { IPagination } from 'src/types/Common.ts'
 
-export const getCertificates = async (props: IPagination) => {
-  return await axios.get<ICertificate>(`${BASEURL}/certificates/`, {
+export const getOrdersList = async (props: IPagination) => {
+  return await axios.get<IOrder>(`${BASEURL}/culinary/orders`, {
     params: {
       page: props.page,
       per_page: props.per_page,

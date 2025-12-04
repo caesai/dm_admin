@@ -2,11 +2,11 @@ import { FC, useEffect, useState } from 'react'
 import { CSmartTable, CTabPanel } from '@coreui/react-pro'
 import { Item } from '@coreui/react-pro/src/components/smart-table/types.ts'
 import { IBookingWithRestaurant } from 'src/types/Booking.ts'
-import { RestaurantCityCell } from 'src/views/users/UserPageViews/UserBookings.tsx'
 import { GetBanquetBookings } from 'src/dataProviders/banquets.ts'
 import toast from 'react-hot-toast'
 import classNames from 'classnames'
 import { TablePopup } from 'src/components/TablePopup.tsx'
+import { RestaurantInfoCell } from 'src/components/RestaurantInfoCell.tsx'
 
 const BookingsPanel: FC = () => {
   const [bookings, setBookings] = useState<IBookingWithRestaurant[]>([])
@@ -81,8 +81,6 @@ const BookingsPanel: FC = () => {
         <CSmartTable
           columns={cols}
           items={bookings}
-          columnFilter
-          columnSorter
           clickableRows
           itemsPerPageSelect
           itemsPerPage={itemsPerPage}
@@ -104,7 +102,9 @@ const BookingsPanel: FC = () => {
           }}
           onRowClick={(item: Item) => setBooking(item as IBookingWithRestaurant)}
           scopedColumns={{
-            restaurant_id: (item: Item) => <RestaurantCityCell restaurantId={item.restaurant_id} />,
+            restaurant_id: (item: Item) => (
+              <RestaurantInfoCell restaurantId={item.restaurant_id} type={'city'} />
+            ),
             time: (item: Item) => (
               <td>
                 {item.start_time}-{item.end_time}
