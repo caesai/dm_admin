@@ -30,8 +30,8 @@ const GastronomyPage: FC = () => {
       .then((res) => {
         setOrdersList(res.data.orders)
         setAllOrders(res.data.orders)
-        setTotalItems(res.data.total)
-        setAllItemsCount(res.data.total)
+        setTotalItems(res.data.total!)
+        setAllItemsCount(res.data.total!)
       })
       .catch(() => toast.error('Что-то пошло не так'))
   }
