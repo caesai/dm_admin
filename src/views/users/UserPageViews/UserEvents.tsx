@@ -1,30 +1,12 @@
 import { IEventBookingBase } from 'src/types/Event.ts'
 import { CCard, CCardBody, CSmartTable } from '@coreui/react-pro'
 import { Item } from '@coreui/react-pro/src/components/smart-table/types'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { EventPopup } from 'src/views/users/UserPageViews/Modals/EventPopup.tsx'
-import { useAtom } from 'jotai'
-import { restaurantByIdAtom } from 'src/atoms/restaurantAtom.ts'
-
+import { RestaurantInfoCell } from 'src/components/RestaurantInfoCell.tsx'
+import {formatDateTime} from "src/utils.tsx";
 interface Props {
   events: IEventBookingBase[]
-}
-
-const RestaurantCityCell = ({ restaurantId }: { restaurantId: number }) => {
-  const [restaurantState, loadRestaurant] = useAtom(restaurantByIdAtom(restaurantId))
-
-  useEffect(() => {
-    loadRestaurant()
-  }, [loadRestaurant])
-
-  return <>{restaurantState.loading ? 'Загрузка...' : restaurantState.restaurant?.city.name}</>
-}
-
-const formatDateTime = (dateString: string) => {
-  if (!dateString) return '-'
-
-  const date = new Date(dateString)
-  return isNaN(date.getTime()) ? '-' : date.toLocaleString('ru-RU')
 }
 
 export const UserEvents = ({ events }: Props) => {
@@ -94,7 +76,7 @@ export const UserEvents = ({ events }: Props) => {
           scopedColumns={{
             restaurant_id: (item: Item) => (
               <td>
-                <RestaurantCityCell restaurantId={item.restaurant_id} />
+                <RestaurantInfoCell restaurantId={item.restaurant_id} type={'city'} />
               </td>
             ),
             event_date: (item: Item) => (

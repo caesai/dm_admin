@@ -21,3 +21,10 @@ export const getRestaurantCity = (restaurants: IRestaurantWCity[], restaurantId:
   const restaurant = restaurants.find((r) => r.id === restaurantId)
   return getCityOrAddress(restaurant)
 }
+
+export const formatDateTime = (dateString: string) => {
+  if (!dateString) return '-'
+
+  const date = new Date(dateString)
+  return isNaN(date.getTime()) ? '-' : date.toLocaleString('ru-RU')
+}
