@@ -1,5 +1,5 @@
-import { FC, useEffect, useState } from 'react'
-import { CCard, CCardBody, CCardHeader, CSmartTable } from '@coreui/react-pro'
+import { ChangeEvent, FC, useEffect, useState } from 'react'
+import { CCard, CCardBody, CCardHeader, CFormSelect, CSmartTable } from '@coreui/react-pro'
 import classNames from 'classnames'
 import { Item } from '@coreui/react-pro/src/components/smart-table/types.ts'
 import toast from 'react-hot-toast'
@@ -7,10 +7,15 @@ import { TablePopup } from 'src/components/TablePopup.tsx'
 import { getOrdersList } from 'src/dataProviders/gastronomy.ts'
 import { IOrder, IOrderData } from 'src/types/Gastronomy.ts'
 import { RestaurantInfoCell } from 'src/components/RestaurantInfoCell.tsx'
-import { formatDateTime } from 'src/utils.tsx'
+import { formatDateTime, getRestaurantCity } from 'src/utils.tsx'
+import { IRestaurantWCity } from 'src/types/Restaurant.ts'
+import { GetRestaurantList } from 'src/dataProviders/restaurants.ts'
 
 const GastronomyPage: FC = () => {
   const [ordersList, setOrdersList] = useState<IOrderData[]>([])
+  const [allOrders, setAllOrders] = useState<IOrderData[]>([])
+  const [restaurants, setRestaurants] = useState<IRestaurantWCity[]>([])
+  const [currentId, setCurrentId] = useState<number>(0)
   const [currentOrder, setOrder] = useState<IOrder | null>(null)
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [itemsPerPage, setItemsPerPage] = useState<number>(20)
@@ -23,14 +28,48 @@ const GastronomyPage: FC = () => {
     })
       .then((res) => {
         setOrdersList(res.data.orders)
+        setAllOrders(res.data.orders)
         setTotalItems(res.data.total)
       })
       .catch(() => toast.error('Что-то пошло не так'))
   }
 
+  const loadRestaurants = async () => {
+    const response = await GetRestaurantList()
+    setRestaurants(response.data)
+  }
+
+  const filterOrders = () => {
+    if (currentId) {
+      const newList = allOrders.filter((order) => order.restaurant_id === currentId)
+      setOrdersList(newList)
+      setTotalItems(newList.length)
+    } else {
+      setOrdersList(allOrders)
+      setCurrentPage(1)
+    }
+  }
+
+  const changeRestaurantId = (e: ChangeEvent<HTMLSelectElement>) => {
+    if (e.target.value === '') setCurrentId(0)
+    else {
+      setCurrentId(Number(e.target.value))
+    }
+  }
+
   useEffect(() => {
-    void loadOrders()
+    if (!currentId) {
+      void loadOrders()
+    }
   }, [currentPage, itemsPerPage])
+
+  useEffect(() => {
+    void loadRestaurants()
+  }, [])
+
+  useEffect(() => {
+    filterOrders()
+  }, [currentId])
 
   const cols = [
     {
@@ -82,7 +121,17 @@ const GastronomyPage: FC = () => {
         <CCardHeader>
           <strong>Заказы</strong>
         </CCardHeader>
-        <CCardBody className="py-0">
+        <CCardBody>
+          <CFormSelect
+            options={[
+              { label: 'Выберите ресторан', value: '' },
+              ...restaurants.map((restaurant) => ({
+                label: `${restaurant.title}, ${getRestaurantCity(restaurants, restaurant.id)}`,
+                value: `${restaurant.id}`,
+              })),
+            ]}
+            onChange={changeRestaurantId}
+          />
           <CSmartTable
             columns={cols}
             items={ordersList}
