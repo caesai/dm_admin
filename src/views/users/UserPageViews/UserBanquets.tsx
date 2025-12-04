@@ -82,8 +82,6 @@ export const UserBanquets: FC<{
           <CSmartTable
             columns={cols}
             items={banquets}
-            columnFilter
-            columnSorter
             clickableRows
             itemsPerPageSelect
             itemsPerPage={itemsPerPage}

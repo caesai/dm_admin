@@ -80,12 +80,10 @@ const CertificatesPage: FC = () => {
         <CCardHeader>
           <strong>Сертификаты</strong>
         </CCardHeader>
-        <CCardBody>
+        <CCardBody className={'py-0'}>
           <CSmartTable
             columns={cols}
             items={certificates}
-            columnFilter
-            columnSorter
             clickableRows
             itemsPerPageSelect
             itemsPerPage={itemsPerPage}

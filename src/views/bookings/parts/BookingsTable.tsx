@@ -84,13 +84,11 @@ const BookingsTable: FC<IBookingsTableProps> = ({
       <CCardHeader>
         <strong>Брони</strong>
       </CCardHeader>
-      <CCardBody>
+      <CCardBody className={'py-0'}>
         {bookings.length > 0 ? (
           <CSmartTable
             columns={cols}
             items={bookings}
-            columnFilter
-            columnSorter
             clickableRows
             itemsPerPageSelect
             itemsPerPage={itemsPerPage}

@@ -61,8 +61,8 @@ export const UserEvents = ({ events }: Props) => {
         <CSmartTable
           columns={cols}
           items={events}
-          columnFilter
-          columnSorter
+
+
           clickableRows
           onRowClick={(item: Item) => setCurrentEvent(item as IEventBookingBase)}
           tableHeadProps={{

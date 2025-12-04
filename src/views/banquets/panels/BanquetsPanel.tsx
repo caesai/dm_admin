@@ -61,7 +61,10 @@ const BanquetsPanel: FC = () => {
         banquet_id={[banquetToDeleteId, setBanquetToDeleteId]}
         onDelete={getRestaurantData}
       />
-      <CTabPanel itemKey={'banquets'} className={classNames('d-flex', 'flex-column', 'gap-4')}>
+      <CTabPanel
+        itemKey={'banquets'}
+        className={classNames('d-flex', 'flex-column', 'gap-4', 'py-3')}
+      >
         <CFormSelect
           options={[
             { label: 'Выберите ресторан', value: '' },

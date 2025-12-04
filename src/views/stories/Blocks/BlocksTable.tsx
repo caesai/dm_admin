@@ -43,7 +43,6 @@ const BlocksTable: FC<{
       }}
       activePage={1}
       columns={columns}
-      columnFilter
       itemsPerPageSelect
       itemsPerPage={20}
       pagination
