@@ -19,6 +19,7 @@ const GastronomyPage: FC = () => {
   const [currentOrder, setOrder] = useState<IOrder | null>(null)
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [itemsPerPage, setItemsPerPage] = useState<number>(20)
+  const [allItemsCount, setAllItemsCount] = useState<number>(0)
   const [totalItems, setTotalItems] = useState<number>(0)
 
   const loadOrders = async () => {
@@ -30,6 +31,7 @@ const GastronomyPage: FC = () => {
         setOrdersList(res.data.orders)
         setAllOrders(res.data.orders)
         setTotalItems(res.data.total)
+        setAllItemsCount(res.data.total)
       })
       .catch(() => toast.error('Что-то пошло не так'))
   }
@@ -47,6 +49,7 @@ const GastronomyPage: FC = () => {
     } else {
       setOrdersList(allOrders)
       setCurrentPage(1)
+      setTotalItems(allItemsCount)
     }
   }
 

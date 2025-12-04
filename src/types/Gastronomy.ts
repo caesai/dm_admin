@@ -1,11 +1,11 @@
-type orderItem = {
+type OrderItem = {
   id: number
   title: string
   quantity: number
   price: number
 }
 
-type orderTime = {
+type OrderTime = {
   date: string
   time: string
 }
@@ -20,10 +20,10 @@ export interface IOrderData {
   delivery_date: string | null
   delivery_method: 'pickup' | 'delivery'
   delivery_time: string | null
-  items: orderItem[]
+  items: OrderItem[]
   order_id: string
   pickup_date: string
-  pickup_time: orderTime
+  pickup_time: OrderTime
   ready_notification_sent: boolean
   reminder_sent: boolean
   restaurant_id: number
