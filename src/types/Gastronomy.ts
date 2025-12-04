@@ -1,3 +1,5 @@
+import {IPagination} from "src/types/Common.ts";
+
 type OrderItem = {
   id: number
   title: string
@@ -31,9 +33,6 @@ export interface IOrderData {
   total_amount: number
 }
 
-export interface IOrder {
+export interface IOrder extends IPagination {
   orders: IOrderData[]
-  total: number
-  page: number
-  per_page: number
 }

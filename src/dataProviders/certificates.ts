@@ -1,13 +1,9 @@
 import axios from 'axios'
 import { BASEURL } from 'src/api.ts'
 import { ICertificate } from 'src/types/Certificates.ts'
+import {IPagination} from "src/types/Common.ts";
 
-type getCertificatesProps = {
-  page: number
-  per_page: number
-}
-
-export const getCertificates = async (props: getCertificatesProps) => {
+export const getCertificates = async (props: IPagination) => {
   return await axios.get<ICertificate>(`${BASEURL}/certificates/`, {
     params: {
       page: props.page,

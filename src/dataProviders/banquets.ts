@@ -6,11 +6,7 @@ import {
 } from 'src/types/Restaurant.ts'
 import axios from 'axios'
 import { BASEURL } from 'src/api.ts'
-
-export interface IBanquetBookings {
-  page: number
-  per_page: number
-}
+import {IPagination} from "src/types/Common.ts";
 
 export const GetRestaurantOptions = async (id: number) => {
   return await axios.get<IRestaurantOptions>(`${BASEURL}/banquet-options/restaurant/${id}`, {
@@ -20,7 +16,7 @@ export const GetRestaurantOptions = async (id: number) => {
   })
 }
 
-export const GetBanquetBookings = async (props: IBanquetBookings) => {
+export const GetBanquetBookings = async (props: IPagination) => {
   return await axios.get(`${BASEURL}/banquet-requests/`, {
     params: {
       page: props.page,

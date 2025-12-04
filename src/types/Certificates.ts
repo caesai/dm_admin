@@ -1,3 +1,5 @@
+import {IPagination} from "src/types/Common.ts";
+
 export interface CertificateData {
   certificate_type: string
   value: string
@@ -16,9 +18,6 @@ export interface CertificateData {
   shared_at: string
 }
 
-export interface ICertificate {
+export interface ICertificate extends IPagination {
   certificates: CertificateData[]
-  total: number
-  page: number
-  per_page: number
 }
