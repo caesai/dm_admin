@@ -43,7 +43,7 @@ const BookingsPage: FC = () => {
     })
       .then((res) => {
         setBookings(res.data.bookings)
-        setTotalItems(res.data.total)
+        setTotalItems(res.data.total!)
       })
       .catch(() => toast.error('Что-то пошло не так'))
       .finally(() => setLoading(false))

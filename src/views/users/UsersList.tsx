@@ -15,7 +15,7 @@ const UsersList = () => {
     getUsers(currentPage, itemsPerPage)
       .then((res) => {
         setUsers(res.data.users)
-        setTotalItems(res.data.total)
+        setTotalItems(res.data.total!)
       })
       .catch((err) => {
         toast.error('Произошла ошибка при загрузке данных')
