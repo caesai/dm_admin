@@ -36,3 +36,22 @@ export interface IOrderData {
 export interface IOrder extends IPagination {
   orders: IOrderData[]
 }
+
+export interface ICulinaryDish {
+  id: number
+  guest_title: string
+  title: string
+  image_url: string
+  weights: string[]
+  weight_value: string
+  prices: number[]
+  allergens: string[]
+  description: string
+  calories?: number
+  carbohydrates?: number
+  fats?: number
+  proteins?: number
+  is_active: boolean
+  priority: number
+  restaurant_id: number
+}
