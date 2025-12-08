@@ -27,8 +27,8 @@ export const WorkhoursPanel: FC<{
   const weekdayOrder = ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс']
 
   const sortedWorktime = [...restaurant.worktime].sort((a, b) => {
-    const indexA = weekdayOrder.indexOf(a.weekday)
-    const indexB = weekdayOrder.indexOf(b.weekday)
+    const indexA = weekdayOrder.indexOf(a.weekday) !== -1 ? weekdayOrder.indexOf(a.weekday) : weekdayOrder.length
+    const indexB = weekdayOrder.indexOf(b.weekday) !== -1 ? weekdayOrder.indexOf(b.weekday) : weekdayOrder.length
     return indexA - indexB
   })
 
