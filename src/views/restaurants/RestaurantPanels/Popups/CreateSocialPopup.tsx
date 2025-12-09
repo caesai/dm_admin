@@ -20,7 +20,6 @@ export const CreateSocialPopup: FC<{
   popup: [boolean, Dispatch<SetStateAction<boolean>>]
 }> = ({ restaurant, setRestaurant, popup }) => {
   const [social, setSocial] = useState<ISocial>({
-    id: 0,
     name: '',
     url: '',
     type: 'instagram',
