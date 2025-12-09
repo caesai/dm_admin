@@ -6,7 +6,7 @@ import { IRestaurantBanquet } from 'src/types/Restaurant.ts'
 import classNames from 'classnames'
 import toast from 'react-hot-toast'
 import { GetUserBanquets } from 'src/dataProviders/users.ts'
-import {RestaurantInfoCell} from "src/components/RestaurantInfoCell.tsx";
+import { RestaurantInfoCell } from 'src/components/RestaurantInfoCell.tsx'
 
 export const UserBanquets: FC<{
   user_id: number
@@ -82,8 +82,6 @@ export const UserBanquets: FC<{
           <CSmartTable
             columns={cols}
             items={banquets}
-            columnFilter
-            columnSorter
             clickableRows
             itemsPerPageSelect
             itemsPerPage={itemsPerPage}

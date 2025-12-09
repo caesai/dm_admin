@@ -4,7 +4,7 @@ import { Item } from '@coreui/react-pro/src/components/smart-table/types'
 import { useState } from 'react'
 import { EventPopup } from 'src/views/users/UserPageViews/Modals/EventPopup.tsx'
 import { RestaurantInfoCell } from 'src/components/RestaurantInfoCell.tsx'
-import {formatDateTime} from "src/utils.tsx";
+import { formatDateTime } from 'src/utils.tsx'
 interface Props {
   events: IEventBookingBase[]
 }
@@ -61,8 +61,6 @@ export const UserEvents = ({ events }: Props) => {
         <CSmartTable
           columns={cols}
           items={events}
-          columnFilter
-          columnSorter
           clickableRows
           onRowClick={(item: Item) => setCurrentEvent(item as IEventBookingBase)}
           tableHeadProps={{

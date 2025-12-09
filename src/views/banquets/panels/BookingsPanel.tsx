@@ -81,8 +81,6 @@ const BookingsPanel: FC = () => {
         <CSmartTable
           columns={cols}
           items={bookings}
-          columnFilter
-          columnSorter
           clickableRows
           itemsPerPageSelect
           itemsPerPage={itemsPerPage}

@@ -1,3 +1,5 @@
+import { IPagination } from 'src/types/Common.ts'
+
 type OrderItem = {
   id: number
   title: string
@@ -31,9 +33,25 @@ export interface IOrderData {
   total_amount: number
 }
 
-export interface IOrder {
+export interface IOrder extends IPagination {
   orders: IOrderData[]
-  total: number
-  page: number
-  per_page: number
+}
+
+export interface ICulinaryDish {
+  id: number
+  guest_title: string
+  title: string
+  image_url: string
+  weights: string[]
+  weight_value: string
+  prices: number[]
+  allergens: string[]
+  description: string
+  calories?: number
+  carbohydrates?: number
+  fats?: number
+  proteins?: number
+  is_active: boolean
+  priority: number
+  restaurant_id: number
 }

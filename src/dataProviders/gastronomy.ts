@@ -1,13 +1,9 @@
 import axios from 'axios'
 import { BASEURL } from 'src/api.ts'
-import { IOrder } from 'src/types/Gastronomy.ts'
+import { IOrder, ICulinaryDish } from 'src/types/Gastronomy.ts'
+import { IPagination } from 'src/types/Common.ts'
 
-type getOrdersProps = {
-  page: number
-  per_page: number
-}
-
-export const getOrdersList = async (props: getOrdersProps) => {
+export const getOrdersList = async (props: IPagination) => {
   return await axios.get<IOrder>(`${BASEURL}/culinary/orders`, {
     params: {
       page: props.page,
@@ -15,4 +11,13 @@ export const getOrdersList = async (props: getOrdersProps) => {
     },
     headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
   })
+}
+
+export const getRestaurantDishes = async (restaurantId: number) => {
+  return await axios.get<ICulinaryDish[]>(
+    `${BASEURL}/culinary/restaurants/${restaurantId}/dishes`,
+    {
+      headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
+    },
+  )
 }
