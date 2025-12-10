@@ -1,4 +1,4 @@
-import { Dispatch, FC, SetStateAction, useState } from 'react'
+import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 import { IRestaurant } from 'src/types/Restaurant.ts'
 import {
   CButton,
@@ -14,56 +14,87 @@ import {
 } from '@coreui/react-pro'
 import { IMenuImg } from 'src/types/Menu.ts'
 import { uploadFile } from 'src/dataProviders/s3.ts'
-import { CreateMenuImg } from 'src/dataProviders/restaurants.ts'
+import { CreateMenuImg, UpdateMenuImg } from 'src/dataProviders/restaurants.ts'
 import toast from 'react-hot-toast'
 
-export const CreateMenu: FC<{
+export const RestaurantMenu: FC<{
   restaurant: IRestaurant
   setRestaurant: Dispatch<SetStateAction<IRestaurant | undefined>>
   popup: [boolean, Dispatch<SetStateAction<boolean>>]
-}> = ({ restaurant, setRestaurant, popup }) => {
+  menu?: IMenuImg
+}> = ({ restaurant, setRestaurant, popup, menu }) => {
   const [open, setOpen] = popup
-  const [menu, setMenu] = useState<IMenuImg>({
-    id: 0,
-    image_url: '',
-    order: 1,
-  })
+  const isEditMode = !!menu
+  const [menuState, setMenuState] = useState<IMenuImg>(
+    menu || {
+      id: 0,
+      image_url: '',
+      order: 1,
+    },
+  )
+
+  useEffect(() => {
+    if (menu) {
+      setMenuState({ ...menu })
+    } else {
+      setMenuState({
+        id: 0,
+        image_url: '',
+        order: 1,
+      })
+    }
+  }, [menu])
 
   const saveChanges = () => {
-    CreateMenuImg(menu, restaurant.id)
-      .then((res) =>
-        setRestaurant((prev) => ({
-          ...prev!,
-          menu_imgs: [...prev!.menu_imgs, res.data],
-        })),
-      )
-      .then(() => {
-        toast.success('Запись создана')
-        setOpen(false)
-      })
+    if (isEditMode) {
+      UpdateMenuImg(menuState)
+        .then((res) =>
+          setRestaurant((prev) => ({
+            ...prev!,
+            menu_imgs: prev!.menu_imgs.map((m) => (m.id === menuState.id ? res.data : m)),
+          })),
+        )
+        .then(() => {
+          toast.success('Запись обновлена')
+          setOpen(false)
+        })
+    } else {
+      CreateMenuImg(menuState, restaurant.id)
+        .then((res) =>
+          setRestaurant((prev) => ({
+            ...prev!,
+            menu_imgs: [...prev!.menu_imgs, res.data],
+          })),
+        )
+        .then(() => {
+          toast.success('Запись создана')
+          setOpen(false)
+        })
+    }
   }
 
   const handleImageChange = (files: FileList | null) => {
     if (!files) {
       return
     }
-    uploadFile(files[0]).then((d) => setMenu((prev) => ({ ...prev, image_url: d.data.url })))
+    uploadFile(files[0]).then((d) => setMenuState((prev) => ({ ...prev, image_url: d.data.url })))
   }
+
   return (
     <CModal visible={open} onClose={() => setOpen(false)}>
       <CModalHeader>
-        <CModalTitle>Добавить</CModalTitle>
+        <CModalTitle>{isEditMode ? 'Редактировать' : 'Добавить'}</CModalTitle>
       </CModalHeader>
       <CModalBody>
         <CForm className={'d-flex flex-column gap-2'}>
-          <CImage src={menu.image_url} className={'w-100 h-auto bg-dark bg-opacity-50'} />
+          <CImage src={menuState.image_url} className={'w-100 h-auto bg-dark bg-opacity-50'} />
           <CInputGroup>
             <CFormInput
               floatingLabel={'Приоритет'}
-              value={menu.order}
+              value={menuState.order}
               onChange={(e) =>
                 Number(e.target.value)
-                  ? setMenu((prev) => ({
+                  ? setMenuState((prev) => ({
                       ...prev,
                       order: Number(e.target.value),
                     }))
@@ -74,7 +105,7 @@ export const CreateMenu: FC<{
             <CButton
               color={'secondary'}
               onClick={() =>
-                setMenu((prev) => ({
+                setMenuState((prev) => ({
                   ...prev,
                   order: ++prev.order,
                 }))
@@ -85,7 +116,7 @@ export const CreateMenu: FC<{
             <CButton
               color={'secondary'}
               onClick={() =>
-                setMenu((prev) => ({
+                setMenuState((prev) => ({
                   ...prev,
                   order: --prev.order,
                 }))
@@ -105,7 +136,7 @@ export const CreateMenu: FC<{
       </CModalBody>
       <CModalFooter className={'d-flex justify-content-between'}>
         <CButton color={'primary'} onClick={saveChanges}>
-          Добавить
+          {isEditMode ? 'Сохранить' : 'Добавить'}
         </CButton>
       </CModalFooter>
     </CModal>

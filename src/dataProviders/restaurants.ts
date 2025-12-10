@@ -117,15 +117,15 @@ export const CreateWorktime = async (wt: IWorktime, restaurant_id: number) => {
 }
 
 export const EditWorktime = async (worktime: IWorktime) => {
-  return await axios.patch<IWorktime>(`${BASEURL}/workhours/`, worktime, {
+  return await axios.patch<IWorktime>(`${BASEURL}/workhours/${worktime.id}`, worktime, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },
   })
 }
 
-export const RemoveWorktime = async (wt: IWorktime) => {
-  return await axios.delete(`${BASEURL}/workhours/${wt.id}`, {
+export const RemoveWorktime = async (worktime: IWorktime) => {
+  return await axios.delete(`${BASEURL}/workhours/${worktime.id}`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },
@@ -146,6 +146,14 @@ export const CreateMenuImg = async (menu: IMenuImg, restaurant_id: number) => {
       },
     },
   )
+}
+
+export const UpdateMenuImg = async (menu: IMenuImg) => {
+  return await axios.patch<IMenuImg>(`${BASEURL}/menu/${menu.id}`, menu, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+    },
+  })
 }
 
 export const DeleteMenuImg = async (menu: IMenuImg) => {

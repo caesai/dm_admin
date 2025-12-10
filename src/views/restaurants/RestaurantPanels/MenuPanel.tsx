@@ -1,4 +1,4 @@
-import { Dispatch, FC, SetStateAction, useState } from 'react'
+import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 import { IRestaurant } from 'src/types/Restaurant.ts'
 import {
   CButton,
@@ -10,7 +10,7 @@ import {
   CRow,
 } from '@coreui/react-pro'
 import classNames from 'classnames'
-import { CreateMenu } from 'src/views/restaurants/RestaurantPanels/Popups/CreateMenu.tsx'
+import { RestaurantMenu } from 'src/views/restaurants/RestaurantPanels/Popups/RestaurantMenu.tsx'
 import { IMenuImg } from 'src/types/Menu.ts'
 import { DeleteMenuImg } from 'src/dataProviders/restaurants.ts'
 import toast from 'react-hot-toast'
@@ -20,6 +20,8 @@ export const MenuPanel: FC<{
   setRestaurant: Dispatch<SetStateAction<IRestaurant | undefined>>
 }> = ({ restaurant, setRestaurant }) => {
   const [createPopup, setCreatePopup] = useState(false)
+  const [editPopup, setEditPopup] = useState(false)
+  const [selectedMenu, setSelectedMenu] = useState<IMenuImg | undefined>(undefined)
 
   const deleteMenu = (menu: IMenuImg) => {
     DeleteMenuImg(menu)
@@ -32,12 +34,29 @@ export const MenuPanel: FC<{
       .then(() => toast.success('Запись удалена'))
   }
 
+  const handleEdit = (menu: IMenuImg) => {
+    setSelectedMenu(menu)
+    setEditPopup(true)
+  }
+
+  useEffect(() => {
+    if (!editPopup) {
+      setSelectedMenu(undefined)
+    }
+  }, [editPopup])
+
   return (
     <div className={'card-body'}>
-      <CreateMenu
+      <RestaurantMenu
         restaurant={restaurant}
         setRestaurant={setRestaurant}
         popup={[createPopup, setCreatePopup]}
+      />
+      <RestaurantMenu
+        restaurant={restaurant}
+        setRestaurant={setRestaurant}
+        popup={[editPopup, setEditPopup]}
+        menu={selectedMenu}
       />
       <div className={'d-flex mb-3'}>
         <CButton color={'success'} onClick={() => setCreatePopup(true)}>
@@ -57,7 +76,9 @@ export const MenuPanel: FC<{
                     <CButton color={'danger'} onClick={() => deleteMenu(img)}>
                       Удалить
                     </CButton>
-                    <CButton color={'primary'}>Ред.</CButton>
+                    <CButton color={'primary'} onClick={() => handleEdit(img)}>
+                      Ред.
+                    </CButton>
                   </div>
                 </CCardText>
               </CCardBody>
