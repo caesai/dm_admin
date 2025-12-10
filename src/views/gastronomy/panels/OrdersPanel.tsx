@@ -58,6 +58,7 @@ const OrdersPanel: FC = () => {
       const newList = allOrders.filter((order) => order.restaurant_id === currentId)
       setOrdersList(newList)
       setTotalItems(newList.length)
+      setCurrentPage(1)
     } else {
       setOrdersList(allOrders)
       setCurrentPage(1)
