@@ -75,7 +75,7 @@ const RestaurantPage = () => {
                 <WorkhoursPanel
                   restaurant={restaurant}
                   setRestaurant={setRestaurant}
-                  signal={[updateSignal, setUpdateSignal]}
+                  onUpdate={() => setUpdateSignal((p) => ++p)}
                 />
               </CTabPanel>
               <CTabPanel itemKey={'menu'}>

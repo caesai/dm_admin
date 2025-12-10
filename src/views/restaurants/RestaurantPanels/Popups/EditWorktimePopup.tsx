@@ -11,14 +11,13 @@ import {
   CModalTitle,
 } from '@coreui/react-pro'
 import { IWorktime } from 'src/types/Worktime.ts'
-import { IRestaurant } from 'src/types/Restaurant.ts'
 import { EditWorktime } from 'src/dataProviders/restaurants.ts'
 
 export const EditWorktimePopup: FC<{
   worktime: IWorktime
-  setRestaurant: Dispatch<SetStateAction<IRestaurant | undefined>>
   popup: [boolean, Dispatch<SetStateAction<boolean>>]
-}> = ({ worktime, setRestaurant, popup }) => {
+  onUpdate: () => void
+}> = ({ worktime, popup, onUpdate }) => {
   const [open, setOpen] = popup
   const [copy, setCopy] = useState<IWorktime>(worktime)
 
@@ -27,14 +26,10 @@ export const EditWorktimePopup: FC<{
   }, [worktime])
 
   const saveChanges = () => {
-    EditWorktime(copy)
-      .then((res) =>
-        setRestaurant((prevState) => ({
-          ...prevState!,
-          worktime: [...prevState!.worktime, res.data],
-        })),
-      )
-      .then(() => setOpen(false))
+    EditWorktime(copy).then(() => {
+      onUpdate()
+      setOpen(false)
+    })
   }
 
   return (

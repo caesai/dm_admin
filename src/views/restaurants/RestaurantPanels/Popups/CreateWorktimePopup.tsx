@@ -16,9 +16,9 @@ import { CreateWorktime } from 'src/dataProviders/restaurants.ts'
 
 export const CreateWorktimePopup: FC<{
   restaurant: IRestaurant
-  setRestaurant: Dispatch<SetStateAction<IRestaurant | undefined>>
   popup: [boolean, Dispatch<SetStateAction<boolean>>]
-}> = ({ restaurant, setRestaurant, popup }) => {
+  onUpdate: () => void
+}> = ({ restaurant, popup, onUpdate }) => {
   const [open, setOpen] = popup
 
   const [worktime, setWorktime] = useState<IWorktime>({
@@ -29,14 +29,10 @@ export const CreateWorktimePopup: FC<{
   })
 
   const saveChanges = () => {
-    CreateWorktime(worktime, restaurant.id)
-      .then((res) =>
-        setRestaurant((prevState) => ({
-          ...prevState!,
-          worktime: [...prevState!.worktime, res.data],
-        })),
-      )
-      .then(() => setOpen(false))
+    CreateWorktime(worktime, restaurant.id).then(() => {
+      onUpdate()
+      setOpen(false)
+    })
   }
   return (
     <CModal visible={open} onClose={() => setOpen(false)}>
