@@ -1,5 +1,5 @@
 export interface ISocial {
-  id: number
+  id?: number
   type: string
   url: string
   name: string

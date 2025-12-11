@@ -18,8 +18,8 @@ import { EditWorktimePopup } from 'src/views/restaurants/RestaurantPanels/Popups
 export const WorkhoursPanel: FC<{
   restaurant: IRestaurant
   setRestaurant: Dispatch<SetStateAction<IRestaurant | undefined>>
-  signal: [number, Dispatch<SetStateAction<number>>]
-}> = ({ restaurant, setRestaurant }) => {
+  onUpdate: () => void
+}> = ({ restaurant, onUpdate }) => {
   const [createPopup, setCreatePopup] = useState(false)
   const [editPopup, setEditPopup] = useState(false)
   const [cur, setCur] = useState<IWorktime>()
@@ -27,8 +27,10 @@ export const WorkhoursPanel: FC<{
   const weekdayOrder = ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс']
 
   const sortedWorktime = [...restaurant.worktime].sort((a, b) => {
-    const indexA = weekdayOrder.indexOf(a.weekday) !== -1 ? weekdayOrder.indexOf(a.weekday) : weekdayOrder.length
-    const indexB = weekdayOrder.indexOf(b.weekday) !== -1 ? weekdayOrder.indexOf(b.weekday) : weekdayOrder.length
+    const indexA =
+      weekdayOrder.indexOf(a.weekday) !== -1 ? weekdayOrder.indexOf(a.weekday) : weekdayOrder.length
+    const indexB =
+      weekdayOrder.indexOf(b.weekday) !== -1 ? weekdayOrder.indexOf(b.weekday) : weekdayOrder.length
     return indexA - indexB
   })
 
@@ -36,29 +38,21 @@ export const WorkhoursPanel: FC<{
     if (!restaurant) {
       return
     }
-    RemoveWorktime(wt)
-      .then(() =>
-        setRestaurant((prev) => ({
-          ...prev!,
-          worktime: prev!.worktime.filter((v) => v.id !== wt.id),
-        })),
-      )
-      .then(() => toast.success('Запись удалена'))
+    RemoveWorktime(wt).then(() => {
+      onUpdate()
+      toast.success('Запись удалена')
+    })
   }
 
   return (
     <div className={'table-responsive mt-2'}>
       <CreateWorktimePopup
         restaurant={restaurant}
-        setRestaurant={setRestaurant}
         popup={[createPopup, setCreatePopup]}
+        onUpdate={onUpdate}
       />
       {cur && (
-        <EditWorktimePopup
-          worktime={cur}
-          setRestaurant={setRestaurant}
-          popup={[editPopup, setEditPopup]}
-        />
+        <EditWorktimePopup worktime={cur} popup={[editPopup, setEditPopup]} onUpdate={onUpdate} />
       )}
       <div>
         <CButton color={'primary'} onClick={() => setCreatePopup(true)}>

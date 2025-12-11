@@ -38,13 +38,6 @@ export const UpdateRestaurantGalleryItem = async (item: IPhotoCard) => {
   })
 }
 
-export const DeleteRestaurantGalleryItem = async (item: IPhotoCard) => {
-  return await axios.delete(`${BASEURL}/gallery/${item.id}`, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-    },
-  })
-}
 export const CreateRestaurantGalleryItem = async (item: IPhotoCard, restaurant_id: number) => {
   return await axios.post(
     `${BASEURL}/gallery/`,
@@ -63,16 +56,18 @@ export const CreateRestaurantGalleryItem = async (item: IPhotoCard, restaurant_i
   )
 }
 
-export const UpdateRestaurantDish = async (item: IMenu) => {
-  return await axios.patch(`${BASEURL}/dishes`, item, {
+// /gallery/${item.id}
+export const DeleteRestaurantGalleryItem = async (item: IPhotoCard) => {
+  return await axios.delete(`${BASEURL}/gallery/${item.id}`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },
   })
 }
 
-export const DeleteRestaurantDish = async (item: IMenu) => {
-  return await axios.delete(`${BASEURL}/dishes/${item.id}`, {
+// /dishes/
+export const UpdateRestaurantDish = async (item: IMenu) => {
+  return await axios.patch(`${BASEURL}/dishes/`, item, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },
@@ -81,7 +76,7 @@ export const DeleteRestaurantDish = async (item: IMenu) => {
 
 export const CreateRestaurantDish = async (item: IMenu, restaurant_id: number) => {
   return await axios.post(
-    `${BASEURL}/dishes`,
+    `${BASEURL}/dishes/`,
     {
       title: item.title,
       price: item.price,
@@ -96,8 +91,8 @@ export const CreateRestaurantDish = async (item: IMenu, restaurant_id: number) =
   )
 }
 
-export const RemoveWorktime = async (wt: IWorktime) => {
-  return await axios.delete(`${BASEURL}/workhours/${wt.id}`, {
+export const DeleteRestaurantDish = async (item: IMenu) => {
+  return await axios.delete(`${BASEURL}/dishes/${item.id}`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },
@@ -121,9 +116,25 @@ export const CreateWorktime = async (wt: IWorktime, restaurant_id: number) => {
   )
 }
 
+export const EditWorktime = async (worktime: IWorktime) => {
+  return await axios.patch<IWorktime>(`${BASEURL}/workhours/${worktime.id}`, worktime, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+    },
+  })
+}
+
+export const RemoveWorktime = async (worktime: IWorktime) => {
+  return await axios.delete(`${BASEURL}/workhours/${worktime.id}`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+    },
+  })
+}
+
 export const CreateMenuImg = async (menu: IMenuImg, restaurant_id: number) => {
   return await axios.post<IMenuImg>(
-    `${BASEURL}/menu`,
+    `${BASEURL}/menu/`,
     {
       image_url: menu.image_url,
       order: menu.order,
@@ -137,6 +148,14 @@ export const CreateMenuImg = async (menu: IMenuImg, restaurant_id: number) => {
   )
 }
 
+export const UpdateMenuImg = async (menu: IMenuImg) => {
+  return await axios.patch<IMenuImg>(`${BASEURL}/menu/${menu.id}`, menu, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+    },
+  })
+}
+
 export const DeleteMenuImg = async (menu: IMenuImg) => {
   return await axios.delete(`${BASEURL}/menu/${menu.id}`, {
     headers: {
@@ -146,27 +165,18 @@ export const DeleteMenuImg = async (menu: IMenuImg) => {
 }
 
 export const CreateSocialLink = async (social: ISocial, restaurant_id: number) => {
-  return await axios.post<ISocial>(
-    `${BASEURL}/socials`,
-    { ...social, restaurant_id },
-    {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-      },
-    },
-  )
-}
-
-export const DeleteSocialLink = async (social: ISocial) => {
-  return await axios.delete(`${BASEURL}/socials/${social.id}`, {
+  return await axios.post<ISocial>(`${BASEURL}/restaurants/${restaurant_id}/socials`, social, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },
   })
 }
 
-export const EditWorktime = async (worktime: IWorktime) => {
-  return await axios.patch<IWorktime>(`${BASEURL}/workhours`, worktime, {
+export const DeleteSocialLink = async (social: ISocial, restaurant_id: number) => {
+  return await axios.delete(`${BASEURL}/restaurants/${restaurant_id}/socials/${social.id}`, {
+    data: {
+      ...social,
+    },
     headers: {
       Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },
