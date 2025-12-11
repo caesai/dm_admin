@@ -13,21 +13,20 @@ import { GetRestaurantList } from 'src/dataProviders/restaurants.ts'
 
 const OrdersPanel: FC = () => {
   const [ordersList, setOrdersList] = useState<IOrderData[]>([])
-  const [allOrders, setAllOrders] = useState<IOrderData[]>([])
   const [restaurants, setRestaurants] = useState<IRestaurantWCity[]>([])
   const [currentId, setCurrentId] = useState<number>(0)
   const [currentOrder, setOrder] = useState<IOrderData | null>(null)
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [itemsPerPage, setItemsPerPage] = useState<number>(20)
-  const [allItemsCount, setAllItemsCount] = useState<number>(0)
   const [totalItems, setTotalItems] = useState<number>(0)
 
   const filterDate = new Date('2025-12-08T14:00:00')
 
   const filterOrdersDate = (array: IOrderData[]) => {
-    return array.filter((order) => {
-      return new Date(order.created_at) >= filterDate
-    })
+    return array
+    // return array.filter((order) => {
+    //   return new Date(order.created_at) >= filterDate
+    // })
   }
 
   const filteredOrders = useMemo(() => {
@@ -35,15 +34,19 @@ const OrdersPanel: FC = () => {
   }, [ordersList])
 
   const loadOrders = async () => {
-    getOrdersList({
+    const params: { page: number; per_page: number; restaurant_id?: number } = {
       page: currentPage,
       per_page: itemsPerPage,
-    })
+    }
+
+    if (currentId > 0) {
+      params.restaurant_id = currentId
+    }
+
+    getOrdersList(params)
       .then((res) => {
         setOrdersList(res.data.orders)
-        setAllOrders(res.data.orders)
         setTotalItems(res.data.total!)
-        setAllItemsCount(res.data.total!)
       })
       .catch(() => toast.error('Что-то пошло не так'))
   }
@@ -53,39 +56,22 @@ const OrdersPanel: FC = () => {
     setRestaurants(response.data)
   }
 
-  const filterOrders = () => {
-    if (currentId) {
-      const newList = allOrders.filter((order) => order.restaurant_id === currentId)
-      setOrdersList(newList)
-      setTotalItems(newList.length)
-      setCurrentPage(1)
-    } else {
-      setOrdersList(allOrders)
-      setCurrentPage(1)
-      setTotalItems(allItemsCount)
-    }
-  }
-
   const changeRestaurantId = (e: ChangeEvent<HTMLSelectElement>) => {
-    if (e.target.value === '') setCurrentId(0)
-    else {
+    if (e.target.value === '') {
+      setCurrentId(0)
+    } else {
       setCurrentId(Number(e.target.value))
     }
+    setCurrentPage(1)
   }
 
   useEffect(() => {
-    if (!currentId) {
-      void loadOrders()
-    }
-  }, [currentPage, itemsPerPage])
+    void loadOrders()
+  }, [currentPage, itemsPerPage, currentId])
 
   useEffect(() => {
     void loadRestaurants()
   }, [])
-
-  useEffect(() => {
-    filterOrders()
-  }, [currentId])
 
   const cols = [
     {
