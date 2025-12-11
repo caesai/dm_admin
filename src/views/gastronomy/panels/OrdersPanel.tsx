@@ -23,10 +23,9 @@ const OrdersPanel: FC = () => {
   const filterDate = new Date('2025-12-08T14:00:00')
 
   const filterOrdersDate = (array: IOrderData[]) => {
-    return array
-    // return array.filter((order) => {
-    //   return new Date(order.created_at) >= filterDate
-    // })
+    return array.filter((order) => {
+      return new Date(order.created_at) >= filterDate
+    })
   }
 
   const filteredOrders = useMemo(() => {
