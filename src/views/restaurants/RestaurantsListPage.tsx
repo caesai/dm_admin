@@ -65,7 +65,6 @@ const RestaurantsListPage = () => {
                     <RestaurantCard restaurant={res} key={index} />
                   ))}
                 </CRow>
-                image.png
               </CCardBody>
             </CCard>
           ))
