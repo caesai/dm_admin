@@ -1,4 +1,4 @@
-import { ICommon } from 'src/types/Common.ts'
+import { ICommon, IPagination } from 'src/types/Common.ts'
 import { IBookingWithRestaurant, IReviewWithRestaurant } from 'src/types/Booking.ts'
 import { IPaymentBase } from 'src/types/Payment.ts'
 import { IEventBookingBase } from 'src/types/Event.ts'
@@ -43,10 +43,7 @@ export interface IUserFull extends IUserWithDates {
   days_since_last_visit?: number
 }
 
-export interface IUserList {
-  page: number
-  per_page: number
-  total: number
+export interface IUserList extends IPagination {
   users: IUserWithDates[]
 }
 

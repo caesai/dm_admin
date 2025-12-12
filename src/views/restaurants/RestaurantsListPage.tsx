@@ -39,19 +39,7 @@ const RestaurantsListPage = () => {
   return (
     <CCard>
       <CCardHeader>
-        <div
-          className={classNames(
-            'd-flex',
-            'flex-row',
-            'justify-content-between',
-            'align-items-center',
-          )}
-        >
-          <strong>Рестораны</strong>
-          <CButton color={'success'} onClick={() => null}>
-            Создать
-          </CButton>
-        </div>
+        <strong>Рестораны</strong>
       </CCardHeader>
       <CCardBody className={classNames('d-flex', 'flex-column', 'gap-2')}>
         {loader ? (

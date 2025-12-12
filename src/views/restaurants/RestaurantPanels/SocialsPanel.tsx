@@ -20,7 +20,7 @@ export const SocialsPanel: FC<{
   const [createPopup, setCreatePopup] = useState(false)
 
   const deleteSocialLink = (link: ISocial) => {
-    DeleteSocialLink(link).then(() =>
+    DeleteSocialLink(link, restaurant.id).then(() =>
       setRestaurant((prev) => ({
         ...prev!,
         socials: [...prev!.socials.filter((v) => v.id !== link.id)],

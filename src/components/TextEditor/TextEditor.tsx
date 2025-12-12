@@ -14,6 +14,7 @@ import Code from '@tiptap/extension-code'
 import History from '@tiptap/extension-history'
 import * as Icons from './Icons'
 import { LinkModal } from './LinkModal'
+import { CSSProperties } from 'react'
 // @ts-expect-error its ok
 import css from './editor.module.css'
 import TurndownService from 'turndown'
@@ -24,9 +25,11 @@ import HardBreak from '@tiptap/extension-hard-break'
 interface IProps {
   initialContent?: string | undefined
   onUpdate: (a: any) => void
+  placeholder?: string
+  style?: CSSProperties
 }
 
-export const TextEditor: React.FC<IProps> = ({ onUpdate, initialContent }) => {
+export const TextEditor: React.FC<IProps> = ({ onUpdate, initialContent, placeholder, style }) => {
   const [editorContent, setEditorContent] = useState('')
   const [isEmoji, setIsEmoji] = useState<boolean>(false)
   const emojiPickerRef = useRef<HTMLDivElement>(null)
@@ -209,7 +212,7 @@ export const TextEditor: React.FC<IProps> = ({ onUpdate, initialContent }) => {
   useClickOutside(emojiPickerRef, closeEmojiPopup)
 
   return (
-    <div className={css.editor}>
+    <div className={css.editor} style={style}>
       <div className={css.menu}>
         <button
           className={css.menu_button}
@@ -301,6 +304,9 @@ export const TextEditor: React.FC<IProps> = ({ onUpdate, initialContent }) => {
           Remove
         </button>
       </BubbleMenu>
+
+      {placeholder && <span className={css.placeholder}>{placeholder}</span>}
+
       <EditorContent editor={editor} />
 
       <LinkModal

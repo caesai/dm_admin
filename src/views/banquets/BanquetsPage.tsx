@@ -23,7 +23,7 @@ const BanquetsPage = () => {
             <CTab itemKey={'bookings'}>Бронирования</CTab>
           </CTabList>
         </CCardHeader>
-        <CCardBody>
+        <CCardBody className={'py-0'}>
           <CTabContent>
             {activeTab === 'banquets' && <BanquetsPanel />}
             {activeTab === 'bookings' && <BookingsPanel />}
