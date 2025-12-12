@@ -46,7 +46,10 @@ const ConfirmNotificationPopup: FC<{
       </CModalHeader>
       <CModalBody>
         Сообщение будет отправлено{' '}
-        {restaurants ? `клиентам ${getRestaurantTitles()}` : 'всем клиентам'}!
+        {restaurants && restaurants.length > 0
+          ? `клиентам ${getRestaurantTitles()}`
+          : 'всем клиентам'}
+        !
       </CModalBody>
       <CModalFooter>
         <CLoadingButton
