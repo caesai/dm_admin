@@ -11,6 +11,7 @@ export interface IMailing {
 export interface IMailingSend {
   users_ids: Array<string>
   restaurant_id?: number
+  restaurant_ids?: number[]
   text?: string
   media_url?: string
   media_type?: 'photo' | 'video' | 'document'
