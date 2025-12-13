@@ -1,5 +1,5 @@
 import { ChangeEvent, FC, useEffect, useMemo, useState } from 'react'
-import { CFormSelect, CSmartTable, CTabPanel } from '@coreui/react-pro'
+import { CCard, CCardBody, CFormSelect, CSmartTable, CTabPanel } from '@coreui/react-pro'
 import classNames from 'classnames'
 import { Item } from '@coreui/react-pro/src/components/smart-table/types.ts'
 import toast from 'react-hot-toast'
@@ -118,61 +118,67 @@ const OrdersPanel: FC = () => {
   return (
     <>
       <TablePopup data={[currentOrder, setOrder]} title={'Заказ'} />
-      <CTabPanel itemKey={'orders'} className={classNames('d-flex', 'flex-column', 'py-3')}>
-        <CFormSelect
-          options={[
-            { label: 'Выберите ресторан', value: '' },
-            ...restaurants.map((restaurant) => ({
-              label: `${restaurant.title}, ${getRestaurantCity(restaurants, restaurant.id)}`,
-              value: `${restaurant.id}`,
-            })),
-          ]}
-          onChange={changeRestaurantId}
-        />
-        <CSmartTable
-          columns={cols}
-          items={filteredOrders}
-          clickableRows
-          itemsPerPageSelect
-          itemsPerPage={itemsPerPage}
-          onItemsPerPageChange={setItemsPerPage}
-          itemsPerPageOptions={[10, 20, 50, 100]}
-          pagination
-          paginationProps={{
-            pages: Math.ceil(totalItems / itemsPerPage),
-            activePage: currentPage,
-            onActivePageChange: setCurrentPage,
-          }}
-          tableHeadProps={{
-            className: 'align-middle',
-          }}
-          tableProps={{
-            striped: true,
-            hover: true,
-            className: classNames('align-middle', 'text-center'),
-          }}
-          onRowClick={(item: Item) => setOrder(item as IOrderData)}
-          scopedColumns={{
-            restaurant_id: (item: Item) => (
-              <RestaurantInfoCell restaurantId={item.restaurant_id} type={'title'} />
-            ),
-            restaurant_address: (item: Item) => (
-              <RestaurantInfoCell restaurantId={item.restaurant_id} type={'address'} />
-            ),
-            delivery_method: (item: Item) => (
-              <td>{item.delivery_method === 'pickup' ? 'Самовывоз' : 'Доставка'}</td>
-            ),
-            pickup_date: (item: Item) => (
-              <td>
-                {item.pickup_date
-                  ? new Date(item.pickup_date).toLocaleDateString()
-                  : new Date(item.delivery_date).toLocaleDateString()}
-              </td>
-            ),
-            created_at: (item: Item) => <td>{formatDateTime(item.created_at)}</td>,
-          }}
-        />
-      </CTabPanel>
+      {filteredOrders.length > 0 ? (
+        <CTabPanel itemKey={'orders'} className={classNames('d-flex', 'flex-column', 'py-3')}>
+          <CFormSelect
+            options={[
+              { label: 'Выберите ресторан', value: '' },
+              ...restaurants.map((restaurant) => ({
+                label: `${restaurant.title}, ${getRestaurantCity(restaurants, restaurant.id)}`,
+                value: `${restaurant.id}`,
+              })),
+            ]}
+            onChange={changeRestaurantId}
+          />
+          <CSmartTable
+            columns={cols}
+            items={filteredOrders}
+            clickableRows
+            itemsPerPageSelect
+            itemsPerPage={itemsPerPage}
+            onItemsPerPageChange={setItemsPerPage}
+            itemsPerPageOptions={[10, 20, 50, 100]}
+            pagination
+            paginationProps={{
+              pages: Math.ceil(totalItems / itemsPerPage),
+              activePage: currentPage,
+              onActivePageChange: setCurrentPage,
+            }}
+            tableHeadProps={{
+              className: 'align-middle',
+            }}
+            tableProps={{
+              striped: true,
+              hover: true,
+              className: classNames('align-middle', 'text-center'),
+            }}
+            onRowClick={(item: Item) => setOrder(item as IOrderData)}
+            scopedColumns={{
+              restaurant_id: (item: Item) => (
+                <RestaurantInfoCell restaurantId={item.restaurant_id} type={'title'} />
+              ),
+              restaurant_address: (item: Item) => (
+                <RestaurantInfoCell restaurantId={item.restaurant_id} type={'address'} />
+              ),
+              delivery_method: (item: Item) => (
+                <td>{item.delivery_method === 'pickup' ? 'Самовывоз' : 'Доставка'}</td>
+              ),
+              pickup_date: (item: Item) => (
+                <td>
+                  {item.pickup_date
+                    ? new Date(item.pickup_date).toLocaleDateString()
+                    : new Date(item.delivery_date).toLocaleDateString()}
+                </td>
+              ),
+              created_at: (item: Item) => <td>{formatDateTime(item.created_at)}</td>,
+            }}
+          />
+        </CTabPanel>
+      ) : (
+        <CCard className={classNames('my-4')}>
+          <CCardBody>Нет доступных заказов</CCardBody>
+        </CCard>
+      )}
     </>
   )
 }
