@@ -18,7 +18,7 @@ import { Link } from 'react-router-dom'
 import CIcon from '@coreui/icons-react'
 import { cilSearch } from '@coreui/icons'
 import classNames from 'classnames'
-import { getUserBySearch } from 'src/dataProviders/users.ts'
+import { getUserBySearch, getUserById } from 'src/dataProviders/users.ts'
 import toast from 'react-hot-toast'
 
 interface ITableProps {
@@ -34,7 +34,7 @@ interface ITableProps {
 
 interface ISearchConfig {
   isActive: boolean
-  type: 'tg_id' | 'phone'
+  type: 'tg_id' | 'phone' | 'id'
   value: string
   user: IUserFull | null
 }
@@ -55,7 +55,16 @@ export const UsersListSmartTable = ({ users, tableConfig }: ITableProps) => {
   const columns = [
     {
       key: 'id',
-      label: 'ID',
+      label: (
+        <div className={classNames('d-flex', 'align-items-center', 'gap-3')}>
+          <span>ID</span>
+          <CIcon
+            icon={cilSearch}
+            style={{ cursor: 'pointer' }}
+            onClick={() => handleSearchChange('id')}
+          />
+        </div>
+      ) as never,
       _style: { width: '5%' },
     },
     { key: 'first_name', _style: { width: '20%' }, label: 'Имя' },
@@ -101,7 +110,9 @@ export const UsersListSmartTable = ({ users, tableConfig }: ITableProps) => {
   }
 
   const getSearchPlaceholder = () => {
-    return searchConfig.type === 'tg_id' ? 'Telegram ID' : 'номер телефона'
+    if (searchConfig.type === 'tg_id') return 'Telegram ID'
+    if (searchConfig.type === 'phone') return 'номер телефона'
+    return 'ID пользователя'
   }
 
   const toggleDetails = (index: number) => {
@@ -117,7 +128,12 @@ export const UsersListSmartTable = ({ users, tableConfig }: ITableProps) => {
 
   const searchUser = async () => {
     if (searchConfig.value.length === 0) return
-    await getUserBySearch(Number(searchConfig.value), searchConfig.type)
+    const searchPromise =
+      searchConfig.type === 'id'
+        ? getUserById(Number(searchConfig.value))
+        : getUserBySearch(Number(searchConfig.value), searchConfig.type)
+
+    await searchPromise
       .then((response) => {
         setSearchConfig((prev) => ({
           ...prev,
@@ -127,7 +143,7 @@ export const UsersListSmartTable = ({ users, tableConfig }: ITableProps) => {
       .catch(() => toast.error('Пользователь не найден'))
   }
 
-  const handleSearchChange = (type?: 'tg_id' | 'phone') => {
+  const handleSearchChange = (type?: 'tg_id' | 'phone' | 'id') => {
     setSearchConfig((prev) => ({
       isActive: true,
       type: type ? type : prev.type,
