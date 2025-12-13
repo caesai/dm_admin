@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { CCard, CCardBody, CCardHeader, CSmartTable } from '@coreui/react-pro'
 import classNames from 'classnames'
 import { Item } from '@coreui/react-pro/src/components/smart-table/types.ts'
@@ -14,23 +14,16 @@ const CertificatesPage: FC = () => {
   const [itemsPerPage, setItemsPerPage] = useState<number>(20)
   const [totalItems, setTotalItems] = useState<number>(0)
 
-  const filterDate = new Date('2025-12-03T12:00:00')
-
-  const filterCertificates = (array: CertificateData[]) => {
-    return array.filter((certificate) => {
-      return new Date(certificate.created_at) >= filterDate
-    })
-  }
-
-  const filteredCertificates = useMemo(() => {
-    return filterCertificates(certificates)
-  }, [certificates])
+  const filterDate = '2025-12-03T12:00:00'
 
   const loadCertificates = async () => {
-    getCertificates({
-      page: currentPage,
-      per_page: itemsPerPage,
-    })
+    getCertificates(
+      {
+        page: currentPage,
+        per_page: itemsPerPage,
+      },
+      filterDate,
+    )
       .then((res) => {
         setCertificates(res.data.certificates)
         setTotalItems(res.data.total!)
@@ -95,7 +88,7 @@ const CertificatesPage: FC = () => {
         <CCardBody className={'py-0'}>
           <CSmartTable
             columns={cols}
-            items={filteredCertificates}
+            items={certificates}
             clickableRows
             itemsPerPageSelect
             itemsPerPage={itemsPerPage}
