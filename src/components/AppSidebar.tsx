@@ -31,7 +31,7 @@ const AppSidebar = () => {
     >
       <CSidebarHeader className="border-bottom">
         <CSidebarBrand as={NavLink} to="/">
-          <CImage className="w-100" src={'/logoFull.png'} />
+          <CImage className="w-100" src={'./public/logo.svg'} />
         </CSidebarBrand>
         <CCloseButton
           className="d-lg-none"
