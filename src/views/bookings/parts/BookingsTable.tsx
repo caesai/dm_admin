@@ -70,6 +70,11 @@ const BookingsTable: FC<IBookingsTableProps> = ({
       _props: { scope: 'col' },
     },
     {
+      key: 'phone',
+      label: 'Номер',
+      _props: { scope: 'col' },
+    },
+    {
       key: 'remarked_comment',
       label: 'Комментарий в Ремаркед',
       _props: {

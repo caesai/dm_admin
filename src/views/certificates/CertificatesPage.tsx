@@ -67,6 +67,11 @@ const CertificatesPage: FC = () => {
       _props: { scope: 'col' },
     },
     {
+      key: 'phone_number',
+      label: 'Номер',
+      _props: { scope: 'col' },
+    },
+    {
       key: 'message',
       label: 'Сообщение',
       _props: { scope: 'col' },

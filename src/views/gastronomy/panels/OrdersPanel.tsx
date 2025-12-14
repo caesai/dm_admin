@@ -89,6 +89,11 @@ const OrdersPanel: FC = () => {
       _props: { scope: 'col' },
     },
     {
+      key: 'customer_phone',
+      label: 'Номер',
+      _props: { scope: 'col' },
+    },
+    {
       key: 'status',
       label: 'Статус',
       _props: { scope: 'col' },
