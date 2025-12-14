@@ -3,11 +3,16 @@ import { BASEURL } from 'src/api.ts'
 import { ICertificate } from 'src/types/Certificates.ts'
 import { IPagination } from 'src/types/Common.ts'
 
-export const getCertificates = async (props: IPagination) => {
+interface ICertificateProps extends IPagination {
+  user_id?: number
+}
+
+export const getCertificates = async (props: ICertificateProps) => {
   return await axios.get<ICertificate>(`${BASEURL}/certificates/`, {
     params: {
       page: props.page,
       per_page: props.per_page,
+      customer_id: props.user_id,
     },
     headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
   })

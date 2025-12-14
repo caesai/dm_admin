@@ -31,6 +31,8 @@ import { ILogs } from 'src/types/Logs.ts'
 import { UserEvents } from 'src/views/users/UserPageViews/UserEvents.tsx'
 import { IEventBookingBase } from 'src/types/Event.ts'
 import { UserBanquets } from 'src/views/users/UserPageViews/UserBanquets.tsx'
+import { UserCertificates } from 'src/views/users/UserPageViews/UserCertificates.tsx'
+import { UserGastronomy } from 'src/views/users/UserPageViews/UserGastronomy.tsx'
 
 const UserPage = () => {
   const { id } = useParams()
@@ -71,6 +73,8 @@ const UserPage = () => {
                         <CTab itemKey="bookings">Бронирование</CTab>
                         <CTab itemKey="events">Мероприятия</CTab>
                         <CTab itemKey="banquets">Банкеты</CTab>
+                        <CTab itemKey="certificates">Сертификаты</CTab>
+                        <CTab itemKey="gastronomy">Кулинария</CTab>
                         <CTab itemKey="logs">Логи</CTab>
                         <CTab itemKey="reviews">Отзывы</CTab>
                         <CTab itemKey="payments">Платежи</CTab>
@@ -89,6 +93,12 @@ const UserPage = () => {
                         </CTabPanel>
                         <CTabPanel itemKey="banquets">
                           <UserBanquets user_id={Number(id)} />
+                        </CTabPanel>
+                        <CTabPanel className="p-3" itemKey="certificates">
+                          <UserCertificates user_id={Number(id)} />
+                        </CTabPanel>
+                        <CTabPanel className="p-3" itemKey="gastronomy">
+                          <UserGastronomy user_id={Number(id)} />
                         </CTabPanel>
                         <CTabPanel className="p-3" itemKey="logs">
                           <UserLogs logs={logs} />
