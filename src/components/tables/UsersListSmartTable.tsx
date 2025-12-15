@@ -1,16 +1,5 @@
 import { Dispatch, SetStateAction, useState } from 'react'
-import {
-  CBadge,
-  CButton,
-  CCardBody,
-  CCol,
-  CCollapse,
-  CFormInput,
-  CListGroup,
-  CListGroupItem,
-  CRow,
-  CSmartTable,
-} from '@coreui/react-pro'
+import { CBadge, CButton, CFormInput, CSmartTable } from '@coreui/react-pro'
 
 import type { Item } from '@coreui/react-pro/src/components/smart-table/types'
 import { IUser, IUserFull } from 'src/types/User.ts'
@@ -47,9 +36,7 @@ const initSearchConfig: ISearchConfig = {
 }
 
 export const UsersListSmartTable = ({ users, tableConfig }: ITableProps) => {
-  const [details, setDetails] = useState<number[]>([])
   const [searchConfig, setSearchConfig] = useState<ISearchConfig>(initSearchConfig)
-
   const { currentPage, itemsPerPage, setCurrentPage, setItemsPerPage, totalItems } = tableConfig
 
   const columns = [
@@ -88,7 +75,7 @@ export const UsersListSmartTable = ({ users, tableConfig }: ITableProps) => {
       ) as never,
     },
     {
-      key: 'show_details',
+      key: 'user_link',
       label: '',
       _style: { width: '1%' },
       filter: true,
@@ -102,17 +89,6 @@ export const UsersListSmartTable = ({ users, tableConfig }: ITableProps) => {
 
   const getSearchPlaceholder = () => {
     return searchConfig.type === 'tg_id' ? 'Telegram ID' : 'номер телефона'
-  }
-
-  const toggleDetails = (index: number) => {
-    const position = details.indexOf(index)
-    let newDetails = details.slice()
-    if (position !== -1) {
-      newDetails.splice(position, 1)
-    } else {
-      newDetails = [...details, index]
-    }
-    setDetails(newDetails)
   }
 
   const searchUser = async () => {
@@ -191,70 +167,17 @@ export const UsersListSmartTable = ({ users, tableConfig }: ITableProps) => {
               </CBadge>
             </td>
           ),
-          show_details: (item: Item) => {
+          user_link: (item: Item) => {
             return (
               <td className="py-2">
-                <CButton
-                  color="primary"
-                  variant="outline"
-                  shape="square"
-                  size="sm"
-                  onClick={() => {
-                    toggleDetails(item.id)
-                  }}
-                >
-                  {details.includes(item.id) ? 'Меньше' : 'Больше'}
-                </CButton>
+                <div style={{ display: 'flex', justifyContent: 'end' }}>
+                  <Link to={`/users/${item.id}`} target="_blank" rel="noopener noreferrer">
+                    <CButton size="sm" color="primary">
+                      Открыть
+                    </CButton>
+                  </Link>
+                </div>
               </td>
-            )
-          },
-          details: (item: Item) => {
-            return (
-              <CCollapse visible={details.includes(item.id)}>
-                <CCardBody>
-                  <CListGroup className={'mb-2'}>
-                    <CListGroupItem>
-                      <b>Пользователь</b>
-                    </CListGroupItem>
-                    <CListGroupItem>Email: {item.email ? item.email : 'Не указано'}</CListGroupItem>
-                    <CListGroupItem>
-                      Лицензионное соглашение:{' '}
-                      <CBadge color={getBadge(item.license_agreement)}>
-                        {item.license_agreement ? 'Да' : 'Нет'}
-                      </CBadge>
-                    </CListGroupItem>
-                    <CListGroupItem>
-                      Рассылки:{' '}
-                      <CBadge color={getBadge(item.advertisement_agreement)}>
-                        {item.advertisement_agreement ? 'Да' : 'Нет'}
-                      </CBadge>
-                    </CListGroupItem>
-                    <CListGroupItem>
-                      Обработка данных:{' '}
-                      <CBadge color={getBadge(item.gdpr_agreement)}>
-                        {item.gdpr_agreement ? 'Да' : 'Нет'}
-                      </CBadge>
-                    </CListGroupItem>
-                    <CListGroupItem>
-                      Регистрация: {new Date(item.created_at).toLocaleString()}
-                    </CListGroupItem>
-                    <CListGroupItem>
-                      Последнее изменение: {new Date(item.updated_at).toLocaleString()}
-                    </CListGroupItem>
-                  </CListGroup>
-                  <CRow className="justify-content-between">
-                    <CCol>
-                      <div style={{ display: 'flex', justifyContent: 'end' }}>
-                        <Link to={`/users/${item.id}`} target="_blank" rel="noopener noreferrer">
-                          <CButton size="sm" color="info">
-                            Открыть
-                          </CButton>
-                        </Link>
-                      </div>
-                    </CCol>
-                  </CRow>
-                </CCardBody>
-              </CCollapse>
             )
           },
         }}

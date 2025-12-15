@@ -11,6 +11,7 @@ import {
   CTableHeaderCell,
   CTableRow,
 } from '@coreui/react-pro'
+import { useMemo } from 'react'
 
 interface Props {
   preferences: IUserPreferences
@@ -35,35 +36,41 @@ export const UserPreferences = ({ preferences }: Props) => {
     eventsPreferences.length,
   )
 
+  const isEmptyPreferences = useMemo(() => {
+    return (
+      moodPreferences.length === 0 && menuPreferences.length === 0 && eventsPreferences.length === 0
+    )
+  }, [preferencesList, moodPreferences, menuPreferences, eventsPreferences])
+
   return (
-    <CCard className="border h-100">
-      <CCardHeader>
-        <CCardTitle className="mb-0">Предпочтения</CCardTitle>
-      </CCardHeader>
-      <CCardBody>
-        {preferencesList.length > 0 ? (
-          <CTable striped responsive>
-            <CTableHead>
-              <CTableRow>
-                <CTableHeaderCell>Настроение</CTableHeaderCell>
-                <CTableHeaderCell>Меню</CTableHeaderCell>
-                <CTableHeaderCell>Форматы</CTableHeaderCell>
-              </CTableRow>
-            </CTableHead>
-            <CTableBody>
-              {Array.from({ length: maxLength }).map((_, index) => (
-                <CTableRow key={index}>
-                  <CTableDataCell>{moodPreferences[index] || null}</CTableDataCell>
-                  <CTableDataCell>{menuPreferences[index] || null}</CTableDataCell>
-                  <CTableDataCell>{eventsPreferences[index] || null}</CTableDataCell>
+    <>
+      {!isEmptyPreferences && (
+        <CCard className="border h-100">
+          <CCardHeader>
+            <CCardTitle className="mb-0">Предпочтения</CCardTitle>
+          </CCardHeader>
+          <CCardBody>
+            <CTable striped responsive>
+              <CTableHead>
+                <CTableRow>
+                  <CTableHeaderCell>Настроение</CTableHeaderCell>
+                  <CTableHeaderCell>Меню</CTableHeaderCell>
+                  <CTableHeaderCell>Форматы</CTableHeaderCell>
                 </CTableRow>
-              ))}
-            </CTableBody>
-          </CTable>
-        ) : (
-          <div className="text-center text-muted py-3">Предпочтения не указаны</div>
-        )}
-      </CCardBody>
-    </CCard>
+              </CTableHead>
+              <CTableBody>
+                {Array.from({ length: maxLength }).map((_, index) => (
+                  <CTableRow key={index}>
+                    <CTableDataCell>{moodPreferences[index] || null}</CTableDataCell>
+                    <CTableDataCell>{menuPreferences[index] || null}</CTableDataCell>
+                    <CTableDataCell>{eventsPreferences[index] || null}</CTableDataCell>
+                  </CTableRow>
+                ))}
+              </CTableBody>
+            </CTable>
+          </CCardBody>
+        </CCard>
+      )}
+    </>
   )
 }
