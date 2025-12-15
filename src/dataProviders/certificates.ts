@@ -5,6 +5,7 @@ import { IPagination } from 'src/types/Common.ts'
 
 interface ICertificateProps extends IPagination {
   user_id?: number
+  created_from?: string
 }
 
 export const getCertificates = async (props: ICertificateProps) => {
@@ -13,6 +14,7 @@ export const getCertificates = async (props: ICertificateProps) => {
       page: props.page,
       per_page: props.per_page,
       customer_id: props.user_id,
+      created_from: props.created_from,
     },
     headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
   })
