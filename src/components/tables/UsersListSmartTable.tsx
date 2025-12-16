@@ -75,7 +75,7 @@ export const UsersListSmartTable = ({ users, tableConfig }: ITableProps) => {
       ) as never,
     },
     {
-      key: 'user_link',
+      key: 'actions',
       label: '',
       _style: { width: '1%' },
       filter: true,
@@ -167,7 +167,7 @@ export const UsersListSmartTable = ({ users, tableConfig }: ITableProps) => {
               </CBadge>
             </td>
           ),
-          user_link: (item: Item) => {
+          actions: (item: Item) => {
             return (
               <td className="py-2">
                 <div style={{ display: 'flex', justifyContent: 'end' }}>

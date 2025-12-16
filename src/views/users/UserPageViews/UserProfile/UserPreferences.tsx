@@ -40,7 +40,7 @@ export const UserPreferences = ({ preferences }: Props) => {
     return (
       moodPreferences.length === 0 && menuPreferences.length === 0 && eventsPreferences.length === 0
     )
-  }, [preferencesList, moodPreferences, menuPreferences, eventsPreferences])
+  }, [moodPreferences, menuPreferences, eventsPreferences])
 
   return (
     <>
