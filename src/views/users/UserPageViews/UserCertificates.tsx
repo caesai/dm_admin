@@ -1,7 +1,7 @@
 import { CertificateData } from 'src/types/Certificates.ts'
 import { CCard, CCardBody, CSmartTable } from '@coreui/react-pro'
 import { Item } from '@coreui/react-pro/src/components/smart-table/types'
-import { useState, useEffect, FC } from 'react'
+import { useState, useEffect, FC, useCallback } from 'react'
 import { TablePopup } from 'src/components/TablePopup.tsx'
 import { formatDateTime } from 'src/utils.tsx'
 import classNames from 'classnames'
@@ -17,7 +17,7 @@ export const UserCertificates: FC<{
   const [itemsPerPage, setItemsPerPage] = useState<number>(20)
   const [totalItems, setTotalItems] = useState<number>(0)
 
-  const loadCertificates = () => {
+  const loadCertificates = useCallback(() => {
     getCertificates({
       user_id: user_id,
       page: currentPage,
@@ -28,11 +28,12 @@ export const UserCertificates: FC<{
         setTotalItems(res.data.total!)
       })
       .catch(() => toast.error('Что-то пошло не так'))
-  }
+  }, [user_id, currentPage, itemsPerPage])
 
   useEffect(() => {
     void loadCertificates()
-  }, [user_id, currentPage, itemsPerPage])
+  }, [loadCertificates])
+
   const cols = [
     {
       key: 'certificate_type',

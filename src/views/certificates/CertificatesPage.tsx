@@ -17,13 +17,11 @@ const CertificatesPage: FC = () => {
   const filterDate = '2025-12-03T12:00:00'
 
   const loadCertificates = async () => {
-    getCertificates(
-      {
-        page: currentPage,
-        per_page: itemsPerPage,
-      },
-      filterDate,
-    )
+    getCertificates({
+      page: currentPage,
+      per_page: itemsPerPage,
+      created_from: filterDate,
+    })
       .then((res) => {
         setCertificates(res.data.certificates)
         setTotalItems(res.data.total!)

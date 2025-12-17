@@ -1,7 +1,7 @@
 import { IOrderData } from 'src/types/Gastronomy.ts'
 import { CCard, CCardBody, CSmartTable } from '@coreui/react-pro'
 import { Item } from '@coreui/react-pro/src/components/smart-table/types'
-import { useState, useEffect, FC } from 'react'
+import { useState, useEffect, FC, useCallback } from 'react'
 import { TablePopup } from 'src/components/TablePopup.tsx'
 import { RestaurantInfoCell } from 'src/components/RestaurantInfoCell.tsx'
 import { formatDateTime } from 'src/utils.tsx'
@@ -18,7 +18,7 @@ export const UserGastronomy: FC<{
   const [itemsPerPage, setItemsPerPage] = useState<number>(20)
   const [totalItems, setTotalItems] = useState<number>(0)
 
-  const loadOrders = () => {
+  const loadOrders = useCallback(() => {
     getOrdersList({
       customer_id: user_id,
       page: currentPage,
@@ -29,11 +29,12 @@ export const UserGastronomy: FC<{
         setTotalItems(res.data.total!)
       })
       .catch(() => toast.error('Что-то пошло не так'))
-  }
+  }, [user_id, currentPage, itemsPerPage])
 
   useEffect(() => {
     void loadOrders()
-  }, [user_id, currentPage, itemsPerPage])
+  }, [loadOrders])
+
   const cols = [
     {
       key: 'order_id',
