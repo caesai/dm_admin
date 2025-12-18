@@ -123,18 +123,18 @@ const OrdersPanel: FC = () => {
   return (
     <>
       <TablePopup data={[currentOrder, setOrder]} title={'Заказ'} />
-      {filteredOrders.length > 0 ? (
-        <CTabPanel itemKey={'orders'} className={classNames('d-flex', 'flex-column', 'py-3')}>
-          <CFormSelect
-            options={[
-              { label: 'Выберите ресторан', value: '' },
-              ...restaurants.map((restaurant) => ({
-                label: `${restaurant.title}, ${getRestaurantCity(restaurants, restaurant.id)}`,
-                value: `${restaurant.id}`,
-              })),
-            ]}
-            onChange={changeRestaurantId}
-          />
+      <CTabPanel itemKey={'orders'} className={classNames('d-flex', 'flex-column', 'py-3')}>
+        <CFormSelect
+          options={[
+            { label: 'Выберите ресторан', value: '' },
+            ...restaurants.map((restaurant) => ({
+              label: `${restaurant.title}, ${getRestaurantCity(restaurants, restaurant.id)}`,
+              value: `${restaurant.id}`,
+            })),
+          ]}
+          onChange={changeRestaurantId}
+        />
+        {filteredOrders.length > 0 ? (
           <CSmartTable
             columns={cols}
             items={filteredOrders}
@@ -178,12 +178,12 @@ const OrdersPanel: FC = () => {
               created_at: (item: Item) => <td>{formatDateTime(item.created_at)}</td>,
             }}
           />
-        </CTabPanel>
-      ) : (
-        <CCard className={classNames('my-4')}>
-          <CCardBody>Нет доступных заказов</CCardBody>
-        </CCard>
-      )}
+        ) : (
+          <CCard className={classNames('my-4')}>
+            <CCardBody>Нет доступных заказов</CCardBody>
+          </CCard>
+        )}
+      </CTabPanel>
     </>
   )
 }
