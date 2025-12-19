@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { BASEURL } from 'src/api.ts'
-import { IUserFull, IUserList, IUserPreferences } from 'src/types/User.ts'
+import { IUserFull, IUserList, IUserPreferences, IUserWithDates } from 'src/types/User.ts'
 import { IBookingWithRestaurant } from 'src/types/Booking.ts'
 import { IPagination } from 'src/types/Common.ts'
 
@@ -71,6 +71,31 @@ export const GetUserBanquets = async (id: number, props: IPagination) => {
     params: {
       page: props.page,
       per_page: props.per_page,
+    },
+    headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
+  })
+}
+
+export const getUsersMailingList = async () => {
+  return await axios.get<IUserWithDates[]>(`${BASEURL}/users/mailing-list`, {
+    headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
+  })
+}
+
+export const addUsersMailing = async (user_id: number) => {
+  return await axios.post(
+    `${BASEURL}/users/mailing-list`,
+    { user_id: user_id },
+    {
+      headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
+    },
+  )
+}
+
+export const deleteUsersMailing = async (user_id: number) => {
+  return await axios.delete(`${BASEURL}/users/mailing-list`, {
+    params: {
+      user_id: user_id,
     },
     headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
   })

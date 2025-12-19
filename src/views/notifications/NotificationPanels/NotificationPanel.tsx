@@ -22,7 +22,7 @@ import { TextEditor } from 'src/components/TextEditor/TextEditor.tsx'
 import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react'
 import ConfirmNotificationPopup from 'src/views/notifications/NotificationPopups/ConfirmNotificationPopup.tsx'
 import toast from 'react-hot-toast'
-import NotificationHistory from 'src/views/notifications/NotificationPanels/NotificationHistory.tsx'
+import NotificationTable from 'src/views/notifications/Tables/NotificationTable.tsx'
 import TooltipInfo from 'src/components/TooltipInfo'
 import { cilArrowBottom, cilArrowTop } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
@@ -522,7 +522,7 @@ const NotificationPanel = () => {
             </div>
           </CCardBody>
         </CCard>
-        <NotificationHistory refreshKey={refreshHistoryKey} />
+        <NotificationTable refreshKey={refreshHistoryKey} />
       </CTabPanel>
       {isPopupOpen && (
         <ConfirmNotificationPopup

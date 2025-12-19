@@ -23,7 +23,7 @@ interface NotificationHistoryProps {
   refreshKey: number
 }
 
-const NotificationHistory = ({ refreshKey }: NotificationHistoryProps) => {
+const NotificationTable = ({ refreshKey }: NotificationHistoryProps) => {
   const [mailingList, setMailingList] = useState<IMailing[]>([])
   const [currentMailingId, setCurrentMailingId] = useState<number | null>(null)
   const [currentMailingText, setCurrentMailingText] = useState<string | null>(null)
@@ -99,4 +99,4 @@ const NotificationHistory = ({ refreshKey }: NotificationHistoryProps) => {
   )
 }
 
-export default NotificationHistory
+export default NotificationTable
