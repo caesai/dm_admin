@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, useEffect, useMemo, useState } from 'react'
+import { ChangeEvent, FC, useEffect, useState } from 'react'
 import { CCard, CCardBody, CFormSelect, CSmartTable, CTabPanel } from '@coreui/react-pro'
 import classNames from 'classnames'
 import { Item } from '@coreui/react-pro/src/components/smart-table/types.ts'
@@ -20,22 +20,18 @@ const OrdersPanel: FC = () => {
   const [itemsPerPage, setItemsPerPage] = useState<number>(20)
   const [totalItems, setTotalItems] = useState<number>(0)
 
-  const filterDate = new Date('2025-12-08T14:00:00')
-
-  const filterOrdersDate = (array: IOrderData[]) => {
-    return array.filter((order) => {
-      return new Date(order.created_at) >= filterDate
-    })
-  }
-
-  const filteredOrders = useMemo(() => {
-    return filterOrdersDate(ordersList)
-  }, [ordersList])
+  const filterDate = '2025-12-08T14:00:00'
 
   const loadOrders = async () => {
-    const params: { page: number; per_page: number; restaurant_id?: number } = {
+    const params: {
+      page: number
+      per_page: number
+      restaurant_id?: number
+      created_from?: string
+    } = {
       page: currentPage,
       per_page: itemsPerPage,
+      created_from: filterDate,
     }
 
     if (currentId > 0) {
@@ -134,10 +130,10 @@ const OrdersPanel: FC = () => {
           ]}
           onChange={changeRestaurantId}
         />
-        {filteredOrders.length > 0 ? (
+        {ordersList.length > 0 ? (
           <CSmartTable
             columns={cols}
-            items={filteredOrders}
+            items={ordersList}
             clickableRows
             itemsPerPageSelect
             itemsPerPage={itemsPerPage}
