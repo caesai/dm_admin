@@ -153,7 +153,7 @@ const OrdersPanel: FC = () => {
             scopedColumns={{
               restaurant_id: (item: Item) => (
                 <td
-                  className={classNames('', 'gap-1')}
+                  className={classNames('gap-1')}
                   style={currentId === 0 ? { display: 'flex' } : { display: 'none' }}
                 >
                   <div className={classNames('d-flex')}>
