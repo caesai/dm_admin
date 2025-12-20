@@ -28,12 +28,17 @@ const MailingPanel: FC = () => {
   const [currentId, setCurrentId] = useState<number>(0)
 
   const loadUsers = useCallback(() => {
-    getUsersMailingList()
+    setCurrentId(0)
+    setSelectedUser(null)
+    getUsersMailingList({
+      page: currentPage,
+      per_page: itemsPerPage,
+    })
       .then((res) => {
-        setUsers(res.data)
-        // setTotalItems(res.data.total)
+        setUsers(res.data.users)
+        setTotalItems(res.data.total!)
       })
-      .catch(() => toast.error('Не удалось загрузить пользоваетелей'))
+      .catch(() => toast.error('Не удалось загрузить пользователей'))
   }, [currentPage, itemsPerPage])
 
   const sendMailing = () => {
@@ -52,6 +57,7 @@ const MailingPanel: FC = () => {
         })
       })
       .catch(() => toast.error('Произошла ошибка'))
+      .finally(() => loadUsers())
   }
 
   const deleteMailing = () => {
@@ -60,6 +66,7 @@ const MailingPanel: FC = () => {
     deleteUsersMailing(selectedUser.id)
       .then(() => toast('Вы отключили рассылку у пользователя'))
       .catch(() => toast.error('Произошла ошибка'))
+      .finally(() => loadUsers())
   }
 
   const handleChangeId = (e: ChangeEvent<HTMLInputElement>) => {
@@ -116,18 +123,22 @@ const MailingPanel: FC = () => {
         <CCard className="border">
           <CCardBody className={classNames('d-flex', 'flex-column', 'gap-2')}>
             <div className={classNames('d-flex', 'gap-2')}>
-              <CFormInput placeholder="ID клиента" onChange={handleChangeId} />
+              <CFormInput
+                placeholder="ID клиента"
+                onChange={handleChangeId}
+                value={currentId === 0 ? '' : currentId}
+              />
               <CButton color="primary" onClick={searchUser}>
                 Поиск
               </CButton>
             </div>
             {selectedUser &&
               (selectedUser.mailing_enabled ? (
-                <CButton color="primary" onClick={deleteMailing}>
+                <CButton color="primary" onClick={sendMailing}>
                   Не отправлять клиенту рассылку
                 </CButton>
               ) : (
-                <CButton color="primary" onClick={sendMailing}>
+                <CButton color="primary" onClick={deleteMailing}>
                   Отправлять клиенту рассылку
                 </CButton>
               ))}

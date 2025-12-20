@@ -1,4 +1,5 @@
 import { IUserWithDates } from 'src/types/User.ts'
+import { IPagination } from 'src/types/Common.ts'
 
 export interface IMailing {
   id: number
@@ -25,4 +26,8 @@ export interface IMailingSend {
 
 export interface IMailingUser extends IUserWithDates {
   last_name?: string
+}
+
+export interface IMailingUserList extends IPagination {
+  users: IUserWithDates[]
 }
