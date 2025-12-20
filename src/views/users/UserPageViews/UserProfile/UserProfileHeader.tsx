@@ -31,11 +31,11 @@ export const UserProfileHeader = ({ user }: Props) => {
             <strong>Последнее редактирование:</strong> {new Date(user.updated_at).toLocaleString()}
           </div>
           <div className="mb-2">
-            {user.mailing_enabled ? (
-              <strong>Пользователь получает рассылку</strong>
-            ) : (
-              <strong>Пользователь отказался от рассылки</strong>
-            )}
+            <strong>
+              {user.mailing_enabled
+                ? 'Пользователь получает рассылку'
+                : 'Пользователь отказался от рассылки'}
+            </strong>
           </div>
         </div>
       </CCardBody>
