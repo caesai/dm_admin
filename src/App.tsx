@@ -1,7 +1,7 @@
 import React, { Suspense, useEffect } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
-import { CSpinner, useColorModes } from '@coreui/react-pro'
+import { CSpinner } from '@coreui/react-pro'
 
 import './scss/style.scss'
 
@@ -18,28 +18,35 @@ const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
 const Login = React.lazy(() => import('./views/pages/login/Login'))
 
 const App = () => {
-  const { isColorModeSet, setColorMode } = useColorModes(
-    'coreui-pro-react-admin-template-theme-default',
-  )
-  const [appState] = useAtom(appAtom)
+  const [, setAppState] = useAtom(appAtom)
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.href.split('?')[1])
-    let theme = urlParams.get('theme')
-
-    if (theme !== null && theme.match(/^[A-Za-z0-9\s]+/)) {
-      theme = theme.match(/^[A-Za-z0-9\s]+/)![0]
+    const getCurrentTheme = () => {
+      return (
+        (localStorage.getItem('coreui-pro-react-admin-template-theme-default') as
+          | 'light'
+          | 'dark') || 'light'
+      )
     }
 
-    if (theme) {
-      setColorMode(theme)
+    setAppState((prev) => ({
+      ...prev,
+      theme: getCurrentTheme(),
+    }))
+
+    const handleColorSchemeChange = () => {
+      const currentTheme = getCurrentTheme()
+      setAppState((prev) => ({
+        ...prev,
+        theme: currentTheme,
+      }))
     }
 
-    if (isColorModeSet()) {
-      return
-    }
+    document.documentElement.addEventListener('ColorSchemeChange', handleColorSchemeChange)
 
-    setColorMode(appState.theme)
+    return () => {
+      document.documentElement.removeEventListener('ColorSchemeChange', handleColorSchemeChange)
+    }
   }, [])
 
   return (
