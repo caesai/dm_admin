@@ -78,11 +78,7 @@ const OrdersPanel: FC = () => {
       key: 'restaurant_id',
       label: 'Ресторан',
       _props: { scope: 'col' },
-    },
-    {
-      key: 'restaurant_address',
-      label: 'Адрес',
-      _props: { scope: 'col' },
+      _style: currentId === 0 ? { display: 'flex' } : { display: 'none' },
     },
     {
       key: 'customer_phone',
@@ -122,7 +118,7 @@ const OrdersPanel: FC = () => {
       <CTabPanel itemKey={'orders'} className={classNames('d-flex', 'flex-column', 'py-3')}>
         <CFormSelect
           options={[
-            { label: 'Выберите ресторан', value: '' },
+            { label: 'Все', value: '' },
             ...restaurants.map((restaurant) => ({
               label: `${restaurant.title}, ${getRestaurantCity(restaurants, restaurant.id)}`,
               value: `${restaurant.id}`,
@@ -156,10 +152,16 @@ const OrdersPanel: FC = () => {
             onRowClick={(item: Item) => setOrder(item as IOrderData)}
             scopedColumns={{
               restaurant_id: (item: Item) => (
-                <RestaurantInfoCell restaurantId={item.restaurant_id} type={'title'} />
-              ),
-              restaurant_address: (item: Item) => (
-                <RestaurantInfoCell restaurantId={item.restaurant_id} type={'address'} />
+                <td
+                  className={classNames('', 'gap-1')}
+                  style={currentId === 0 ? { display: 'flex' } : { display: 'none' }}
+                >
+                  <div className={classNames('d-flex')}>
+                    <RestaurantInfoCell restaurantId={item.restaurant_id} type={'title'} />
+                    <p>,</p>
+                  </div>
+                  <RestaurantInfoCell restaurantId={item.restaurant_id} type={'address'} />
+                </td>
               ),
               delivery_method: (item: Item) => (
                 <td>{item.delivery_method === 'pickup' ? 'Самовывоз' : 'Доставка'}</td>
