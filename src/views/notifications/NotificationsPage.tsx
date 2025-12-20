@@ -10,6 +10,7 @@ import OtherPanel from 'src/views/notifications/NotificationPanels/OtherPanel.ts
 import EditOtherPopup from 'src/views/notifications/NotificationPopups/EditOtherPopup.tsx'
 import { IRestaurantWCity } from 'src/types/Restaurant.ts'
 import { GetRestaurantList } from 'src/dataProviders/restaurants.ts'
+import MailingPanel from 'src/views/notifications/NotificationPanels/MailingPanel.tsx'
 
 const NotificationsPage = () => {
   const [textId, setTextId] = useState<number | null>(null)
@@ -47,12 +48,14 @@ const NotificationsPage = () => {
         <CCardHeader>
           <CTabList variant="enclosed">
             <CTab itemKey="distribution">Рассылка</CTab>
+            <CTab itemKey="mailing">Отказ от рассылки</CTab>
             <CTab itemKey="reservation">Бронирование</CTab>
             <CTab itemKey="other">Прочее</CTab>
           </CTabList>
         </CCardHeader>
         <CTabContent>
           <NotificationPanel />
+          <MailingPanel />
           <ReservationPanel
             setConfirmationId={setConfirmationId}
             confirmationList={confirmation}

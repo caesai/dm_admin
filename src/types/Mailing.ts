@@ -1,3 +1,6 @@
+import { IUserWithDates } from 'src/types/User.ts'
+import { IPagination } from 'src/types/Common.ts'
+
 export interface IMailing {
   id: number
   text: string | null
@@ -19,4 +22,12 @@ export interface IMailingSend {
   button_text?: string | null
   button_url?: string
   media_items?: Array<string[]>
+}
+
+export interface IMailingUser extends IUserWithDates {
+  last_name?: string
+}
+
+export interface IMailingUserList extends IPagination {
+  users: IUserWithDates[]
 }
