@@ -6,6 +6,7 @@ import { IPagination } from 'src/types/Common.ts'
 interface IOrderProps extends IPagination {
   restaurant_id?: number
   customer_id?: number
+  created_from?: string
 }
 
 export const getOrdersList = async (props: IOrderProps) => {
@@ -15,6 +16,7 @@ export const getOrdersList = async (props: IOrderProps) => {
       customer_id: props.customer_id,
       page: props.page,
       per_page: props.per_page,
+      created_from: props.created_from,
     },
     headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
   })
