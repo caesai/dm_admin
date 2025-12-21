@@ -30,6 +30,13 @@ export const UserProfileHeader = ({ user }: Props) => {
           <div className="mb-2">
             <strong>Последнее редактирование:</strong> {new Date(user.updated_at).toLocaleString()}
           </div>
+          <div className="mb-2">
+            <strong>
+              {user.mailing_enabled
+                ? 'Пользователь получает рассылку'
+                : 'Пользователь отказался от рассылки'}
+            </strong>
+          </div>
         </div>
       </CCardBody>
     </CCard>
