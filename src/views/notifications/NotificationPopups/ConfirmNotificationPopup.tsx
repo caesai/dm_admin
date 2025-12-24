@@ -12,9 +12,9 @@ import { getCityOrAddress } from 'src/utils'
 
 const ConfirmNotificationPopup: FC<{
   popup: [boolean, Dispatch<SetStateAction<boolean>>]
-  restaurant?: IRestaurantWCity
+  restaurants?: IRestaurantWCity[]
   onConfirm: () => Promise<void>
-}> = ({ popup, restaurant, onConfirm }) => {
+}> = ({ popup, restaurants, onConfirm }) => {
   const [visible, setVisible] = popup
   const [allNotificationIsInProgress, setAllNotificationIsInProgress] = useState(false)
 
@@ -28,6 +28,17 @@ const ConfirmNotificationPopup: FC<{
     }
   }
 
+  const getRestaurantTitles = () => {
+    if (!restaurants) return ''
+
+    const titles: string[] = []
+    restaurants.forEach((restaurant) => {
+      titles.push(`${restaurant.title}, ${getCityOrAddress(restaurant)}`)
+    })
+
+    return titles.join('; ')
+  }
+
   return (
     <CModal alignment="center" visible={visible} onClose={() => setVisible(false)}>
       <CModalHeader>
@@ -35,10 +46,7 @@ const ConfirmNotificationPopup: FC<{
       </CModalHeader>
       <CModalBody>
         Сообщение будет отправлено{' '}
-        {restaurant?.title
-          ? `клиентам ${restaurant.title}, ${getCityOrAddress(restaurant)}`
-          : 'всем клиентам'}
-        !
+        {restaurants ? `клиентам ${getRestaurantTitles()}` : 'всем клиентам'}!
       </CModalBody>
       <CModalFooter>
         <CLoadingButton

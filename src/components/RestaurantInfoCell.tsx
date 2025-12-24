@@ -1,12 +1,13 @@
 import { useAtom } from 'jotai/index'
 import { restaurantByIdAtom } from 'src/atoms/restaurantAtom.ts'
-import { useEffect } from 'react'
+import { CSSProperties, useEffect } from 'react'
 
 type RestaurantInfoCellData = 'city' | 'address' | 'title'
 
 type RestaurantInfoCellProps = {
   restaurantId: number
   type: RestaurantInfoCellData
+  style?: CSSProperties
 }
 
 export const RestaurantInfoCell = (props: RestaurantInfoCellProps) => {
@@ -31,5 +32,5 @@ export const RestaurantInfoCell = (props: RestaurantInfoCellProps) => {
   if (restaurantState.loading) return <td>Загрузка...</td>
   if (!restaurantState.restaurant) return <td>Ошибка</td>
 
-  return <td>{getRestaurantInfo()}</td>
+  return <td style={props.style}>{getRestaurantInfo()}</td>
 }

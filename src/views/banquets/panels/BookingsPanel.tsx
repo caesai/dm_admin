@@ -58,6 +58,11 @@ const BookingsPanel: FC = () => {
       _props: { scope: 'col' },
     },
     {
+      key: 'phone_number',
+      label: 'Номер',
+      _props: { scope: 'col' },
+    },
+    {
       key: 'guests_count',
       label: 'Гости',
       _props: { scope: 'col' },

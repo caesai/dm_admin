@@ -6,9 +6,9 @@ import {
   CCardHeader,
   CForm,
   CFormInput,
-  CFormSelect,
   CInputGroup,
   CLoadingButton,
+  CMultiSelect,
   CTable,
   CTableBody,
   CTableDataCell,
@@ -19,10 +19,10 @@ import {
 } from '@coreui/react-pro'
 import classNames from 'classnames'
 import { TextEditor } from 'src/components/TextEditor/TextEditor.tsx'
-import { ChangeEvent, useEffect, useRef, useState } from 'react'
+import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react'
 import ConfirmNotificationPopup from 'src/views/notifications/NotificationPopups/ConfirmNotificationPopup.tsx'
 import toast from 'react-hot-toast'
-import NotificationHistory from 'src/views/notifications/NotificationPanels/NotificationHistory.tsx'
+import NotificationTable from 'src/views/notifications/Tables/NotificationTable.tsx'
 import TooltipInfo from 'src/components/TooltipInfo'
 import { cilArrowBottom, cilArrowTop } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
@@ -48,7 +48,7 @@ const NotificationPanel = () => {
   const [videoUploadInProgress, setVideoUploadInProgress] = useState<boolean>(false)
   const [buttonText, setButtonText] = useState<string>('')
   const [buttonUrl, setButtonUrl] = useState<string>('')
-  const [restaurantId, setRestaurantId] = useState<number | undefined>(undefined)
+  const [currentRestaurantIds, setRestaurantsIds] = useState<number[]>([])
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false)
   const [isActiveNotificationButton, setIsActiveNotificationButton] = useState<boolean>(false)
   const [refreshHistoryKey, setRefreshHistoryKey] = useState<number>(0)
@@ -62,6 +62,11 @@ const NotificationPanel = () => {
     setRefreshHistoryKey((key) => key + 1)
   }
 
+  const loadRestaurants = async () => {
+    const response = await GetRestaurantList()
+    setRestaurants(response.data)
+  }
+
   const sendMailing = async (
     users_ids: Array<string>,
     text: string,
@@ -73,13 +78,12 @@ const NotificationPanel = () => {
     try {
       const btnText = button_text || undefined
       const btnUrl = button_url || undefined
-      const restaurant_id = restaurantId || undefined
       const mediaItems = mediaList.map((item) => [item.url, item.type, item.name])
 
       if (documentFile) {
         await sendMailingContent({
           users_ids: users_ids,
-          restaurant_id: restaurant_id,
+          restaurant_ids: currentRestaurantIds.includes(0) ? [] : currentRestaurantIds,
           text: text,
           button_text: btnText,
           button_url: btnUrl,
@@ -90,7 +94,7 @@ const NotificationPanel = () => {
       } else if (mediaList.length === 1) {
         await sendMailingContent({
           users_ids: users_ids,
-          restaurant_id: restaurant_id,
+          restaurant_ids: currentRestaurantIds.includes(0) ? [] : currentRestaurantIds,
           text: text,
           button_text: btnText,
           button_url: btnUrl,
@@ -101,7 +105,7 @@ const NotificationPanel = () => {
       } else if (mediaList.length > 1) {
         await sendMailingGroup({
           users_ids: users_ids,
-          restaurant_id: restaurant_id,
+          restaurant_ids: currentRestaurantIds.includes(0) ? [] : currentRestaurantIds,
           text: text,
           button_text: btnText,
           button_url: btnUrl,
@@ -110,7 +114,7 @@ const NotificationPanel = () => {
       } else {
         await sendMailingContent({
           users_ids: users_ids,
-          restaurant_id: restaurant_id,
+          restaurant_ids: currentRestaurantIds.includes(0) ? [] : currentRestaurantIds,
           text: text,
           button_text: btnText,
           button_url: btnUrl,
@@ -279,14 +283,14 @@ const NotificationPanel = () => {
     })
   }
 
-  const changeRestaurantId = (e: ChangeEvent<HTMLSelectElement>) => {
-    setRestaurantId(e.target.value ? parseInt(e.target.value) : undefined)
+  const changeRestaurantIds = (options: Array<{ value: string | number }>) => {
+    const restaurantsList = options.map((option) => Number(option.value))
+    setRestaurantsIds(restaurantsList)
   }
 
-  const loadRestaurants = async () => {
-    const response = await GetRestaurantList()
-    setRestaurants(response.data)
-  }
+  const currentRestaurants = useMemo(() => {
+    return restaurants.filter((restaurant) => currentRestaurantIds.includes(restaurant.id))
+  }, [restaurants, currentRestaurantIds])
 
   useEffect(() => {
     setIsActiveNotificationButton(false)
@@ -480,13 +484,22 @@ const NotificationPanel = () => {
           </CCard>
           <CCardBody className={classNames('d-flex', 'flex-column', 'gap-2')}>
             <div className={classNames('d-flex', 'align-items-center')}>
-              <CFormSelect
-                onChange={changeRestaurantId}
+              <CMultiSelect
+                className={'w-100'}
+                selectionType={'tags'}
+                selectAll={false}
+                placeholder={'Выберите ресторан'}
+                onChange={changeRestaurantIds}
                 options={[
-                  { label: 'Всем', value: undefined },
+                  {
+                    label: 'Всем',
+                    value: 0,
+                    disabled: currentRestaurantIds.length > 0 && !currentRestaurantIds.includes(0),
+                  },
                   ...restaurants.map((restaurant) => ({
                     label: `Клиентам ${restaurant.title}, ${getRestaurantCity(restaurants, restaurant.id)}`,
                     value: `${restaurant.id}`,
+                    disabled: currentRestaurantIds.includes(0),
                   })),
                 ]}
               />
@@ -509,12 +522,12 @@ const NotificationPanel = () => {
             </div>
           </CCardBody>
         </CCard>
-        <NotificationHistory refreshKey={refreshHistoryKey} />
+        <NotificationTable refreshKey={refreshHistoryKey} />
       </CTabPanel>
       {isPopupOpen && (
         <ConfirmNotificationPopup
           onConfirm={notifyAll}
-          restaurant={restaurants.find((restaurant) => restaurant.id === restaurantId)}
+          restaurants={currentRestaurants}
           popup={[isPopupOpen, setIsPopupOpen]}
         />
       )}

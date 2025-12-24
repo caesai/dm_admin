@@ -1,14 +1,10 @@
 import { IUserFull } from 'src/types/User.ts'
-import { CCard, CCardBody, CCardImage, CCardTitle, CBadge } from '@coreui/react-pro'
+import { CCard, CCardBody, CCardImage, CCardTitle } from '@coreui/react-pro'
 import classNames from 'classnames'
 import css from 'src/views/style/layout.module.css'
 
 interface Props {
   user: IUserFull
-}
-
-const getBadge = (status: boolean) => {
-  return status ? 'success' : 'secondary'
 }
 
 export const UserProfileHeader = ({ user }: Props) => {
@@ -34,23 +30,15 @@ export const UserProfileHeader = ({ user }: Props) => {
           <div className="mb-2">
             <strong>Последнее редактирование:</strong> {new Date(user.updated_at).toLocaleString()}
           </div>
-          <div className="mt-3">
-            <div className="d-grid gap-2">
-              <AgreementBadge label="Ранний доступ:" value={user.early_access} />
-              <AgreementBadge label="Лиц. соглашение:" value={user.license_agreement} />
-              <AgreementBadge label="Обработка данных:" value={user.gdpr_agreement} />
-              <AgreementBadge label="Рассылки:" value={user.advertisement_agreement} />
-            </div>
+          <div className="mb-2">
+            <strong>
+              {user.mailing_enabled
+                ? 'Пользователь получает рассылку'
+                : 'Пользователь отказался от рассылки'}
+            </strong>
           </div>
         </div>
       </CCardBody>
     </CCard>
   )
 }
-
-const AgreementBadge = ({ label, value }: { label: string; value: boolean }) => (
-  <span className="d-flex align-items-center justify-content-between">
-    <strong>{label}</strong>
-    <CBadge color={getBadge(value)}>{value ? 'Да' : 'Нет'}</CBadge>
-  </span>
-)

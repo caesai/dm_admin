@@ -103,7 +103,11 @@ export const useUserStats = (user: IUserFull) => {
     const restaurantsData: IRestaurantData[] = []
 
     for (const booking of user.bookings) {
-      const restaurantId = booking.restaurant_id
+      const restaurantId = booking.restaurant?.id
+      if (!restaurantId) {
+        console.error('ID ресторана не найден')
+        continue
+      }
       if (restaurantsMap.has(restaurantId)) continue
 
       try {

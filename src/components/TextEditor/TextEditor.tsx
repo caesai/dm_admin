@@ -30,7 +30,7 @@ interface IProps {
 }
 
 export const TextEditor: React.FC<IProps> = ({ onUpdate, initialContent, placeholder, style }) => {
-  const [editorContent, setEditorContent] = useState('')
+  const [editorContent, setEditorContent] = useState(initialContent || '')
   const [isEmoji, setIsEmoji] = useState<boolean>(false)
   const emojiPickerRef = useRef<HTMLDivElement>(null)
 

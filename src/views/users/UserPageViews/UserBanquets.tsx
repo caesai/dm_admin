@@ -1,6 +1,6 @@
 import { CCard, CCardBody, CSmartTable, CTabPanel } from '@coreui/react-pro'
 import { Item } from '@coreui/react-pro/src/components/smart-table/types'
-import { useState, useEffect, FC } from 'react'
+import { useState, useEffect, FC, useCallback } from 'react'
 import { TablePopup } from 'src/components/TablePopup.tsx'
 import { IRestaurantBanquet } from 'src/types/Restaurant.ts'
 import classNames from 'classnames'
@@ -17,20 +17,21 @@ export const UserBanquets: FC<{
   const [itemsPerPage, setItemsPerPage] = useState<number>(20)
   const [totalItems, setTotalItems] = useState<number>(0)
 
-  useEffect(() => {
-    const loadBanquets = () => {
-      GetUserBanquets(user_id, {
-        page: currentPage,
-        per_page: itemsPerPage,
+  const loadBanquets = useCallback(() => {
+    GetUserBanquets(user_id, {
+      page: currentPage,
+      per_page: itemsPerPage,
+    })
+      .then((res) => {
+        setBanquets(res.data.requests)
+        setTotalItems(res.data.total)
       })
-        .then((res) => {
-          setBanquets(res.data.requests)
-          setTotalItems(res.data.total)
-        })
-        .catch(() => toast.error('Что-то пошло не так'))
-    }
-    void loadBanquets()
+      .catch(() => toast.error('Что-то пошло не так'))
   }, [user_id, currentPage, itemsPerPage])
+
+  useEffect(() => {
+    void loadBanquets()
+  }, [loadBanquets])
 
   const cols = [
     {
