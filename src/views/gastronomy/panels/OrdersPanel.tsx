@@ -78,7 +78,7 @@ const OrdersPanel: FC = () => {
       key: 'restaurant_id',
       label: 'Ресторан',
       _props: { scope: 'col' },
-      _style: currentId === 0 ? { display: 'flex' } : { display: 'none' },
+      _style: currentId === 0 ? { display: 'table-cell' } : { display: 'none' },
     },
     {
       key: 'customer_phone',
@@ -156,11 +156,23 @@ const OrdersPanel: FC = () => {
                   className={classNames('gap-1')}
                   style={currentId === 0 ? { display: 'flex' } : { display: 'none' }}
                 >
-                  <div className={classNames('d-flex')}>
-                    <RestaurantInfoCell restaurantId={item.restaurant_id} type={'title'} />
-                    <p>,</p>
+                  <div className={classNames('d-flex', 'align-items-center', 'gap-2')}>
+                    <div className={classNames('d-flex', 'align-items-center', 'h-100')}>
+                      <RestaurantInfoCell
+                        restaurantId={item.restaurant_id}
+                        type={'title'}
+                        style={{ display: 'flex', alignItems: 'center' }}
+                      />
+                      <p className="mb-0">,</p>
+                    </div>
+                    <div className={'h-100'}>
+                      <RestaurantInfoCell
+                        restaurantId={item.restaurant_id}
+                        type={'address'}
+                        style={{ display: 'flex', alignItems: 'center', height: '100%' }}
+                      />
+                    </div>
                   </div>
-                  <RestaurantInfoCell restaurantId={item.restaurant_id} type={'address'} />
                 </td>
               ),
               delivery_method: (item: Item) => (
