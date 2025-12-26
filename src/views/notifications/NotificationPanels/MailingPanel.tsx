@@ -16,6 +16,7 @@ import {
   getUsersMailingList,
   addUsersMailing,
   deleteUsersMailing,
+  getUserById,
 } from 'src/dataProviders/users.ts'
 import { IMailingUser } from 'src/types/Mailing.ts'
 
@@ -75,14 +76,12 @@ const MailingPanel: FC = () => {
   }
 
   const searchUser = () => {
-    const currentUser = users.find((user) => user.id === currentId)
-
-    if (!currentUser) {
-      toast.error('Не удалось найти пользователя')
-      setSelectedUser(null)
-    } else {
-      setSelectedUser(currentUser)
-    }
+    getUserById(currentId)
+      .then((res) => setSelectedUser(res.data))
+      .catch(() => {
+        toast.error('Не удалось найти пользователя')
+        setSelectedUser(null)
+      })
   }
 
   useEffect(() => {
