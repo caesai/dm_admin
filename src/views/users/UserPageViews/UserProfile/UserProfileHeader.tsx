@@ -32,7 +32,7 @@ export const UserProfileHeader = ({ user }: Props) => {
           </div>
           {user.permissions && (
             <div className="mb-2">
-              <strong>Доступ: {user.permissions.join(', ')}</strong>
+              <strong>Доступ:</strong> {user.permissions.join(', ')}
             </div>
           )}
           <div className="mb-2">
