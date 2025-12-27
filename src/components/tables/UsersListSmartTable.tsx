@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useState } from 'react'
-import { CBadge, CButton, CFormInput, CSmartTable } from '@coreui/react-pro'
+import { CButton, CFormInput, CSmartTable } from '@coreui/react-pro'
 
 import type { Item } from '@coreui/react-pro/src/components/smart-table/types'
 import { IUser, IUserFull } from 'src/types/User.ts'
@@ -92,10 +92,6 @@ export const UsersListSmartTable = ({ users, tableConfig }: ITableProps) => {
     },
   ]
 
-  const getBadge = (status: boolean) => {
-    return status ? 'success' : 'secondary'
-  }
-
   const getSearchPlaceholder = () => {
     if (searchConfig.type === 'tg_id') return 'Telegram ID'
     if (searchConfig.type === 'phone') return 'номер телефона'
@@ -176,13 +172,6 @@ export const UsersListSmartTable = ({ users, tableConfig }: ITableProps) => {
         }}
         columns={columns}
         scopedColumns={{
-          early_access: (item: Item) => (
-            <td>
-              <CBadge color={getBadge(item.early_access)}>
-                {item.early_access ? 'Да' : 'Нет'}
-              </CBadge>
-            </td>
-          ),
           actions: (item: Item) => {
             return (
               <td className="py-2">

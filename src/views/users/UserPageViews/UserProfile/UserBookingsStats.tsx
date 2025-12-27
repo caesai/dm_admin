@@ -25,7 +25,7 @@ export const UserBookingsStats = ({
       <CCardBody>
         {hasBookings ? (
           <div className="d-grid gap-2">
-            <StatItem label="Общее количество:" value={user.total_bookings} />
+            <StatItem label="Общее количество:" value={user.bookings?.length} />
             <StatItem label="С детьми:" value={bookingsWithKids} />
             <StatItem label="Отмененных:" value={canceledBookings} />
             <StatItem label="Визитов:" value={visitedBookings} />
