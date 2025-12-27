@@ -143,47 +143,51 @@ const MailingPanel: FC = () => {
               ))}
           </CCardBody>
         </CCard>
-        <CCard className={'border'}>
+        <CCard>
           <CCardHeader>
             <strong>Пользователи, которые отказались от рассылки</strong>
           </CCardHeader>
-          <CSmartTable
-            columns={cols}
-            items={users}
-            clickableRows
-            itemsPerPageSelect
-            itemsPerPage={itemsPerPage}
-            onItemsPerPageChange={setItemsPerPage}
-            itemsPerPageOptions={[10, 20, 50, 100]}
-            pagination
-            paginationProps={{
-              pages: Math.ceil(totalItems / itemsPerPage),
-              activePage: currentPage,
-              onActivePageChange: setCurrentPage,
-            }}
-            tableHeadProps={{
-              className: 'align-middle',
-            }}
-            tableProps={{
-              striped: true,
-              hover: true,
-              className: classNames('align-middle', 'text-center'),
-            }}
-            scopedColumns={{
-              client: (item: Item) => (
-                <td>{item.last_name ? `${item.first_name} ${item.last_name}` : item.first_name}</td>
-              ),
-              open: (item: Item) => (
-                <td className="pe-0">
-                  <Link to={`/users/${item.id}`} target="_blank" rel="noopener noreferrer">
-                    <CButton size="sm" color="primary">
-                      Открыть
-                    </CButton>
-                  </Link>
-                </td>
-              ),
-            }}
-          />
+          <CCardBody>
+            <CSmartTable
+              columns={cols}
+              items={users}
+              clickableRows
+              itemsPerPageSelect
+              itemsPerPage={itemsPerPage}
+              onItemsPerPageChange={setItemsPerPage}
+              itemsPerPageOptions={[10, 20, 50, 100]}
+              pagination
+              paginationProps={{
+                pages: Math.ceil(totalItems / itemsPerPage),
+                activePage: currentPage,
+                onActivePageChange: setCurrentPage,
+              }}
+              tableHeadProps={{
+                className: 'align-middle',
+              }}
+              tableProps={{
+                striped: true,
+                hover: true,
+                className: classNames('align-middle', 'text-center'),
+              }}
+              scopedColumns={{
+                client: (item: Item) => (
+                  <td>
+                    {item.last_name ? `${item.first_name} ${item.last_name}` : item.first_name}
+                  </td>
+                ),
+                open: (item: Item) => (
+                  <td className="pe-0">
+                    <Link to={`/users/${item.id}`} target="_blank" rel="noopener noreferrer">
+                      <CButton size="sm" color="primary">
+                        Открыть
+                      </CButton>
+                    </Link>
+                  </td>
+                ),
+              }}
+            />
+          </CCardBody>
         </CCard>
       </CCard>
     </CTabPanel>
