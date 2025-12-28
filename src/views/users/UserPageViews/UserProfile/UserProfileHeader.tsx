@@ -30,6 +30,11 @@ export const UserProfileHeader = ({ user }: Props) => {
           <div className="mb-2">
             <strong>Последнее редактирование:</strong> {new Date(user.updated_at).toLocaleString()}
           </div>
+          {user.permissions && (
+            <div className="mb-2">
+              <strong>Доступ:</strong> {user.permissions.join(', ')}
+            </div>
+          )}
           <div className="mb-2">
             <strong>
               {user.mailing_enabled
