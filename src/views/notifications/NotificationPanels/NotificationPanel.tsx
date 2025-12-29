@@ -58,6 +58,7 @@ const NotificationPanel = () => {
   const [refreshHistoryKey, setRefreshHistoryKey] = useState<number>(0)
   const [documentFile, setDocumentFile] = useState<IMedia | null>(null)
   const [restaurants, setRestaurants] = useState<IRestaurantWCity[]>([])
+  const [previewText, setPreviewText] = useState<string>('')
 
   const imageInputRef = useRef<HTMLInputElement>(null)
   const videoInputRef = useRef<HTMLInputElement>(null)
@@ -171,7 +172,7 @@ const NotificationPanel = () => {
       text: '',
       restaurant_ids: currentRestaurantIds.includes(0) ? null : currentRestaurantIds,
     })
-      .then((res) => toast(`Количество получателей: ${res.data.count}`))
+      .then((res) => setPreviewText(`Количество получателей: ${res.data.count}`))
       .catch(() => toast.error('Произошла ошибка'))
   }
 
@@ -521,6 +522,7 @@ const NotificationPanel = () => {
                 <TooltipInfo content="Выберите ресторан, чтобы отправить сообщение только его клиентам." />
               </div>
             </div>
+            <span>{previewText}</span>
             <div className={classNames('d-flex', 'align-items-center', 'w-25')}>
               <CButton
                 color="primary"
