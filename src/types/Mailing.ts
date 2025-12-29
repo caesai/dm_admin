@@ -12,9 +12,9 @@ export interface IMailing {
 }
 
 export interface IMailingSend {
-  users_ids: Array<string>
+  users_ids?: Array<string>
   restaurant_id?: number
-  restaurant_ids?: number[]
+  restaurant_ids?: number[] | null
   text?: string
   media_url?: string
   media_type?: 'photo' | 'video' | 'document'

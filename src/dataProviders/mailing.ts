@@ -33,3 +33,11 @@ export const deleteMailing = async (id: number) => {
     },
   })
 }
+
+export const sendMailingPreview = async (data: IMailingSend) => {
+  return await axios.post(`${BASEURL}/mailing/preview-count`, data, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+    },
+  })
+}
