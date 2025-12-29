@@ -34,8 +34,28 @@ export const deleteMailing = async (id: number) => {
   })
 }
 
-export const sendMailingPreview = async (data: IMailingSend) => {
-  return await axios.post(`${BASEURL}/mailing/preview-count`, data, {
+export const getMailingPreview = async (restaurants: number[] | null) => {
+  console.log(restaurants)
+  return await axios.get(`${BASEURL}/mailing/preview-count`, {
+    params: { restaurant_ids: restaurants },
+    paramsSerializer: () => {
+      const searchParams = new URLSearchParams()
+      if (restaurants && restaurants.length > 0) {
+        restaurants.forEach((id) => {
+          searchParams.append('restaurant_ids', id.toString())
+        })
+      }
+      return searchParams.toString()
+    },
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+    },
+  })
+}
+
+export const getMailingStatistics = async (id: number) => {
+  return await axios.get(`${BASEURL}/mailing/statistics`, {
+    params: { mailing_id: id },
     headers: {
       Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },

@@ -28,9 +28,9 @@ import { cilArrowBottom, cilArrowTop } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 import { uploadFile } from 'src/dataProviders/s3.ts'
 import {
+  getMailingPreview,
   sendMailingContent,
   sendMailingGroup,
-  sendMailingPreview,
 } from 'src/dataProviders/mailing.ts'
 import { GetRestaurantList } from 'src/dataProviders/restaurants.ts'
 import { IRestaurantWCity } from 'src/types/Restaurant.ts'
@@ -168,10 +168,7 @@ const NotificationPanel = () => {
   }
 
   const previewMailing = () => {
-    sendMailingPreview({
-      text: '',
-      restaurant_ids: currentRestaurantIds.includes(0) ? null : currentRestaurantIds,
-    })
+    getMailingPreview(currentRestaurantIds.includes(0) ? null : currentRestaurantIds)
       .then((res) => setPreviewText(`Количество получателей: ${res.data.count}`))
       .catch(() => toast.error('Произошла ошибка'))
   }
