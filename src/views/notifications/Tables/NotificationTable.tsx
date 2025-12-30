@@ -17,6 +17,7 @@ import { IMailing } from 'src/types/Mailing.ts'
 import DeleteMailingPopup from 'src/views/notifications/NotificationPopups/DeleteMailingPopup.tsx'
 import toast from 'react-hot-toast'
 import MailingTextPopup from 'src/views/notifications/NotificationPopups/MailingTextPopup.tsx'
+import MailingStatisticsPopup from 'src/views/notifications/NotificationPopups/MailingStatisticsPopup.tsx'
 import { renderHTMLContent } from 'src/utils.tsx'
 
 interface NotificationHistoryProps {
@@ -27,6 +28,7 @@ const NotificationTable = ({ refreshKey }: NotificationHistoryProps) => {
   const [mailingList, setMailingList] = useState<IMailing[]>([])
   const [currentMailingId, setCurrentMailingId] = useState<number | null>(null)
   const [currentMailingText, setCurrentMailingText] = useState<string | null>(null)
+  const [currentStatisticsId, setCurrentStatisticsId] = useState<number | null>(null)
 
   const formatText = (text: string | null) => {
     if (text !== null) {
@@ -59,6 +61,7 @@ const NotificationTable = ({ refreshKey }: NotificationHistoryProps) => {
                 <CTableHeaderCell className="text-start">Показать</CTableHeaderCell>
                 <CTableHeaderCell>Дата</CTableHeaderCell>
                 <CTableHeaderCell>Количество получателей</CTableHeaderCell>
+                <CTableHeaderCell>Статистика</CTableHeaderCell>
                 <CTableHeaderCell>Удалить</CTableHeaderCell>
               </CTableRow>
             </CTableHead>
@@ -75,6 +78,11 @@ const NotificationTable = ({ refreshKey }: NotificationHistoryProps) => {
                   </CTableDataCell>
                   <CTableDataCell>{mailing.created_at}</CTableDataCell>
                   <CTableDataCell>{mailing.sent_count}</CTableDataCell>
+                  <CTableDataCell>
+                    <CButton color="primary" onClick={() => setCurrentStatisticsId(mailing.id)}>
+                      Статистика
+                    </CButton>
+                  </CTableDataCell>
                   <CTableDataCell>
                     <CButton color="primary" onClick={() => setCurrentMailingId(mailing.id)}>
                       Удалить
@@ -94,6 +102,9 @@ const NotificationTable = ({ refreshKey }: NotificationHistoryProps) => {
       )}
       {currentMailingText !== null && (
         <MailingTextPopup popup={[currentMailingText, setCurrentMailingText]} />
+      )}
+      {currentStatisticsId !== null && (
+        <MailingStatisticsPopup popup={[currentStatisticsId, setCurrentStatisticsId]} />
       )}
     </>
   )
