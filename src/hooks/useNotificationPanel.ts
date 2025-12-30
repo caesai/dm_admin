@@ -54,7 +54,7 @@ export const useNotificationPanel = () => {
 
       if (documentFile) {
         await sendMailingContent({
-          users_ids: users_ids,
+          users_ids,
           restaurant_ids: currentRestaurantIds.includes(0) ? [] : currentRestaurantIds,
           text: text,
           button_text: btnText,
@@ -65,7 +65,7 @@ export const useNotificationPanel = () => {
         })
       } else if (mediaList.length === 1) {
         await sendMailingContent({
-          users_ids: users_ids,
+          users_ids,
           restaurant_ids: currentRestaurantIds.includes(0) ? [] : currentRestaurantIds,
           text: text,
           button_text: btnText,
@@ -76,7 +76,7 @@ export const useNotificationPanel = () => {
         })
       } else if (mediaList.length > 1) {
         await sendMailingGroup({
-          users_ids: users_ids,
+          users_ids,
           restaurant_ids: currentRestaurantIds.includes(0) ? [] : currentRestaurantIds,
           text: text,
           button_text: btnText,
@@ -85,7 +85,7 @@ export const useNotificationPanel = () => {
         })
       } else {
         await sendMailingContent({
-          users_ids: users_ids,
+          users_ids,
           restaurant_ids: currentRestaurantIds.includes(0) ? [] : currentRestaurantIds,
           text: text,
           button_text: btnText,
