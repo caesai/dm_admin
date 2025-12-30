@@ -1,16 +1,16 @@
 import { CCard, CCardHeader, CTab, CTabContent, CTabList, CTabs } from '@coreui/react-pro'
 import { useEffect, useState } from 'react'
 import classNames from 'classnames'
-import ReservationPanel from 'src/views/notifications/NotificationPanels/ReservationPanel.tsx'
-import NotificationPanel from 'src/views/notifications/NotificationPanels/NotificationPanel.tsx'
+import ReservationPanel from 'src/views/notifications/NotificationPanels/ReservationPanel/ReservationPanel.tsx'
+import NotificationPanel from 'src/views/notifications/NotificationPanels/NotificationPanel/NotificationPanel.tsx'
 import EditReservationPopup from 'src/views/notifications/NotificationPopups/EditReservationPopup.tsx'
 import { getConfirmationList, getTextsList } from 'src/dataProviders/texts.ts'
 import { IConfirmation, IText } from 'src/types/Texts.ts'
-import OtherPanel from 'src/views/notifications/NotificationPanels/OtherPanel.tsx'
+import OtherPanel from 'src/views/notifications/NotificationPanels/OtherPanel/OtherPanel.tsx'
 import EditOtherPopup from 'src/views/notifications/NotificationPopups/EditOtherPopup.tsx'
 import { IRestaurantWCity } from 'src/types/Restaurant.ts'
 import { GetRestaurantList } from 'src/dataProviders/restaurants.ts'
-import MailingPanel from 'src/views/notifications/NotificationPanels/MailingPanel.tsx'
+import MailingPanel from 'src/views/notifications/NotificationPanels/MailingPanel/MailingPanel.tsx'
 
 const NotificationsPage = () => {
   const [textId, setTextId] = useState<number | null>(null)
