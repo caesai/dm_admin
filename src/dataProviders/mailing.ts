@@ -35,7 +35,6 @@ export const deleteMailing = async (id: number) => {
 }
 
 export const getMailingPreview = async (restaurants: number[] | null) => {
-  console.log(restaurants)
   return await axios.get(`${BASEURL}/mailing/preview-count`, {
     params: { restaurant_ids: restaurants },
     paramsSerializer: () => {
