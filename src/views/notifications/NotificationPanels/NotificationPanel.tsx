@@ -27,7 +27,11 @@ import TooltipInfo from 'src/components/TooltipInfo'
 import { cilArrowBottom, cilArrowTop } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 import { uploadFile } from 'src/dataProviders/s3.ts'
-import { sendMailingContent, sendMailingGroup } from 'src/dataProviders/mailing.ts'
+import {
+  getMailingPreview,
+  sendMailingContent,
+  sendMailingGroup,
+} from 'src/dataProviders/mailing.ts'
 import { GetRestaurantList } from 'src/dataProviders/restaurants.ts'
 import { IRestaurantWCity } from 'src/types/Restaurant.ts'
 import { getRestaurantCity } from 'src/utils.tsx'
@@ -54,6 +58,7 @@ const NotificationPanel = () => {
   const [refreshHistoryKey, setRefreshHistoryKey] = useState<number>(0)
   const [documentFile, setDocumentFile] = useState<IMedia | null>(null)
   const [restaurants, setRestaurants] = useState<IRestaurantWCity[]>([])
+  const [previewText, setPreviewText] = useState<string>('')
 
   const imageInputRef = useRef<HTMLInputElement>(null)
   const videoInputRef = useRef<HTMLInputElement>(null)
@@ -160,6 +165,12 @@ const NotificationPanel = () => {
       console.log(error)
       toast.error('Ошибка в рассылке: ' + error)
     }
+  }
+
+  const previewMailing = () => {
+    getMailingPreview(currentRestaurantIds.includes(0) ? null : currentRestaurantIds)
+      .then((res) => setPreviewText(`Количество получателей: ${res.data.count}`))
+      .catch(() => toast.error('Произошла ошибка'))
   }
 
   const handlePhoto = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -299,6 +310,7 @@ const NotificationPanel = () => {
   useEffect(() => {
     loadRestaurants()
   }, [])
+
   return (
     <>
       <CTabPanel itemKey="distribution">
@@ -507,10 +519,24 @@ const NotificationPanel = () => {
                 <TooltipInfo content="Выберите ресторан, чтобы отправить сообщение только его клиентам." />
               </div>
             </div>
-            <div className={classNames('d-flex', 'align-items-center')}>
+            <span>{previewText}</span>
+            <div className={classNames('d-flex', 'align-items-center', 'w-25')}>
               <CButton
                 color="primary"
-                className="px-4"
+                className={classNames('px-4', 'w-100')}
+                onClick={previewMailing}
+                disabled={!currentRestaurantIds.length}
+              >
+                База рассылки
+              </CButton>
+              <div className="ms-2">
+                <TooltipInfo content="Узнать количество получателей." />
+              </div>
+            </div>
+            <div className={classNames('d-flex', 'align-items-center', 'w-25')}>
+              <CButton
+                color="primary"
+                className={classNames('px-4', 'w-100')}
                 onClick={() => setIsPopupOpen(true)}
                 disabled={!isActiveNotificationButton}
               >
